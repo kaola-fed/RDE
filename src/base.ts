@@ -1,5 +1,6 @@
 import {Command} from '@oclif/command'
-import cli from 'cli-ux'
+
+import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
   static appConf = 'rede.app.js'
@@ -12,24 +13,23 @@ export default abstract class Base extends Command {
     // check user input args here
     const args = await this.checkArgs()
 
-    cli.action.start('start initializing')
+    logger.info('Phase 1: Start initializing')
     // initialize everything needed here
     await this.initialize(args)
-    cli.action.stop()
 
-    cli.action.start('start checking conf')
+    logger.info('Phase 2: Start checking')
     // check rede related conf here
     await this.checkConf()
-    cli.action.stop()
 
-    cli.action.start('start run')
+    logger.info('Phase 3: Start running')
   }
 
   async finally() {
-    cli.action.stop()
+    await this.postRun()
   }
 
   protected async checkArgs(): Promise<any> {}
   protected async initialize(_args: any): Promise<any> {}
   protected async checkConf(): Promise<any> {}
+  protected async postRun(): Promise<any> {}
 }

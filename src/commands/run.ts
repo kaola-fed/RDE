@@ -1,5 +1,5 @@
 import Base from '../base'
-import {logger} from '../logger'
+import {logger} from '../services/logger'
 
 export default class Run extends Base {
   static description = 'run scripts provided by @rede/template'

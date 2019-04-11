@@ -1,6 +1,6 @@
-import Base from '../base'
+import Base from '../../base'
 
-export default class Template extends Base {
+export default class Index extends Base {
   static description = '@rede/template development tool'
 
   static examples = [

@@ -1,6 +1,6 @@
-import Base from '../base'
+import Base from '../../base'
 
-export default class Suite extends Base {
+export default class Index extends Base {
   static description = '@rede/suite development tool'
 
   static examples = [
