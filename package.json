@@ -1,10 +1,10 @@
 {
-  "name": "rede",
+  "name": "rde",
   "description": "Recommanded Development Environment",
   "version": "0.0.0",
   "author": "kaolafed",
   "bin": {
-    "rede": "./bin/run"
+    "rde": "./bin/run"
   },
   "bugs": "https://github.com/kaola-fed/rede/issues",
   "dependencies": {
@@ -56,7 +56,7 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "rede",
+    "bin": "rde",
     "plugins": [
       "@oclif/plugin-help"
     ]
@@ -72,7 +72,7 @@
       "git add"
     ]
   },
-  "repository": "kaolafed/rede",
+  "repository": "kaolafed/rde",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",

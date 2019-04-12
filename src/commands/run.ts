@@ -5,11 +5,11 @@ export default class Run extends Base {
   static description = 'run scripts provided by @rede/template'
 
   static examples = [
-    '$ rede run dev',
+    '$ rde run dev',
   ]
 
   static args = [
-    {name: 'cmd', required: true, description: 'commands provided by @rede/template'}
+    {name: 'cmd', required: true, description: 'commands provided by @rde/template'}
   ]
 
   async run() {

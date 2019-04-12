@@ -4,7 +4,7 @@ export default class Index extends Base {
   static description = '@rede/suite development tool'
 
   static examples = [
-    '$ rede suite init',
+    '$ rde suite init',
   ]
 
   async run() {}

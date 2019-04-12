@@ -11,10 +11,10 @@ import npm from '../services/npm'
 import _ from '../util'
 
 export default class Init extends Base {
-  static description = 'create a rede project'
+  static description = 'create a rde project'
 
   static examples = [
-    '$ rede create <appname>',
+    '$ rde create <appname>',
   ]
 
   static args = [{
@@ -62,7 +62,7 @@ export default class Init extends Base {
   public async postRun() {
     logger.complete('Created project')
     logger.star('Start with command:')
-    logger.star('$ rede run dev')
+    logger.star('$ rde run dev')
   }
 
   private async prompt() {
