@@ -17,8 +17,11 @@ export default abstract class Base extends Command {
     // initialize everything needed here
     await this.initialize(args)
 
-    logger.info('Phase 2: Start checking')
-    // check rede related conf here
+    // render rdt if needed
+    await this.render()
+
+    logger.info('Phase 2: Preparing')
+    // prepare running context here
     await this.preRun()
 
     logger.info('Phase 3: Start running')
@@ -30,6 +33,7 @@ export default abstract class Base extends Command {
 
   protected async preInit(): Promise<any> {}
   protected async initialize(_args: any): Promise<any> {}
+  protected async render(): Promise<any> {}
   protected async preRun(): Promise<any> {}
   protected async postRun(): Promise<any> {}
 }

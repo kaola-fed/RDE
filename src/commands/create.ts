@@ -10,7 +10,7 @@ import {logger} from '../services/logger'
 import npm from '../services/npm'
 import _ from '../util'
 
-export default class Init extends Base {
+export default class Create extends Base {
   static description = 'create a rde project'
 
   static examples = [
@@ -30,7 +30,7 @@ export default class Init extends Base {
   private readonly appScaffoldDir = 'app'
 
   public async preInit() {
-    const {args} = this.parse(Init)
+    const {args} = this.parse(Create)
 
     if (!_.isEmptyDir(process.cwd())) {
       logger.error('Not an empty directory, please check')
