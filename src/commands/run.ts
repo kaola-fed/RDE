@@ -1,5 +1,4 @@
 import Base from '../base'
-import {logger} from '../services/logger'
 
 export default class Run extends Base {
   static description = 'run scripts provided by @rede/template'
@@ -12,8 +11,11 @@ export default class Run extends Base {
     {name: 'cmd', required: true, description: 'commands provided by @rde/template'}
   ]
 
-  async run() {
+  async preInit() {
     const {args} = this.parse(Run)
-    logger.success(`running ${args.cmd}`)
+    return args
+  }
+
+  async run() {
   }
 }

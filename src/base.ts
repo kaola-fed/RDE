@@ -3,15 +3,15 @@ import {Command} from '@oclif/command'
 import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
-  static appConf = 'rede.app.js'
+  static appConf = 'rde.app.js'
 
-  static templateConf = 'rede.template.js'
+  static rdtConf = 'rde.template.js'
 
-  static suiteConf = 'rede.suite.js'
+  static rdsConf = 'rde.suite.js'
 
   async init() {
     // check user input args here
-    const args = await this.checkArgs()
+    const args = await this.preInit()
 
     logger.info('Phase 1: Start initializing')
     // initialize everything needed here
@@ -19,7 +19,7 @@ export default abstract class Base extends Command {
 
     logger.info('Phase 2: Start checking')
     // check rede related conf here
-    await this.checkConf()
+    await this.preRun()
 
     logger.info('Phase 3: Start running')
   }
@@ -28,8 +28,8 @@ export default abstract class Base extends Command {
     await this.postRun()
   }
 
-  protected async checkArgs(): Promise<any> {}
+  protected async preInit(): Promise<any> {}
   protected async initialize(_args: any): Promise<any> {}
-  protected async checkConf(): Promise<any> {}
+  protected async preRun(): Promise<any> {}
   protected async postRun(): Promise<any> {}
 }

@@ -19,7 +19,7 @@ export default class Init extends Base {
 
   static args = [{
     name: 'appName',
-    required: true,
+    required: false,
     description: 'package name, used by package.json',
   }]
 
@@ -29,7 +29,7 @@ export default class Init extends Base {
 
   private readonly appScaffoldDir = 'app'
 
-  public async checkArgs() {
+  public async preInit() {
     const {args} = this.parse(Init)
 
     if (!_.isEmptyDir(process.cwd())) {
@@ -41,7 +41,7 @@ export default class Init extends Base {
   }
 
   public async initialize(args: any) {
-    this.appName = args.appName
+    this.appName = args.appName || path.basename(process.cwd())
 
     await this.prompt()
 
