@@ -14,43 +14,26 @@ export default class Init extends Base {
   static description = 'create a rede project'
 
   static examples = [
-    '$ rede init',
+    '$ rede create <appname>',
   ]
 
   static args = [{
-    name: 'template',
+    name: 'appName',
     required: true,
-    description: '@rede/template name, listed on website',
-    parse: (input: string) => {
-      if (input.includes('rdt-')) {
-        return input
-      } else {
-        return `rdt-${input}`
-      }
-    },
+    description: 'package name, used by package.json',
   }]
 
-  private template = ''
+  private appName = ''
+
+  private rdtName = ''
 
   private readonly appScaffoldDir = 'app'
 
   public async checkArgs() {
     const {args} = this.parse(Init)
-    const {template} = args
 
     if (!_.isEmptyDir(process.cwd())) {
       logger.error('Not an empty directory, please check')
-      this.exit(1)
-    }
-
-    try {
-      await npm.getInfo(template)
-    } catch ({response, message}) {
-      if (response.status === 404) {
-        logger.error(`Cannot find ${template}, please check`)
-      } else {
-        logger.error(message)
-      }
       this.exit(1)
     }
 
@@ -58,19 +41,19 @@ export default class Init extends Base {
   }
 
   public async initialize(args: any) {
-    this.template = args.template
+    this.appName = args.appName
 
-    const prompts = await this.prompt()
+    await this.prompt()
 
-    logger.info(`Installing ${this.template}. This might take a while...`)
-    await writePkgJson({name: prompts.packageName})
+    logger.info(`Installing ${this.rdtName}. This might take a while...`)
+    await writePkgJson({name: this.appName})
 
-    await npm.install(this.template)
+    await npm.install(this.rdtName)
   }
 
   async run() {
     const cwd = process.cwd()
-    const srcDir = path.resolve(cwd, 'node_modules', this.template, this.appScaffoldDir)
+    const srcDir = path.resolve(cwd, 'node_modules', this.rdtName, this.appScaffoldDir)
     const destDir = path.resolve(cwd, 'app')
 
     await ncp(srcDir, destDir)
@@ -83,14 +66,26 @@ export default class Init extends Base {
   }
 
   private async prompt() {
-    const cwdDirName = path.basename(process.cwd())
-    const packageName = await cli.prompt(`package name: (${cwdDirName})`, {
+    const defaultRdt = 'vuecli-basic'
+
+    this.rdtName = await cli.prompt(`template name: (${defaultRdt})`, {
       required: false,
-      default: cwdDirName,
+      default: defaultRdt,
     })
 
-    return {
-      packageName,
+    if (!this.rdtName.includes('rdt-')) {
+      this.rdtName = `rdt-${this.rdtName}`
+    }
+
+    try {
+      await npm.getInfo(this.rdtName)
+    } catch ({response, message}) {
+      if (response.status === 404) {
+        logger.error(`Cannot find ${this.rdtName}, please check`)
+      } else {
+        logger.error(message)
+      }
+      this.exit(1)
     }
   }
 }
