@@ -6,8 +6,10 @@ import * as path from 'path'
 import * as writePkgJson from 'write-pkg'
 
 import Base from '../base'
+import conf from '../services/conf'
 import {logger} from '../services/logger'
 import npm from '../services/npm'
+import render from '../services/render'
 import _ from '../util'
 
 export default class Create extends Base {
@@ -26,8 +28,6 @@ export default class Create extends Base {
   private appName = ''
 
   private rdtName = ''
-
-  private readonly appScaffoldDir = 'app'
 
   public async preInit() {
     const {args} = this.parse(Create)
@@ -49,11 +49,21 @@ export default class Create extends Base {
     await writePkgJson({name: this.appName})
 
     await npm.install(this.rdtName)
+
+    const appConfName = conf.getAppConfName()
+    render.renderTo(appConfName, {
+      template: this.rdtName,
+    }, appConfName)
+
+    const {template} = conf.getRdtConf()
+    const {app} = conf.getAppConf()
+    app.readme.template = template.docs.homepage
+    render.writeJsObj(app, appConfName)
   }
 
   async run() {
     const cwd = process.cwd()
-    const srcDir = path.resolve(cwd, 'node_modules', this.rdtName, this.appScaffoldDir)
+    const srcDir = conf.getRdtAppDir()
     const destDir = path.resolve(cwd, 'app')
 
     await ncp(srcDir, destDir)
