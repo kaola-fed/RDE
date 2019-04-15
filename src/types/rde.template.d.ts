@@ -17,10 +17,11 @@ interface Mapping {
 }
 
 interface Docker {
-  expose: number[]
+  ports: number[]
 }
 
 interface RdtConf {
+  extends: string
   framework: Framework
   spa: boolean
   docs: Docs

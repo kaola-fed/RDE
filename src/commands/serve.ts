@@ -1,10 +1,14 @@
 import {flags} from '@oclif/command'
+import {exec} from 'child_process'
 import * as path from 'path'
+import * as util from 'util'
 
 import Base from '../base'
 import conf from '../services/conf'
 import {logger} from '../services/logger'
 import render from '../services/render'
+
+const asyncExec = util.promisify(exec)
 
 export default class Serve extends Base {
   static description = 'start a dev server'
@@ -24,14 +28,14 @@ export default class Serve extends Base {
   async preInit() {
     const {args, flags} = this.parse(Serve)
 
-    const {app} = conf.getAppConf()
+    const {app} = this.rdeConf
     if (!app.template) {
       throw Error('template is not provided in you config file, please check')
     }
 
-    const {template} = conf.getRdtConf()
+    const {template} = this.rdeConf
     const {docker} = template
-    if (!docker || !docker.expose || !docker.expose.length) {
+    if (!docker || !docker.ports || !docker.ports.length) {
       throw Error(`${conf.getTemplateName()} doesn't support docker mode, please rerun with $ rde serve`)
     }
 
@@ -61,17 +65,31 @@ export default class Serve extends Base {
   }
 
   async preRun() {
+    const {template} = this.rdeConf
+
     if (this.docker) {
-      // const srcDir = path.resolve(__dirname, '../mustaches/docker')
-      // const destDir = '.${conf.getCliName()}/rde.docker/'
-      // await render.renderDir(srcDir, {
-      //   context: '../../',
-      //   ports: ''
-      // })
+      const {mapping} = template
+      const {ports} = template.docker
+      const srcDir = path.resolve(__dirname, '../mustaches/docker')
+      const destDir = `.${conf.getCliName()}/.docker/`
+
+      await render.renderDir(srcDir, {
+        context: '../../',
+        ports,
+        mapping,
+        cmd: 'serve'
+      }, ['mustache'], destDir)
     }
   }
 
-  async run() {}
+  async run() {
+    try {
+      await asyncExec('docker-compose up')
+    } catch (e) {
+      logger.error(e.message)
+      this.exit(1)
+    }
+  }
 
   private validateAppRender() {
     const {app, template} = this.rdeConf
