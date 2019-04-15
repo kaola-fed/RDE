@@ -51,14 +51,17 @@ export default class Create extends Base {
     await npm.install(this.rdtName)
 
     const appConfName = conf.getAppConfName()
-    render.renderTo(appConfName, {
-      template: this.rdtName,
+    await render.renderTo(appConfName.slice(0, -3), {
+      templateName: this.rdtName,
     }, appConfName)
 
     const {template} = conf.getRdtConf()
     const {app} = conf.getAppConf()
+
     app.readme.template = template.docs.homepage
-    render.writeJsObj(app, appConfName)
+    await render.renderTo('module', {
+      obj: app
+    }, appConfName)
   }
 
   async run() {

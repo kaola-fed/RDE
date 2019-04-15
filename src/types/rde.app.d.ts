@@ -4,5 +4,6 @@ interface AppConf {
   readme: {
     template: string,
     suites: any[]
-  }
+  },
+  render: { [key: string]: any }
 }

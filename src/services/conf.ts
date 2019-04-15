@@ -13,11 +13,23 @@ const cwd = process.cwd()
 const appConfPath = path.resolve(cwd, appConfName)
 
 export default {
+  getCliName() { return 'rde' },
+
   getAppConfName() { return appConfName },
 
   getRdtConfName() { return rdtConfName },
 
   rdsConfName() { return rdsConfName },
+
+  getRdtModulePath() {
+    const {app} = this.getAppConf()
+    return path.resolve(cwd, 'node_modules', app.template)
+  },
+
+  getTemplateName() {
+    const {app} = this.getAppConf()
+    return app.template
+  },
 
   getAppConf() {
     if (!fs.existsSync(appConfPath)) {

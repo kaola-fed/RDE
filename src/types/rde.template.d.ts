@@ -6,7 +6,9 @@ interface Docs {
 }
 
 interface Render {
-  includes: string[]
+  includes: string[],
+  tags: string[],
+  validate(dataView: any): boolean,
 }
 
 interface Mapping {
