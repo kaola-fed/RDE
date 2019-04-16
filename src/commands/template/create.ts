@@ -1,4 +1,6 @@
 import {exec} from 'child_process'
+// @ts-ignore
+import * as extend from 'deep-extend'
 import * as fs from 'fs'
 import * as path from 'path'
 // @ts-ignore
@@ -31,9 +33,10 @@ export default class Create extends Base {
   readonly baseRdtName = '@rede/rdt-helloworld'
 
   private rdtName = ''
+  private rdtDependencies: Array<string> = []
 
-  get rdtPkgDir() {
-    return path.resolve(this.cwd, 'node_modules', this.baseRdtName)
+  public getRdtPkgDir(rdtName: string) {
+    return path.resolve(this.cwd, 'node_modules', rdtName)
   }
 
   public async preInit() {
@@ -75,51 +78,101 @@ export default class Create extends Base {
 
     await writePkgJson({name: this.rdtName})
 
-    await npm.install(this.baseRdtName)
+    await npm.install(this.baseRdtName, false)
 
     await asyncExec('rm package*.json')
+
+    this.setRdtDependencies(this.baseRdtName)
+  }
+  // 收集rdt依赖
+  setRdtDependencies(rdtName: string) {
+    this.rdtDependencies.push(rdtName)
+    const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getRdtConfName())
+    if (!fs.existsSync(rdtConfPath)) {
+      logger.error(`${rdtConfPath} cannot be found`)
+      this.exit(1)
+    }
+    const extendRdtName = require(rdtConfPath).extend
+    if (!extendRdtName) {
+      return
+    }
+    this.setRdtDependencies(extendRdtName)
   }
 
   async render() {
+    for (let rdtName of this.rdtDependencies.reverse()) {
+      await this.renderRdt(rdtName)
+    }
+  }
+
+  async renderRdt(rdtName: string) {
+    await this.copyPkgToCwd(rdtName, '', '')
     await Promise.all([
-      this.renderTemplate(),
-      this.copyPkgToCwd('app', 'app'),
-      this.copyPkgToCwd('rde.template.js', 'rde.template.js'),
-      this.copyPkgToCwd('.npmignore', '.gitignore'),
-      this.renderOther()
+      this.renderTemplate(rdtName),
+      this.copyPkgToCwd(rdtName, 'app', 'app'),
+      this.copyPkgToCwd(rdtName, '.npmignore', '.gitignore'),
+      this.renderRdtConf(rdtName),
+      this.renderPkgJson(rdtName)
     ])
   }
 
-  async renderTemplate() {
-    const srcDir = path.resolve(this.rdtPkgDir, 'template')
+  async renderTemplate(rdtName: string) {
+    const srcDir = path.resolve(this.getRdtPkgDir(rdtName), 'template')
 
     const destDir = path.resolve(this.cwd, 'template')
 
-    const rdtConf = require(path.resolve(this.rdtPkgDir, conf.getRdtConfName()))
+    const rdtConf = require(path.resolve(this.getRdtPkgDir(rdtName), conf.getRdtConfName()))
     await render.renderDir(srcDir, {
       ProjectName: this.rdtName
-    }, ['.json', '.html', '.js'], destDir, rdtConf.render.tags)
+    }, rdtConf.render.includes, destDir, {overwrite: true}, rdtConf.render.tags)
   }
 
-  async copyPkgToCwd(src: string, dest: string) {
-    const srcDir = path.resolve(this.rdtPkgDir, src)
+  // 覆盖式copy
+  async copyPkgToCwd(rdtName: string, src: string, dest: string) {
+    const srcDir = path.resolve(this.getRdtPkgDir(rdtName), src)
+    if (!fs.existsSync(srcDir)) {
+      return
+    }
     const destDir = path.resolve(this.cwd, dest)
 
-    await copy(srcDir, destDir)
+    await copy(srcDir, destDir, {overwrite: true})
   }
 
-  async renderOther() {
+  mergeJsonFile(rdtName: string, filename: string) {
+    const currentFilePath = path.resolve(this.cwd, filename)
+    let currentFile = {}
+    if (fs.existsSync(currentFilePath)) {
+      currentFile = require(currentFilePath)
+    }
+    const pkgFilePath = path.resolve(this.getRdtPkgDir(rdtName), filename)
+    if (!fs.existsSync(pkgFilePath)) {
+      logger.info(`${pkgFilePath} cannot be found`)
+      this.exit(1)
+    }
+    const pkgFile = require(pkgFilePath)
+    extend(currentFile, pkgFile)
+    return currentFile
+  }
+
+  // deep-extend 模式 合并rdtConf
+  async renderRdtConf(rdtName: string) {
+    const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getAppConfName())
+    const mergedRdtConf = this.mergeJsonFile(rdtName, conf.getRdtConfName())
+    fs.writeFileSync(rdtConfPath, mergedRdtConf, {encoding: 'UTF-8'})
+  }
+
+  async renderPkgJson(rdtName: string) {
+    const mergedPkgJson: any = this.mergeJsonFile(rdtName, 'package.json')
     // package.json: 赋值name,description,keywords,除去下划线开头的配置
-    const pkgConfig = require(path.resolve(this.rdtPkgDir, 'package.json'))
-    pkgConfig.name = this.rdtName
-    pkgConfig.description = `${this.rdtName} rede-template`
-    pkgConfig.keywords = [this.rdtName, 'rede-template']
-    Object.keys(pkgConfig).forEach(item => {
+    mergedPkgJson.name = this.rdtName
+    mergedPkgJson.description = `${this.rdtName} rede-template`
+    mergedPkgJson.keywords = [this.rdtName, 'rede-template']
+    Object.keys(mergedPkgJson).forEach(item => {
       if (item[0] === '_') {
-        delete pkgConfig[item]
+        delete mergedPkgJson[item]
       }
     })
-    writePkgJson(pkgConfig)
+    writePkgJson(mergedPkgJson)
   }
 
   async run() {
@@ -130,6 +183,6 @@ export default class Create extends Base {
   public async postRun() {
     logger.complete('Created project')
     logger.star('Start with command:')
-    logger.star('$ rde run serve')
+    logger.star('$ rde template serve')
   }
 }

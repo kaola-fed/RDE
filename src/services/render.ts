@@ -25,8 +25,9 @@ export default {
     })
   },
 
-  async renderDir(src: string, dataView: any, includes: string[], dest: string, tags = defaultTags) {
+  async renderDir(src: string, dataView: any, includes: string[], dest: string, options = {}, tags = defaultTags) {
     await copy(src, dest, {
+      ...options,
       transform: (src: string) => {
         return through((chunk, _enc, done) => {
           if (includes.includes(path.extname(src))) {
