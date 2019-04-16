@@ -156,7 +156,7 @@ export default class Create extends Base {
 
   // deep-extend 模式 合并rdtConf
   async renderRdtConf(rdtName: string) {
-    const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getAppConfName())
+    const rdtConfPath = path.resolve(this.cwd, conf.getRdtConfName())
     const mergedRdtConf = this.mergeJsonFile(rdtName, conf.getRdtConfName())
     fs.writeFileSync(rdtConfPath, mergedRdtConf, {encoding: 'UTF-8'})
   }
