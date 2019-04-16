@@ -8,11 +8,15 @@ const rdtConfName = 'rde.template.js'
 
 const rdsConfName = 'rde.suite.js'
 
-const cwd = process.cwd()
-
-const appConfPath = path.resolve(cwd, appConfName)
-
 export default {
+  get cwd() {
+    return process.cwd()
+  },
+
+  get appConfPath() {
+    return path.resolve(this.cwd, appConfName)
+  },
+
   getCliName() { return 'rde' },
 
   getAppConfName() { return appConfName },
@@ -23,7 +27,7 @@ export default {
 
   getRdtModulePath() {
     const {app} = this.getAppConf()
-    return path.resolve(cwd, 'node_modules', app.template)
+    return path.resolve(this.cwd, 'node_modules', app.template)
   },
 
   getTemplateName() {
@@ -32,12 +36,12 @@ export default {
   },
 
   getAppConf() {
-    if (!fs.existsSync(appConfPath)) {
+    if (!fs.existsSync(this.appConfPath)) {
       throw Error('rde.app.js cannot be found in cwd')
     }
 
     return {
-      app: require(appConfPath)
+      app: require(this.appConfPath)
     }
   },
 
@@ -47,7 +51,7 @@ export default {
       throw Error('template is not set in rde.app.js, please check')
     }
 
-    let rdtConfPath = path.resolve(cwd, 'node_modules', app.template, rdtConfName)
+    let rdtConfPath = path.resolve(this.cwd, 'node_modules', app.template, rdtConfName)
     if (!fs.existsSync(rdtConfPath)) {
       throw Error(`rde.template.js cannot be found in package ${app.template}, please check`)
     }
@@ -80,7 +84,7 @@ export default {
   },
 
   getSingleRdsConf(suite: string) {
-    let rdsConfPath = path.resolve(cwd, 'node_modules', suite, rdsConfName)
+    let rdsConfPath = path.resolve(this.cwd, 'node_modules', suite, rdsConfName)
     if (!fs.existsSync(rdsConfPath)) {
       throw Error(`rde.suite.js cannot be found in package ${suite}, please check`)
     }
@@ -97,11 +101,11 @@ export default {
 
   getRdtAppDir() {
     const {app} = this.getAppConf()
-    return path.resolve(cwd, 'node_modules', app.template, 'app')
+    return path.resolve(this.cwd, 'node_modules', app.template, 'app')
   },
 
   getRdtTemplateDir() {
     const {app} = this.getAppConf()
-    return path.resolve(cwd, 'node_modules', app.template, 'template')
+    return path.resolve(this.cwd, 'node_modules', app.template, 'template')
   }
 }

@@ -21,7 +21,7 @@ export default class Create extends Base {
   static description = 'create a rde template project'
 
   static examples = [
-    '$ rde template create <rdtName>',
+    '$ rde template:create <rdtname>',
   ]
 
   static args = [{
@@ -29,6 +29,7 @@ export default class Create extends Base {
     required: false,
     description: 'package name, used by package.json',
   }]
+
   readonly baseRdtName = '@rede/rdt-helloworld'
 
   private rdtName = ''
@@ -77,7 +78,7 @@ export default class Create extends Base {
   public async postRun() {
     logger.complete('Created project')
     logger.star('Start with command:')
-    logger.star('$ rde run dev')
+    logger.star('$ rde run serve')
   }
 
   private async prompt() {

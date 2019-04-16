@@ -3,6 +3,10 @@ import {Command} from '@oclif/command'
 import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
+  get cwd() {
+    return process.cwd()
+  }
+
   async init() {
     try {
       // check user input args here

@@ -1,7 +1,9 @@
+import {exec} from 'child_process'
 import cli from 'cli-ux'
 // @ts-ignore
 import {ncp} from 'ncp'
 import * as path from 'path'
+import * as util from 'util'
 // @ts-ignore
 import * as writePkgJson from 'write-pkg'
 
@@ -10,7 +12,8 @@ import conf from '../services/conf'
 import {logger} from '../services/logger'
 import npm from '../services/npm'
 import render from '../services/render'
-import _ from '../util'
+
+const asyncExec = util.promisify(exec)
 
 export default class Create extends Base {
   static description = 'create a rde project'
@@ -31,21 +34,20 @@ export default class Create extends Base {
 
   public async preInit() {
     const {args} = this.parse(Create)
-
-    if (!_.isEmptyDir(process.cwd())) {
-      logger.error('Not an empty directory, please check')
-      this.exit(1)
-    }
-
     return args
   }
 
   public async initialize(args: any) {
-    this.appName = args.appName || path.basename(process.cwd())
+    this.appName = args.appName
 
     await this.prompt()
 
+    await asyncExec(`mkdir ${this.appName}`)
+
+    process.chdir(this.appName)
+
     logger.info(`Installing ${this.rdtName}. This might take a while...`)
+
     await writePkgJson({name: this.appName})
 
     await npm.install(`${this.rdtName}@0.0.3`)
@@ -65,15 +67,14 @@ export default class Create extends Base {
   }
 
   async run() {
-    const cwd = process.cwd()
     const srcDir = conf.getRdtAppDir()
-    const destDir = path.resolve(cwd, 'app')
+    const destDir = path.resolve(this.cwd, 'app')
 
     await ncp(srcDir, destDir)
   }
 
   public async postRun() {
-    logger.complete('Created project')
+    logger.complete(`Created project: ${this.appName}`)
     logger.star('Start with command:')
     logger.star('$ rde run serve')
   }
