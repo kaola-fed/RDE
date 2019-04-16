@@ -83,7 +83,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --inspect-brk --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha --project ./test/tsconfig.json --opts ./test/mocha.opts --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
     "commitmsg": "validate-commit-msg",
     "lint": "tsc --pretty && tslint --project './tslint.json'"

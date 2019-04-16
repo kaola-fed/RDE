@@ -11,7 +11,7 @@ const rdtName = 'vuecli-basic'
 let CmdCreate: any
 
 describe('rde create', () => {
-  before(async () => {
+  beforeEach(async () => {
     await asyncExec('rm -rf ./test/run && mkdir ./test/run')
     process.chdir('test/run')
 
@@ -21,9 +21,9 @@ describe('rde create', () => {
     CmdCreate = require('../../src/commands/create').default
   })
 
-  after(async () => {
+  afterEach(async () => {
     process.chdir('../../../')
-    // await asyncExec('rm -rf ./test/run')
+    await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })

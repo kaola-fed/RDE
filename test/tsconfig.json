@@ -1,9 +1,20 @@
 {
-  "extends": "../tsconfig",
   "compilerOptions": {
-    "noEmit": true
+    "declaration": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "outDir": "./lib",
+    "typeRoots" : ["../node_modules/@types", "../types"],
+    "strict": false,
+    "target": "es2017",
+    "composite": true,
+    "noUnusedLocals": false,
+    "noImplicitAny": false
   },
-  "references": [
-    {"path": ".."}
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "lib/**"
   ]
 }
