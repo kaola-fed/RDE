@@ -48,7 +48,7 @@ export default class Create extends Base {
     logger.info(`Installing ${this.rdtName}. This might take a while...`)
     await writePkgJson({name: this.appName})
 
-    await npm.install(this.rdtName)
+    await npm.install(`${this.rdtName}@0.0.3`)
 
     const appConfName = conf.getAppConfName()
     await render.renderTo(appConfName.slice(0, -3), {
@@ -61,7 +61,7 @@ export default class Create extends Base {
     app.readme.template = template.docs.homepage
     await render.renderTo('module', {
       obj: app
-    }, appConfName)
+    }, appConfName, true)
   }
 
   async run() {
@@ -75,7 +75,7 @@ export default class Create extends Base {
   public async postRun() {
     logger.complete('Created project')
     logger.star('Start with command:')
-    logger.star('$ rde run dev')
+    logger.star('$ rde run serve')
   }
 
   private async prompt() {

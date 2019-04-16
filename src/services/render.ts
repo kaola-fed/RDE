@@ -13,8 +13,9 @@ export default {
     return mustache.render(tpl, dataView, tags)
   },
 
-  async renderTo(tpl: string, dataView: any, dest: string, tags = defaultTags) {
+  async renderTo(tpl: string, dataView: any, dest: string, overwrite = false, tags = defaultTags) {
     await copy(path.resolve(mustachesDir, `${tpl}.mustache`), dest, {
+      overwrite,
       transform: () => {
         return through((chunk, _enc, done) => {
           const output = this.render(chunk.toString(), dataView, tags)
