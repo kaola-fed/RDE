@@ -7,6 +7,8 @@ import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
 
+import _ from '../util'
+
 import conf from './conf'
 import {logger} from './logger'
 import npm from './npm'
@@ -26,20 +28,20 @@ export default class Core {
   constructor() {}
   async prepare(rdtName: string) {
     // dependencies
-    logger.info('collect rdtDeps...')
+    logger.info('Start collecting rdtDeps...')
     this.collectRdtDeps(rdtName)
 
     // generate rdt template
-    logger.info('compose rdt template...')
+    logger.info('Start composing rdt template...')
     await this.composeTpl()
 
     // template render
-    logger.info('render template...')
-    this.renderTpl()
+    logger.info('Start rendering template...')
+    await this.renderTpl()
 
     // 生成最终运行时目录
-    logger.info('compose runtime...')
-    this.composeRuntime()
+    logger.info('Start composing runtime directory...')
+    await this.composeRuntime()
   }
   getRdtPkgDir(rdtName: string) {
     return path.resolve(this.cwd, 'node_modules', rdtName)
@@ -51,7 +53,7 @@ export default class Core {
       logger.error(`${rdtConfPath} cannot be found`)
       process.exit(2)
     }
-    const extendRdtName = require(rdtConfPath).extend
+    const extendRdtName = _.ensureRequire(rdtConfPath).extend
     if (!extendRdtName) {
       return
     }
@@ -61,14 +63,14 @@ export default class Core {
     const tmpFilePath = path.resolve(this.tmpDir, filename)
     let currentFile = {}
     if (fs.existsSync(tmpFilePath)) {
-      currentFile = require(tmpFilePath)
+      currentFile = _.ensureRequire(tmpFilePath)
     }
     const pkgFilePath = path.resolve(this.getRdtPkgDir(rdtName), filename)
     if (!fs.existsSync(pkgFilePath)) {
       logger.info(`${pkgFilePath} cannot be found`)
       process.exit(2)
     }
-    const pkgFile = require(pkgFilePath)
+    const pkgFile = _.ensureRequire(pkgFilePath)
     extend(currentFile, pkgFile)
     return currentFile
   }
@@ -82,25 +84,30 @@ export default class Core {
       // 合并rde.template.js
       const rdtConfPath = path.resolve(this.tmpDir, conf.getRdtConfName())
       const mergedRdtConf = this.mergeJsonFile(rdtName, conf.getRdtConfName())
-      render.renderTo('module', {
+      await render.renderTo('module', {
         obj: beautify.js(JSON.stringify(mergedRdtConf))
       }, rdtConfPath, true)
     }
   }
 
-  renderTpl() {
+  async renderTpl() {
     const srcDir = path.resolve(this.tmpDir, 'template')
     const destDir = this.runtimeDir
-    const rdtConf = require(path.resolve(this.tmpDir, conf.getRdtConfName()))
-    render.renderDir(srcDir, {
+    const rdtConf = _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
+    await render.renderDir(srcDir, {
       ...rdtConf.render.mock
     }, rdtConf.render.includes, destDir)
   }
 
   async composeRuntime() {
-    const appDir = path.resolve(this.cwd, 'app')
-    const destDir = path.resolve(this.runtimeDir, 'src')
-    await copy(appDir, destDir, {overwrite: true})
+    // 根据配置文件中的mapping，覆盖式copy
+    const rdtConf = _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
+    for (let item of rdtConf.mapping) {
+      const appDir = path.resolve(this.cwd, 'app', item.from)
+      const destDir = path.resolve(this.runtimeDir, item.to)
+      await copy(appDir, destDir, {overwrite: true})
+    }
+    logger.info('Installing runtime dependencies...')
     await npm.install('', false, this.runtimeDir)
   }
 }

@@ -11,6 +11,7 @@ import * as writePkgJson from 'write-pkg'
 import Base from '../../base'
 import {logger} from '../../services/logger'
 import npm from '../../services/npm'
+import _ from '../../util'
 
 const asyncExec = util.promisify(exec)
 
@@ -99,7 +100,7 @@ export default class Create extends Base {
     await copy(srcDir, destDir, {overwrite: true})
   }
   renderPkgJson() {
-    const pkgJson = require(path.resolve(this.cwd, 'package.json'))
+    const pkgJson = _.ensureRequire(path.resolve(this.cwd, 'package.json'))
     pkgJson.name = this.rdtName
     pkgJson.description = `${this.rdtName} rde-template`
     pkgJson.keywords = [this.rdtName, 'rde-template']
