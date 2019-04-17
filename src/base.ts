@@ -30,8 +30,10 @@ export default abstract class Base extends Command {
     }
   }
 
-  async finally() {
-    await this.postRun()
+  async finally(e: any) {
+    if (!e) {
+      await this.postRun()
+    }
   }
 
   protected async preInit(): Promise<any> {}
