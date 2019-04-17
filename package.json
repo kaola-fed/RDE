@@ -12,6 +12,7 @@
     "@oclif/config": "^1.12.12",
     "@oclif/plugin-help": "^2",
     "axios": "^0.18.0",
+    "chokidar": "^2.1.5",
     "cli-ux": "^5.2.1",
     "deep-extend": "^0.6.0",
     "js-beautify": "^1.9.1",

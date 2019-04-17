@@ -1,18 +1,16 @@
 import axios from 'axios'
-import {exec} from 'child_process'
-import * as util from 'util'
+
+import _ from '../util'
 
 import {logger} from './logger'
-
-const asyncExec = util.promisify(exec)
 
 export default {
   async install(pkg?: string, isDevDep = true, dir = process.cwd()) {
     try {
       if (pkg) {
-        await asyncExec(`cd ${dir} && npm i ${isDevDep ? '-D' : ''} ${pkg}`)
+        await _.asyncExec(`cd ${dir} && npm i ${isDevDep ? '-D' : ''} ${pkg}`)
       } else {
-        await asyncExec(`cd ${dir} && npm i`)
+        await _.asyncExec(`cd ${dir} && npm i`)
       }
       logger.info(`Installed package ${pkg}`)
     } catch (e) {

@@ -5,6 +5,7 @@ import * as util from 'util'
 
 import Base from '../base'
 import conf from '../services/conf'
+import Core from '../services/core'
 import {logger} from '../services/logger'
 import render from '../services/render'
 
@@ -47,25 +48,17 @@ export default class Serve extends Base {
 
     try {
       this.validateAppRender()
-
-      await this.render()
     } catch (e) {
       logger.error(e.message)
       this.exit(1)
     }
   }
 
-  async render() {
-    const srcDir = path.resolve(conf.getRdtModulePath(), 'template')
-    const destDir = `.${conf.getCliName()}`
+  async preRun() {
     const {app, template} = this.rdeConf
 
-    const {includes, tags} = template.render
-    await render.renderDir(srcDir, app.render, includes, destDir, tags)
-  }
-
-  async preRun() {
-    const {template} = this.rdeConf
+    const core = new Core(app.template)
+    core.prepare()
 
     if (this.docker) {
       const {mapping} = template

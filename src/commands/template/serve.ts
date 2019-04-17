@@ -1,7 +1,10 @@
 import {flags} from '@oclif/command'
+import {spawn} from 'child_process'
 
 import Base from '../../base'
+import Conf from '../../services/conf'
 import Core from '../../services/core'
+import { logger } from '../../services/logger';
 
 export default class Serve extends Base {
   static description = 'start a template dev server'
@@ -27,13 +30,22 @@ export default class Serve extends Base {
 
   }
 
-  async render() {
+  async preRun() {
     // process.chdir('rdt-hello')
-    const core = new Core()
-    core.prepare('../')
+    const core = new Core('../')
+    await core.prepare()
+    core.watchAndCopy()
   }
 
-  async preRun() {}
-
-  async run() {}
+  async run() {
+    process.chdir(`.${Conf.getCliName()}`)
+    logger.info('Start running serve...')
+    const child = spawn('npm', ['run', 'serve'], {
+      stdio: 'inherit'
+    })
+    child.on('close', code => {
+      logger.warn(`npm run serve exited with code ${code}`)
+      process.exit(code)
+    })
+  }
 }

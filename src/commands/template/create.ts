@@ -1,10 +1,8 @@
-import {exec} from 'child_process'
 // @ts-ignore
 import * as fs from 'fs'
 import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
-import * as util from 'util'
 // @ts-ignore
 import * as writePkgJson from 'write-pkg'
 
@@ -13,7 +11,6 @@ import {logger} from '../../services/logger'
 import npm from '../../services/npm'
 import _ from '../../util'
 
-const asyncExec = util.promisify(exec)
 
 export default class Create extends Base {
   static description = 'create a rde template project'
@@ -46,7 +43,7 @@ export default class Create extends Base {
       this.rdtName = `rdt-${this.rdtName}`
     }
 
-    await asyncExec(`rm -rf ${path.resolve(this.cwd, this.rdtName)}`)
+    await _.asyncExec(`rm -rf ${path.resolve(this.cwd, this.rdtName)}`)
 
     // check rdtName directory is not existed
     if (fs.existsSync(path.resolve(this.cwd, this.rdtName))) {
@@ -68,7 +65,7 @@ export default class Create extends Base {
   }
 
   public async initialize() {
-    await asyncExec(`mkdir ${this.rdtName}`)
+    await _.asyncExec(`mkdir ${this.rdtName}`)
 
     process.chdir(this.rdtName)
 
@@ -78,7 +75,7 @@ export default class Create extends Base {
 
     await npm.install(this.baseRdtName, false)
 
-    await asyncExec('rm package*.json')
+    await _.asyncExec('rm package*.json')
   }
 
   public async preRun() {
@@ -114,7 +111,7 @@ export default class Create extends Base {
   }
 
   async run() {
-    await asyncExec('rm -rf node_modules')
+    await _.asyncExec('rm -rf node_modules')
     await npm.install('', false, this.cwd)
   }
 
