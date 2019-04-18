@@ -18,7 +18,7 @@ export default class Core {
 
   private readonly rdtName: string
 
-  asdfaskdfjaskfj
+  asdfasfasfasd
 
   get cwd() {
     return process.cwd()
