@@ -14,21 +14,18 @@ describe('npm', () => {
     })
 
     it('should throw an error if not exist', async () => {
-      try {
-        await npm.getInfo('some-unexist-pkg-of-kaola')
-      } catch ({response}) {
-        expect(response.status).to.equal(404)
-      }
+      const pkg = await npm.getInfo('some-unexist-pkg-of-kaola')
+      expect(pkg).to.be.null
     })
   })
 
   describe('install', () => {
     before(async () => {
-      await asyncExec('cd test && mkdir run && cd run && npm init -y')
+      await asyncExec('mkdir ./test/run && cd ./test/run && npm init -y')
     })
 
     after(async () => {
-      await asyncExec('rm -rf test/run')
+      await asyncExec('rm -rf ./test/run')
     })
 
     it('should be installed if package exist', async () => {

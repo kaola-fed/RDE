@@ -2,9 +2,6 @@ import {exec, spawn, SpawnOptions} from 'child_process'
 import * as fs from 'fs'
 import * as util from 'util'
 
-import {logger} from './services/logger'
-import {option} from "@oclif/command/lib/flags";
-
 const asyncExec = util.promisify(exec)
 
 const asyncSpawn = util.promisify(spawn)
@@ -16,17 +13,20 @@ export default {
   },
 
   ensureRequire(path: string) {
+    if (!fs.existsSync(path)) {
+      throw Error(`${path} cannot be found`)
+    }
     // @ts-ignore
     delete require.cache[path]
     return require(path)
   },
 
   async asyncExec(cmd: string) {
-    return await asyncExec(cmd)
+    return asyncExec(cmd)
   },
 
   async asyncSpawn(cmd: string, args = [], options: SpawnOptions = {}) {
-    return await asyncSpawn(cmd, args, {
+    return asyncSpawn(cmd, args, {
       ...options,
       stdio: 'inherit'
     })

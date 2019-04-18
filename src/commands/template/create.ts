@@ -3,12 +3,11 @@ import cli from 'cli-ux'
 import * as fs from 'fs'
 import * as inquirer from 'inquirer'
 import * as path from 'path'
-// @ts-ignore
 import * as copy from 'recursive-copy'
-// @ts-ignore
 import * as writePkgJson from 'write-pkg'
 
 import Base from '../../base'
+import conf from '../../services/conf'
 import {logger} from '../../services/logger'
 import npm from '../../services/npm'
 import render from '../../services/render'
@@ -36,7 +35,7 @@ export default class Create extends Base {
   public byExtend = false
 
   get rdtPkgDir() {
-    return path.resolve(this.cwd, 'node_modules', this.rdtName)
+    return path.resolve(this.cwd, 'node_modules', this.rdtStarter)
   }
 
   public async preInit() {
@@ -67,7 +66,31 @@ export default class Create extends Base {
     await writePkgJson({name: this.rdtName})
     await npm.install(this.rdtStarter, false)
     await _.asyncExec('rm package*.json')
+  }
 
+  renderPkgJson() {
+    const json = require(path.resolve(this.cwd, 'package.json'))
+    const {template} = conf.getRdtConf()
+    const {packageWhiteList = []} = template
+
+    const resultJson: RdtPkgJson = {
+      name: this.rdtName,
+      description: 'This is a rde-template, powered by rde',
+      keywords: ['@rede/rdt', `${this.framework}`],
+      dependencies: json.dependencies,
+      devDependencies: json.devDependencies,
+    }
+
+    Object.keys(json).forEach(key => {
+      if (packageWhiteList.includes[key]) {
+        resultJson[key] = json[key]
+      }
+    })
+
+    writePkgJson(resultJson)
+  }
+
+  async run() {
     const {resolve} = path
     if (this.byExtend) {
       const srcDir = resolve(this.mustachesDir, 'rde.template')
@@ -82,24 +105,6 @@ export default class Create extends Base {
 
       this.renderPkgJson()
     }
-  }
-
-  renderPkgJson() {
-    const json = require(path.resolve(this.cwd, 'package.json'))
-    json.name = this.rdtName
-    json.description = 'This is a rde-template, powered by rde'
-    json.keywords = ['@rede/rdt', `${this.framework}`]
-
-    Object.keys(json).forEach(key => {
-      if (key[0] === '_') {
-        delete json[key]
-      }
-    })
-
-    writePkgJson(json)
-  }
-
-  async run() {
   }
 
   public async ask() {

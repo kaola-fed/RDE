@@ -1,9 +1,7 @@
 import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
-// @ts-ignore
 import * as path from 'path'
 import * as copy from 'recursive-copy'
-// @ts-ignore
 import * as writePkgJson from 'write-pkg'
 
 import Base from '../base'
