@@ -1,8 +1,8 @@
 import {exec} from 'child_process'
 import cli from 'cli-ux'
 // @ts-ignore
-import {ncp} from 'ncp'
 import * as path from 'path'
+import * as copy from 'recursive-copy'
 import * as util from 'util'
 // @ts-ignore
 import * as writePkgJson from 'write-pkg'
@@ -25,7 +25,7 @@ export default class Create extends Base {
   static args = [{
     name: 'appName',
     required: false,
-    description: 'package name, used by package.json',
+    description: 'app name',
   }]
 
   private appName = ''
@@ -63,14 +63,14 @@ export default class Create extends Base {
     app.readme.template = template.docs.homepage
     await render.renderTo('module', {
       obj: app
-    }, appConfName, true)
+    }, appConfName, {overwrite: true})
   }
 
   async run() {
     const srcDir = conf.getRdtAppDir()
     const destDir = path.resolve(this.cwd, 'app')
 
-    await ncp(srcDir, destDir)
+    await copy(srcDir, destDir)
   }
 
   public async postRun() {

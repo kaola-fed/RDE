@@ -15,7 +15,6 @@
     "cli-ux": "^5.2.1",
     "deep-extend": "^0.6.0",
     "mustache": "^3.0.1",
-    "ncp": "^2.0.0",
     "nek-ui": "^0.6.1",
     "recursive-copy": "^2.0.10",
     "signale": "^1.4.0",
