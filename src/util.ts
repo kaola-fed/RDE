@@ -1,8 +1,13 @@
-import {exec} from 'child_process'
+import {exec, spawn, SpawnOptions} from 'child_process'
 import * as fs from 'fs'
 import * as util from 'util'
 
+import {logger} from './services/logger'
+import {option} from "@oclif/command/lib/flags";
+
 const asyncExec = util.promisify(exec)
+
+const asyncSpawn = util.promisify(spawn)
 
 export default {
   isEmptyDir(dir: string) {
@@ -17,6 +22,13 @@ export default {
   },
 
   async asyncExec(cmd: string) {
-    return asyncExec(cmd)
+    return await asyncExec(cmd)
+  },
+
+  async asyncSpawn(cmd: string, args = [], options: SpawnOptions = {}) {
+    return await asyncSpawn(cmd, args, {
+      ...options,
+      stdio: 'inherit'
+    })
   }
 }
