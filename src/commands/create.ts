@@ -9,7 +9,7 @@ import * as writePkgJson from 'write-pkg'
 
 import Base from '../base'
 import conf from '../services/conf'
-import {logger} from '../services/logger'
+import {logger, spinner} from '../services/logger'
 import npm from '../services/npm'
 import render from '../services/render'
 
@@ -46,11 +46,8 @@ export default class Create extends Base {
 
     process.chdir(this.appName)
 
-    logger.info(`Installing ${this.rdtName}. This might take a while...`)
-
     await writePkgJson({name: this.appName})
-
-    await npm.install(`${this.rdtName}@0.0.3`)
+    await npm.install(`${this.rdtName}`)
 
     const appConfName = conf.getAppConfName()
     await render.renderTo(appConfName.slice(0, -3), {

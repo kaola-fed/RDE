@@ -11,7 +11,6 @@ import {logger} from '../../services/logger'
 import npm from '../../services/npm'
 import _ from '../../util'
 
-
 export default class Create extends Base {
   static description = 'create a rde template project'
 
