@@ -26,10 +26,6 @@ export default {
     const registry = 'https://registry.npm.taobao.org'
     const {data} = await axios.get(`${registry}/${pkg}`)
 
-    if (data.error) {
-      throw Error(data.error)
-    } else {
-      return data
-    }
+    return data.error ? null : data
   }
 }

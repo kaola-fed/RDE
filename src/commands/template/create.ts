@@ -1,5 +1,7 @@
 // @ts-ignore
+import cli from 'cli-ux'
 import * as fs from 'fs'
+import * as inquirer from 'inquirer'
 import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
@@ -9,6 +11,7 @@ import * as writePkgJson from 'write-pkg'
 import Base from '../../base'
 import {logger} from '../../services/logger'
 import npm from '../../services/npm'
+import render from '../../services/render'
 import _ from '../../util'
 
 export default class Create extends Base {
@@ -24,93 +27,115 @@ export default class Create extends Base {
     description: 'rde template project name, used by package.json',
   }]
 
-  readonly baseRdtName = '@rede/rdt-helloworld'
+  public rdtName = ''
 
-  private rdtName = ''
+  public rdtStarter = ''
 
-  public getRdtPkgDir(rdtName: string) {
-    return path.resolve(this.cwd, 'node_modules', rdtName)
+  public framework = ''
+
+  public byExtend = false
+
+  get rdtPkgDir() {
+    return path.resolve(this.cwd, 'node_modules', this.rdtName)
   }
 
   public async preInit() {
     const {args} = this.parse(Create)
-    // check rdtName start with rdt-   sda
-    if (args.rdtName.includes('rdt-')) {
-      this.rdtName = args.rdtName
-    } else {
-      this.rdtName = `rdt-${this.rdtName}`
+    const {rdtName} = args
+
+    this.rdtName = rdtName.includes('rdt-') ? rdtName : `rdt-${rdtName}`
+
+    if (fs.existsSync(this.rdtName)) {
+      throw Error(`Directory ${this.rdtName} already exist`)
     }
 
-    await _.asyncExec(`rm -rf ${path.resolve(this.cwd, this.rdtName)}`)
-
-    // check rdtName directory is not existed
-    if (fs.existsSync(path.resolve(this.cwd, this.rdtName))) {
-      logger.error(`${this.rdtName} directory is already existed`)
-      this.exit(1)
+    if (await npm.getInfo(this.rdtName)) {
+      throw Error(`Module ${this.rdtName} already exist, please use another name and try again`)
     }
 
-    // check npm rdtName module is not existed
-    try {
-      await npm.getInfo(this.rdtName)
-      logger.error(`npm module ${this.rdtName} is existed, please rename and try again`)
-      this.exit(1)
-    } catch ({response, message}) {
-      if (response.status !== 404) {
-        logger.error(message)
-        this.exit(1)
-      }
-    }
+    return args
   }
 
   public async initialize() {
-    await _.asyncExec(`mkdir ${this.rdtName}`)
-
-    process.chdir(this.rdtName)
-
-    logger.info(`Installing ${this.baseRdtName}. This might take a while...`)
-
-    await writePkgJson({name: this.rdtName})
-
-    await npm.install(this.baseRdtName, false)
-
-    await _.asyncExec('rm package*.json')
+    await this.ask()
   }
 
   public async preRun() {
-    // 从node_modules 中copy到当前目录
-    await this.copyPkgToCwd(this.baseRdtName, '', '')
-     // 处理 .gitignore
-    await this.copyPkgToCwd(this.baseRdtName, '.npmignore', '.gitignore')
-    // 处理package.json，赋值name、description、keywords，去掉_开头的属性
-    this.renderPkgJson()
-  }
-  // 覆盖式copy
-  async copyPkgToCwd(rdtName: string, src: string, dest: string) {
-    const srcDir = path.resolve(this.getRdtPkgDir(rdtName), src)
-    if (!fs.existsSync(srcDir)) {
-      return
-    }
-    const destDir = path.resolve(this.cwd, dest)
+    await _.asyncExec(`mkdir ${this.rdtName}`)
+    process.chdir(this.rdtName)
 
-    await copy(srcDir, destDir, {overwrite: true})
+    await writePkgJson({name: this.rdtName})
+    await npm.install(this.rdtStarter, false)
+    await _.asyncExec('rm package*.json')
+
+    const {resolve} = path
+    if (this.byExtend) {
+      const srcDir = resolve(this.mustachesDir, 'rde.template')
+      await render.renderDir(srcDir, {
+        parentRdtName: this.rdtStarter,
+        framework: this.framework,
+      }, ['.mustaches'], this.cwd)
+
+    } else {
+      await copy(this.rdtPkgDir, this.cwd, {overwrite: true})
+      await copy(resolve(this.rdtPkgDir, '.npmignore'), resolve(this.cwd, '.gitignore'), {overwrite: true})
+
+      this.renderPkgJson()
+    }
   }
+
   renderPkgJson() {
-    const pkgJson = _.ensureRequire(path.resolve(this.cwd, 'package.json'))
-    pkgJson.name = this.rdtName
-    pkgJson.description = `${this.rdtName} rde-template`
-    pkgJson.keywords = [this.rdtName, 'rde-template']
-    Object.keys(pkgJson).forEach(item => {
-      if (item[0] === '_') {
-        delete pkgJson[item]
-        delete pkgJson[item]
+    const json = require(path.resolve(this.cwd, 'package.json'))
+    json.name = this.rdtName
+    json.description = 'This is a rde-template, powered by rde'
+    json.keywords = ['@rede/rdt', `${this.framework}`]
+
+    Object.keys(json).forEach(key => {
+      if (key[0] === '_') {
+        delete json[key]
       }
     })
-    writePkgJson(pkgJson)
+
+    writePkgJson(json)
   }
 
   async run() {
-    await _.asyncExec('rm -rf node_modules')
-    await npm.install('', false, this.cwd)
+  }
+
+  public async ask() {
+    const {framework, byExtend} = await inquirer.prompt([{
+      name: 'framework',
+      message: 'select a framework',
+      type: 'list',
+      choices: Object.keys(this.frameworks).map(name => ({name}))
+    }, {
+      name: 'byExtend',
+      message: 'do you want to extend an existing rdt template? (Y/N)',
+      type: 'confirm',
+      default: false,
+    }])
+
+    this.framework = framework
+    this.byExtend = byExtend
+
+    if (byExtend) {
+      this.rdtStarter = await this.askParentRdt()
+    } else {
+      this.rdtStarter = this.frameworks[framework].rdtStarter
+    }
+  }
+
+  public async askParentRdt() {
+    let parentRdtName = await cli.prompt('parent rdt pkg name: ', {
+      required: true,
+    })
+
+    if (!(await npm.getInfo(parentRdtName))) {
+      logger.error(`package ${parentRdtName} does not exist in npm repo, please check`)
+      parentRdtName = this.askParentRdt()
+    }
+
+    return parentRdtName
   }
 
   public async postRun() {
