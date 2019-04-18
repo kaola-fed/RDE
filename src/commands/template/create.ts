@@ -27,7 +27,6 @@ export default class Create extends Base {
   readonly baseRdtName = '@rede/rdt-helloworld'
 
   private rdtName = ''
-  private rdtDependencies: string[] = []
 
   public getRdtPkgDir(rdtName: string) {
     return path.resolve(this.cwd, 'node_modules', rdtName)
