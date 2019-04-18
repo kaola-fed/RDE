@@ -23,7 +23,7 @@ describe('rde create', () => {
 
   afterEach(async () => {
     process.chdir('../../../')
-    await asyncExec('rm -rf ./test/run')
+    // await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })

@@ -1,15 +1,15 @@
 import {exec} from 'child_process'
 import cli from 'cli-ux'
 // @ts-ignore
-import {ncp} from 'ncp'
 import * as path from 'path'
+import * as copy from 'recursive-copy'
 import * as util from 'util'
 // @ts-ignore
 import * as writePkgJson from 'write-pkg'
 
 import Base from '../base'
 import conf from '../services/conf'
-import {logger} from '../services/logger'
+import {logger, spinner} from '../services/logger'
 import npm from '../services/npm'
 import render from '../services/render'
 
@@ -25,7 +25,7 @@ export default class Create extends Base {
   static args = [{
     name: 'appName',
     required: false,
-    description: 'package name, used by package.json',
+    description: 'app name',
   }]
 
   private appName = ''
@@ -46,11 +46,8 @@ export default class Create extends Base {
 
     process.chdir(this.appName)
 
-    logger.info(`Installing ${this.rdtName}. This might take a while...`)
-
     await writePkgJson({name: this.appName})
-
-    await npm.install(`${this.rdtName}@0.0.3`)
+    await npm.install(`${this.rdtName}`)
 
     const appConfName = conf.getAppConfName()
     await render.renderTo(appConfName.slice(0, -3), {
@@ -63,14 +60,14 @@ export default class Create extends Base {
     app.readme.template = template.docs.homepage
     await render.renderTo('module', {
       obj: app
-    }, appConfName, true)
+    }, appConfName, {overwrite: true})
   }
 
   async run() {
     const srcDir = conf.getRdtAppDir()
     const destDir = path.resolve(this.cwd, 'app')
 
-    await ncp(srcDir, destDir)
+    await copy(srcDir, destDir)
   }
 
   public async postRun() {
