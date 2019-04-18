@@ -1,19 +1,16 @@
-import {exec} from 'child_process'
 import cli from 'cli-ux'
 // @ts-ignore
 import * as path from 'path'
 import * as copy from 'recursive-copy'
-import * as util from 'util'
 // @ts-ignore
 import * as writePkgJson from 'write-pkg'
 
 import Base from '../base'
 import conf from '../services/conf'
-import {logger, spinner} from '../services/logger'
+import {logger} from '../services/logger'
 import npm from '../services/npm'
 import render from '../services/render'
-
-const asyncExec = util.promisify(exec)
+import _ from '../util'
 
 export default class Create extends Base {
   static description = 'create a rde project'
@@ -42,7 +39,7 @@ export default class Create extends Base {
 
     await this.prompt()
 
-    await asyncExec(`mkdir ${this.appName}`)
+    await _.asyncExec(`mkdir ${this.appName}`)
 
     process.chdir(this.appName)
 
