@@ -82,7 +82,7 @@ export default class Core {
   }
   // 在临时目录 组装 template
   async composeTpl() {
-    await _.asyncExec(`rm -rf ${this.tmpDir}`)
+    // await _.asyncExec(`rm -rf ${this.tmpDir}`)
     for (let rdtName of this.rdtDeps.reverse()) {
       // 覆盖式copy template，先忽略template中的需要合并的配置
       const srcDir = path.resolve(this.getRdtPkgDir(rdtName), 'template')
