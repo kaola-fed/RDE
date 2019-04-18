@@ -1,37 +1,53 @@
-import {assert} from 'chai'
+import {expect} from 'chai'
 import {exec} from 'child_process'
+import * as inquirer from 'inquirer'
+import * as path from 'path'
 import * as sinon from 'sinon'
 import * as util from 'util'
 
+const originCwd = process.cwd()
+const {resolve} = path
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
-const rdtName = 'rdt-hello'
 
-let CmdCreate: any
+const rdtName = 'rdt-demo-project'
+const cmdDir = resolve('./src/commands')
+// const rdtDir = resolve('./test/run/', rdtName)
 
-describe('rde template create', () => {
+let CmdCreate: any = require(resolve(cmdDir, './template/create.ts')).default
+
+describe('rde template:create', () => {
   before(async () => {
     await asyncExec('rm -rf ./test/run && mkdir ./test/run')
-    process.chdir('test/run')
-
-    CmdCreate = require('../../../src/commands/template/create').default
+    process.chdir('./test/run')
   })
 
   after(async () => {
-    process.chdir('../../../../')
+    process.chdir(originCwd)
     // await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })
 
-  it('should create a template project width proper config', async () => {
-    await CmdCreate.run([rdtName])
+  describe('create using a starter', () => {
+    before(async () => {
+      sandbox.stub(inquirer, 'prompt').resolves({framework: 'vue', byExtend: false})
 
-    const {docs, render, mapping} = require('../../run/rdt-hello/rde.template.js')
+      await CmdCreate.run([rdtName])
+    })
 
-    assert.typeOf(mapping, 'array', 'mapping does not exist')
-    assert.lengthOf(mapping, 3, 'mapping does not exist')
-    assert.exists(docs, 'docs does not exist')
-    assert.exists(render, 'render does not exist')
+    after(() => {
+      sandbox.restore()
+    })
+
+    it('should', () => {
+      expect(true).to.be.true
+    })
+  })
+
+  describe('create using extend a existing rdt package', () => {
+    it('should right', () => {
+      expect(true).to.be.true
+    })
   })
 })

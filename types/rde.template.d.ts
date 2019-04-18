@@ -27,5 +27,6 @@ interface RdtConf {
   docs: Docs
   render: Render
   mapping: Mapping[]
-  docker: Docker
+  docker: Docker,
+  packageWhiteList: string[]
 }

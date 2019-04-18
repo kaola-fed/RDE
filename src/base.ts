@@ -14,9 +14,9 @@ export default abstract class Base extends Command {
 
   get frameworks() {
     return {
-      vue: {rdtStarter: '@rde/rdt-vue-starter'},
-      react: {rdtStarter: '@rde/rdt-react-starter'},
-      angular: {rdtStarter: '@rde/rdt-angular-starter'},
+      vue: {rdtStarter: '@rede/rdt-vue-starter'},
+      react: {rdtStarter: '@rede/rdt-react-starter'},
+      angular: {rdtStarter: '@rede/rdt-angular-starter'},
     }
   }
 

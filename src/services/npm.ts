@@ -24,8 +24,14 @@ export default {
 
   async getInfo(pkg: string) {
     const registry = 'https://registry.npm.taobao.org'
-    const {data} = await axios.get(`${registry}/${pkg}`)
 
-    return data.error ? null : data
+    try {
+      const {data} = await axios.get(`${registry}/${pkg}`)
+      return data
+    } catch ({response}) {
+      if (response.status === 404) {
+        return null
+      }
+    }
   }
 }
