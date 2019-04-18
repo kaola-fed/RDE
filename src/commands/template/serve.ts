@@ -22,7 +22,7 @@ export default class Serve extends Base {
 
   async preInit() {
     // 本地测试时使用
-    process.chdir('rdt-hello')
+    // process.chdir('rdt-hello')
     const {args, flags} = this.parse(Serve)
 
     return {...args, ...flags}

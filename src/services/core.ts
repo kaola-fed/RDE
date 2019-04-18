@@ -12,23 +12,30 @@ import npm from './npm'
 import render from './render'
 
 export default class Core {
-  private rdtDeps: Array<string> = []
+  private rdtDeps: string[] = []
+
   private rdtName: string
+
   get cwd() {
     return process.cwd()
   }
+
   get tmpDir() {
     return path.resolve(this.cwd, '.tmp')
   }
+
   get runtimeDir() {
     return path.resolve(this.cwd, `.${conf.getCliName()}`)
   }
+
   get rdtConf() {
     return _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
   }
+
   constructor(rdtNameOrPath: string) {
     this.rdtName = rdtNameOrPath
   }
+
   async prepare() {
     // dependencies
     logger.info('Start collecting rdtDeps...')
@@ -46,9 +53,11 @@ export default class Core {
     logger.info('Start composing runtime directory...')
     await this.composeRuntime()
   }
+
   getRdtPkgDir(rdtName: string) {
     return path.resolve(this.cwd, 'node_modules', rdtName)
   }
+
   collectRdtDeps(rdtName: string) {
     this.rdtDeps.push(rdtName)
     const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getRdtConfName())
@@ -58,6 +67,7 @@ export default class Core {
     }
     this.collectRdtDeps(extendRdtName)
   }
+
   mergeJsonFile(rdtName: string, filename: string) {
     const tmpFilePath = path.resolve(this.tmpDir, filename)
     let currentFile = {}
@@ -69,6 +79,7 @@ export default class Core {
     extend(currentFile, pkgFile)
     return currentFile
   }
+
   // 在临时目录 组装 template
   async composeTpl() {
     await _.asyncExec(`rm -rf ${this.tmpDir}`)
@@ -91,7 +102,8 @@ export default class Core {
     const destDir = this.runtimeDir
     const rdtConfRender = this.rdtConf.render
     await render.renderDir(srcDir, {
-      ...rdtConfRender.mock
+      ...rdtConfRender.mock,
+      ProjectName: 'MyProject'
     }, rdtConfRender.includes, destDir, {
       overwrite: true
     })

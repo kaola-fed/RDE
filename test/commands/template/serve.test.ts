@@ -1,17 +1,15 @@
 import {assert} from 'chai'
 import {exec} from 'child_process'
+import * as fs from 'fs'
+import * as path from 'path'
 import * as sinon from 'sinon'
 import * as util from 'util'
-import * as path from 'path'
-import * as fs from 'fs'
 
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
 const rdtName = 'rdt-hello'
 
 let CmdServe: any
-let cmdServeIns: any
-
 const originCwd = process.cwd()
 
 describe('rde template:serve', () => {
@@ -31,7 +29,6 @@ describe('rde template:serve', () => {
     sandbox.restore()
   })
   it('should run a template project', async () => {
-    console.log(process.cwd())
     await CmdServe.run([])
     const runtimeDir = path.resolve(originCwd, './test/run/rdt-hello/.rde')
     assert.isOk(fs.existsSync(runtimeDir), 'runtimDir is existed')
