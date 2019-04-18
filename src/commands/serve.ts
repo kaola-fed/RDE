@@ -1,15 +1,11 @@
 import {flags} from '@oclif/command'
-import {exec} from 'child_process'
-import * as path from 'path'
-import * as util from 'util'
 
 import Base from '../base'
 import conf from '../services/conf'
 import Core from '../services/core'
 import {logger} from '../services/logger'
-import render from '../services/render'
-
-const asyncExec = util.promisify(exec)
+import Watcher from '../services/watcher'
+import _ from '../util'
 
 export default class Serve extends Base {
   static description = 'start a dev server'
@@ -22,23 +18,27 @@ export default class Serve extends Base {
     docker: flags.boolean({char: 'd'})
   }
 
-  readonly rdeConf: RdeConf = conf.getRdeConf()
+  static get rdeConf() {
+    return conf.getRdeConf()
+  }
 
   private docker = false
 
   async preInit() {
+    // 本地测试时使用
+    process.chdir('rde-hello')
     const {args, flags} = this.parse(Serve)
 
-    const {app} = this.rdeConf
+    const {app} = Serve.rdeConf
     if (!app.template) {
       throw Error('template is not provided in you config file, please check')
     }
 
-    const {template} = this.rdeConf
-    const {docker} = template
-    if (!docker || !docker.ports || !docker.ports.length) {
-      throw Error(`${conf.getTemplateName()} doesn't support docker mode, please rerun with $ rde serve`)
-    }
+    // const {template} = Serve.rdeConf
+    // const {docker} = template
+    // if (!docker || !docker.ports || !docker.ports.length) {
+    //   throw Error(`${conf.getTemplateName()} doesn't support docker mode, please rerun with $ rde serve`)
+    // }
 
     return {...args, ...flags}
   }
@@ -46,46 +46,32 @@ export default class Serve extends Base {
   async initialize(args: any) {
     this.docker = args.docker
 
-    try {
-      this.validateAppRender()
-    } catch (e) {
-      logger.error(e.message)
-      this.exit(1)
-    }
+    // try {
+    //   this.validateAppRender()
+    // } catch (e) {
+    //   logger.error(e.message)
+    //   this.exit(1)
+    // }
   }
 
   async preRun() {
-    const {app, template} = this.rdeConf
+    const {app, template} = Serve.rdeConf
 
     const core = new Core(app.template)
-    core.prepare()
-
-    if (this.docker) {
-      const {mapping} = template
-      const {ports} = template.docker
-      const srcDir = path.resolve(__dirname, '../mustaches/docker')
-      const destDir = `.${conf.getCliName()}/.docker/`
-
-      await render.renderDir(srcDir, {
-        context: '../../',
-        ports,
-        mapping,
-        cmd: 'serve'
-      }, ['mustache'], destDir)
-    }
+    await core.prepare()
+    const watcher = new Watcher(template.mapping)
+    watcher.start()
   }
 
   async run() {
-    try {
-      await asyncExec('docker-compose up')
-    } catch (e) {
-      logger.error(e.message)
-      this.exit(1)
-    }
+    logger.info('Start running serve...')
+    _.asyncSpawn('npm', ['run', 'serve'], {
+      cwd: `.${conf.getCliName()}`
+    })
   }
 
   private validateAppRender() {
-    const {app, template} = this.rdeConf
+    const {app, template} = Serve.rdeConf
 
     const valid = template.render.validate(app.render)
 
