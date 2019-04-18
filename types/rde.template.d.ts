@@ -8,6 +8,7 @@ interface Docs {
 interface Render {
   includes: string[],
   tags: string[],
+  mock: {[key: string]: any},
   validate(dataView: any): boolean,
 }
 
@@ -23,7 +24,6 @@ interface Docker {
 interface RdtConf {
   extends: string
   framework: Framework
-  spa: boolean
   docs: Docs
   render: Render
   mapping: Mapping[]

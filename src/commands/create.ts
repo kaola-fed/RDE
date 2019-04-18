@@ -1,4 +1,5 @@
 import cli from 'cli-ux'
+import * as inquirer from 'inquirer'
 // @ts-ignore
 import * as path from 'path'
 import * as copy from 'recursive-copy'
@@ -25,22 +26,22 @@ export default class Create extends Base {
     description: 'app name',
   }]
 
-  private appName = ''
+  public appName = ''
 
-  private rdtName = ''
+  public rdtName = ''
 
   public async preInit() {
     const {args} = this.parse(Create)
+    this.appName = args.appName
     return args
   }
 
-  public async initialize(args: any) {
-    this.appName = args.appName
+  public async initialize() {
+    await this.ask()
+  }
 
-    await this.prompt()
-
+  public async preRun() {
     await _.asyncExec(`mkdir ${this.appName}`)
-
     process.chdir(this.appName)
 
     await writePkgJson({name: this.appName})
@@ -53,14 +54,13 @@ export default class Create extends Base {
 
     const {template} = conf.getRdtConf()
     const {app} = conf.getAppConf()
-
     app.readme.template = template.docs.homepage
     await render.renderTo('module', {
       obj: app
     }, appConfName, {overwrite: true})
   }
 
-  async run() {
+  public async run() {
     const srcDir = conf.getRdtAppDir()
     const destDir = path.resolve(this.cwd, 'app')
 
@@ -73,27 +73,22 @@ export default class Create extends Base {
     logger.star('$ rde run serve')
   }
 
-  private async prompt() {
-    const defaultRdt = 'vuecli-basic'
+  public async ask() {
+    const {framework} = await inquirer.prompt([{
+      name: 'framework',
+      message: 'select a framework',
+      type: 'list',
+      choices: Object.keys(this.frameworks).map(name => ({name}))
+    }])
 
-    this.rdtName = await cli.prompt(`template name: (${defaultRdt})`, {
+    const defaultRdt = this.frameworks[framework].rdtStarter
+    this.rdtName = await cli.prompt(`template package name: (${defaultRdt})`, {
       required: false,
       default: defaultRdt,
     })
 
-    if (!this.rdtName.includes('rdt-')) {
-      this.rdtName = `rdt-${this.rdtName}`
-    }
-
-    try {
-      await npm.getInfo(this.rdtName)
-    } catch ({response, message}) {
-      if (response.status === 404) {
-        logger.error(`Cannot find ${this.rdtName}, please check`)
-      } else {
-        logger.error(message)
-      }
-      this.exit(1)
+    if (!(await npm.getInfo(this.rdtName))) {
+      throw Error(`Cannot find ${this.rdtName}, please check`)
     }
   }
 }
