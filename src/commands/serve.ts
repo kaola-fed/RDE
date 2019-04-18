@@ -65,7 +65,7 @@ export default class Serve extends Base {
 
   async run() {
     logger.info('Start running serve...')
-    _.asyncSpawn('npm', ['run', 'serve'], {
+    await _.asyncSpawn('npm', ['run', 'serve'], {
       cwd: `.${conf.getCliName()}`
     })
   }

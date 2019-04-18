@@ -1,4 +1,3 @@
-import * as chokidar from 'chokidar'
 import * as extend from 'deep-extend'
 import * as fs from 'fs'
 // @ts-ignore
@@ -15,9 +14,9 @@ import npm from './npm'
 import render from './render'
 
 export default class Core {
-  private rdtDeps: string[] = []
+  private readonly rdtDeps: string[] = []
 
-  private rdtName: string
+  private readonly rdtName: string
 
   get cwd() {
     return process.cwd()
@@ -129,40 +128,5 @@ export default class Core {
     }
     logger.info('Installing runtime dependencies...')
     await npm.install('', false, this.runtimeDir)
-  }
-  // 根据 mapping watch 并 copy
-  async watchAndCopy() {
-    const cwd = this.cwd
-    const mapping = this.rdtConf.mapping
-    const watchFiles = mapping.map((item: any) => path.resolve(cwd, 'app', item.from))
-    const watcher = chokidar.watch(watchFiles, {
-      ignored: /(\.git)|(node_modules)/,
-      ignoreInitial: true,
-      interval: 300,
-      binaryInterval: 300
-    })
-    const handleWatcher = async (type: string, filePath: string) => {
-      const relativePath = path.relative(path.resolve(cwd, 'app'), filePath)
-      const mappingItem = mapping.find((item: any) => relativePath.includes(item.from))
-      const tmpPath = path.relative(path.resolve(cwd, 'app', mappingItem.from), filePath)
-      const destPath = path.resolve(cwd, `.${conf.getCliName()}`, mappingItem.to, tmpPath)
-      if (['add', 'change', 'addDir'].includes(type)) {
-        await copy(filePath, destPath, {
-          overwrite: true,
-          dot: true
-        })
-      }
-      if (type === 'unlink') {
-        fs.unlinkSync(destPath)
-      }
-      if (type === 'unlinkDir') {
-        fs.rmdirSync(destPath)
-      }
-    }
-    watcher.on('add', path => handleWatcher('add', path))
-      .on('change', path => handleWatcher('change', path))
-      .on('unlink', path => handleWatcher('unlink', path))
-      .on('addDir', path => handleWatcher('addDir', path))
-      .on('unlinkDir', path => handleWatcher('unlinkDir', path))
   }
 }
