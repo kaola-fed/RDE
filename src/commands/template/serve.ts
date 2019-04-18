@@ -1,7 +1,7 @@
 import {flags} from '@oclif/command'
 
 import Base from '../../base'
-import Conf from '../../services/conf'
+import conf from '../../services/conf'
 import Core from '../../services/core'
 import {logger} from '../../services/logger'
 import Watcher from '../../services/watcher'
@@ -21,6 +21,8 @@ export default class Serve extends Base {
   private docker = false
 
   async preInit() {
+    // 本地测试时使用
+    process.chdir('rdt-hello')
     const {args, flags} = this.parse(Serve)
 
     return {...args, ...flags}
@@ -31,8 +33,6 @@ export default class Serve extends Base {
   }
 
   async preRun() {
-    // 本地测试时使用
-    process.chdir('rdt-hello')
     const core = new Core('../')
     await core.prepare()
     const watcher = new Watcher()
@@ -42,7 +42,7 @@ export default class Serve extends Base {
   async run() {
     logger.info('Start running serve...')
     _.asyncSpawn('npm', ['run', 'serve'], {
-      cwd: `.${Conf.getCliName()}`
+      cwd: `.${conf.getCliName()}`
     })
   }
 }

@@ -13,6 +13,9 @@ export default {
   },
 
   ensureRequire(path: string) {
+    if (!fs.existsSync(path)) {
+      throw Error(`${path} cannot be found`)
+    }
     // @ts-ignore
     delete require.cache[path]
     return require(path)

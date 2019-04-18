@@ -21,7 +21,7 @@ export default class Create extends Base {
 
   static args = [{
     name: 'appName',
-    required: false,
+    required: true,
     description: 'app name',
   }]
 
@@ -38,6 +38,8 @@ export default class Create extends Base {
     this.appName = args.appName
 
     await this.prompt()
+    // 本地开发使用
+    await _.asyncExec(`rm -rf ${this.appName}`)
 
     await _.asyncExec(`mkdir ${this.appName}`)
 
@@ -74,7 +76,7 @@ export default class Create extends Base {
   }
 
   private async prompt() {
-    const defaultRdt = 'vuecli-basic'
+    const defaultRdt = '@rede/rdt-vue-starter'
 
     this.rdtName = await cli.prompt(`template name: (${defaultRdt})`, {
       required: false,

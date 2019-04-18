@@ -1,3 +1,5 @@
+// @ts-ignore
+import * as beautify from 'js-beautify'
 import * as mustache from 'mustache'
 import * as path from 'path'
 // @ts-ignore
@@ -16,6 +18,9 @@ export default {
   },
 
   async renderTo(tpl: string, dataView: any, dest: string, options = {}, tags = defaultTags) {
+    if (tpl === 'module') {
+      dataView.obj = beautify.js(JSON.stringify(dataView.obj))
+    }
     await copy(path.resolve(mustachesDir, `${tpl}.mustache`), dest, {
       ...options,
       transform: () => {

@@ -1,7 +1,5 @@
 import * as extend from 'deep-extend'
 import * as fs from 'fs'
-// @ts-ignore
-import * as beautify from 'js-beautify'
 import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
@@ -54,10 +52,6 @@ export default class Core {
   collectRdtDeps(rdtName: string) {
     this.rdtDeps.push(rdtName)
     const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getRdtConfName())
-    if (!fs.existsSync(rdtConfPath)) {
-      logger.error(`${rdtConfPath} cannot be found`)
-      process.exit(2)
-    }
     const extendRdtName = _.ensureRequire(rdtConfPath).extend
     if (!extendRdtName) {
       return
@@ -71,10 +65,6 @@ export default class Core {
       currentFile = _.ensureRequire(tmpFilePath)
     }
     const pkgFilePath = path.resolve(this.getRdtPkgDir(rdtName), filename)
-    if (!fs.existsSync(pkgFilePath)) {
-      logger.info(`${pkgFilePath} cannot be found`)
-      process.exit(2)
-    }
     const pkgFile = _.ensureRequire(pkgFilePath)
     extend(currentFile, pkgFile)
     return currentFile
@@ -91,7 +81,7 @@ export default class Core {
       const rdtConfPath = path.resolve(this.tmpDir, conf.getRdtConfName())
       const mergedRdtConf = this.mergeJsonFile(rdtName, conf.getRdtConfName())
       await render.renderTo('module', {
-        obj: beautify.js(JSON.stringify(mergedRdtConf))
+        obj: mergedRdtConf
       }, rdtConfPath, {overwrite: true})
     }
   }
