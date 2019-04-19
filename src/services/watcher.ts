@@ -4,42 +4,28 @@ import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
 
-import _ from '../util'
-
 import conf from './conf'
 
 export default class Watcher {
   private readonly mapping: Mapping[] = []
 
-  public get cwd() {
-    return process.cwd()
-  }
-
-  public get tmpDir() {
-    return path.resolve(this.cwd, '.tmp')
-  }
-
-  public get rdtConf() {
-    return _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
-  }
-
   constructor(mapping?: Mapping[]) {
     if (mapping) {
       this.mapping = mapping
     } else {
-      this.mapping = this.rdtConf.mapping
+      this.mapping = conf.getTmpRdtConf().mapping
     }
   }
 
   public start() {
-    const cwd = this.cwd
-    const watchFiles = this.mapping.map((item: any) => path.resolve(cwd, 'app', item.from))
+    const watchFiles = this.mapping.map((item: any) => path.resolve(conf.cwd, 'app', item.from))
     const watcher = chokidar.watch(watchFiles, {
       ignored: /(\.git)|(node_modules)/,
       ignoreInitial: true,
       interval: 300,
       binaryInterval: 300
     })
+
     watcher.on('add', path => this.handler('add', path))
       .on('change', path => this.handler('change', path))
       .on('unlink', path => this.handler('unlink', path))
@@ -47,13 +33,19 @@ export default class Watcher {
       .on('unlinkDir', path => this.handler('unlinkDir', path))
   }
 
-  public async handler(type: string, filePath: string) {
-    const cwd = this.cwd
+  protected async handler(type: string, filePath: string) {
+    const cwd = conf.cwd
     const mapping = this.mapping
-    const relativePath = path.relative(path.resolve(cwd, 'app'), filePath)
-    const mappingItem = mapping.find((item: any) => relativePath.includes(item.from))
-    const tmpPath = path.relative(path.resolve(cwd, 'app', mappingItem.from), filePath)
-    const destPath = path.resolve(cwd, `.${conf.getCliName()}`, mappingItem.to, tmpPath)
+    const {resolve, relative} = path
+    // 获取相对于 app 目录的路径
+    const relativeToAppPath = relative(path.resolve(cwd, 'app'), filePath)
+    // 从 mappping 中找到匹配的规则
+    const mappingItem = mapping.find((item: any) => relativeToAppPath.includes(item.from))
+    // 截取从from 到 变动文件的 路径
+    const relativeToFromPath = relative(resolve(cwd, 'app', mappingItem.from), filePath)
+    // 将相对路径 加在 to 后面，拼成 完整的目标路径
+    const destPath = resolve(conf.runtimeDir, mappingItem.to, relativeToFromPath)
+
     if (['add', 'change', 'addDir'].includes(type)) {
       await copy(filePath, destPath, {
         overwrite: true,
