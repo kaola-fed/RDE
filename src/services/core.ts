@@ -1,7 +1,5 @@
 import * as extend from 'deep-extend'
 import * as fs from 'fs'
-// @ts-ignore
-import * as beautify from 'js-beautify'
 import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
@@ -17,22 +15,6 @@ export default class Core {
   private readonly rdtDeps: string[] = []
 
   private readonly rdtName: string
-
-  public get cwd() {
-    return process.cwd()
-  }
-
-  public get tmpDir() {
-    return path.resolve(this.cwd, '.tmp')
-  }
-
-  public get runtimeDir() {
-    return path.resolve(this.cwd, `.${conf.getCliName()}`)
-  }
-
-  public get rdtConf() {
-    return _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
-  }
 
   constructor(rdtNameOrPath: string) {
     this.rdtName = rdtNameOrPath
@@ -57,16 +39,13 @@ export default class Core {
   }
 
   public getRdtPkgDir(rdtName: string) {
-    return path.resolve(this.cwd, 'node_modules', rdtName)
+    return path.resolve(conf.cwd, 'node_modules', rdtName)
   }
 
   public collectRdtDeps(rdtName: string) {
     this.rdtDeps.push(rdtName)
-    const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getRdtConfName())
-    if (!fs.existsSync(rdtConfPath)) {
-      logger.error(`${rdtConfPath} cannot be found`)
-      process.exit(2)
-    }
+    const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.rdtConfName)
+
     const extendRdtName = _.ensureRequire(rdtConfPath).extend
     if (!extendRdtName) {
       return
@@ -75,45 +54,46 @@ export default class Core {
   }
 
   public mergeJsonFile(rdtName: string, filename: string) {
-    const tmpFilePath = path.resolve(this.tmpDir, filename)
+    const tmpFilePath = path.resolve(conf.tmpDir, filename)
     let currentFile = {}
     if (fs.existsSync(tmpFilePath)) {
       currentFile = _.ensureRequire(tmpFilePath)
     }
+
     const pkgFilePath = path.resolve(this.getRdtPkgDir(rdtName), filename)
-    if (!fs.existsSync(pkgFilePath)) {
-      logger.info(`${pkgFilePath} cannot be found`)
-      process.exit(2)
-    }
     const pkgFile = _.ensureRequire(pkgFilePath)
+
     extend(currentFile, pkgFile)
     return currentFile
   }
 
   // 在临时目录 组装 template
   public async composeTpl() {
-    // await _.asyncExec(`rm -rf ${this.tmpDir}`)
+    await _.asyncExec(`rm -rf ${conf.tmpDir}`)
+
     for (let rdtName of this.rdtDeps.reverse()) {
       // 覆盖式copy template，先忽略template中的需要合并的配置
       const srcDir = path.resolve(this.getRdtPkgDir(rdtName), 'template')
-      const destDir = path.resolve(this.tmpDir, 'template')
+      const destDir = path.resolve(conf.tmpDir, 'template')
       await copy(srcDir, destDir, {overwrite: true})
+
       // 合并rde.template.js
-      const rdtConfPath = path.resolve(this.tmpDir, conf.getRdtConfName())
-      const mergedRdtConf = this.mergeJsonFile(rdtName, conf.getRdtConfName())
+      const rdtConfPath = path.resolve(conf.tmpDir, conf.rdtConfName)
+      const mergedRdtConf = this.mergeJsonFile(rdtName, conf.rdtConfName)
+
       await render.renderTo('module', {
-        obj: beautify.js(JSON.stringify(mergedRdtConf))
-      }, rdtConfPath, true)
+        obj: mergedRdtConf
+      }, rdtConfPath, {overwrite: true})
     }
   }
 
   public async renderTpl() {
-    const srcDir = path.resolve(this.tmpDir, 'template')
-    const destDir = this.runtimeDir
-    const rdtConfRender = this.rdtConf.render
+    const srcDir = path.resolve(conf.tmpDir, 'template')
+    const destDir = conf.runtimeDir
+    const rdtConfRender = conf.getTmpRdtConf().render
+
     await render.renderDir(srcDir, {
-      ...rdtConfRender.mock,
-      ProjectName: 'MyProject'
+      ...rdtConfRender.mock
     }, rdtConfRender.includes, destDir, {
       overwrite: true
     })
@@ -121,12 +101,13 @@ export default class Core {
 
   public async composeRuntime() {
     // 根据配置文件中的mapping，覆盖式copy
-    for (let item of this.rdtConf.mapping) {
-      const appDir = path.resolve(this.cwd, 'app', item.from)
-      const destDir = path.resolve(this.runtimeDir, item.to)
+    const mapping = conf.getTmpRdtConf().mapping
+    for (let item of mapping) {
+      const appDir = path.resolve(conf.cwd, 'app', item.from)
+      const destDir = path.resolve(conf.runtimeDir, item.to)
       await copy(appDir, destDir, {overwrite: true})
     }
-    logger.info('Installing runtime dependencies...')
-    await npm.install('', false, this.runtimeDir)
+
+    await npm.install('', false, conf.runtimeDir)
   }
 }

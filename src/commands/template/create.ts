@@ -35,7 +35,7 @@ export default class Create extends Base {
   public byExtend = false
 
   public get rdtPkgDir() {
-    return path.resolve(this.cwd, 'node_modules', this.rdtStarter)
+    return path.resolve(conf.cwd, 'node_modules', this.rdtStarter)
   }
 
   public async preInit() {
@@ -69,8 +69,8 @@ export default class Create extends Base {
   }
 
   public renderPkgJson() {
-    const json = require(path.resolve(this.cwd, 'package.json'))
-    const rdtConf = require(path.resolve(this.cwd, 'node_modules', this.rdtStarter, conf.getRdtConfName()))
+    const json = require(path.resolve(conf.cwd, 'package.json'))
+    const rdtConf = require(path.resolve(conf.cwd, 'node_modules', this.rdtStarter, conf.rdtConfName))
     const {packageWhiteList = []} = rdtConf
 
     const resultJson: RdtPkgJson = {
@@ -97,14 +97,15 @@ export default class Create extends Base {
       await render.renderDir(srcDir, {
         parentRdtName: this.rdtStarter,
         framework: this.framework,
-      }, ['.mustaches'], this.cwd)
+      }, ['.mustaches'], conf.cwd)
 
     } else {
-      await copy(this.rdtPkgDir, this.cwd, {overwrite: true})
-      await copy(resolve(this.rdtPkgDir, '.npmignore'), resolve(this.cwd, '.gitignore'), {overwrite: true})
+      await copy(this.rdtPkgDir, conf.cwd, {overwrite: true})
+      await copy(resolve(this.rdtPkgDir, '.npmignore'), resolve(conf.cwd, '.gitignore'), {overwrite: true})
 
       this.renderPkgJson()
     }
+    await npm.install('')
   }
 
   public async ask() {

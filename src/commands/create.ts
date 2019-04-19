@@ -45,7 +45,7 @@ export default class Create extends Base {
     await writePkgJson({name: this.appName})
     await npm.install(`${this.rdtName}`)
 
-    const appConfName = conf.getAppConfName()
+    const appConfName = conf.appConfName
     await render.renderTo(appConfName.slice(0, -3), {
       templateName: this.rdtName,
     }, appConfName)
@@ -59,8 +59,8 @@ export default class Create extends Base {
   }
 
   public async run() {
-    const srcDir = conf.getRdtAppDir()
-    const destDir = path.resolve(this.cwd, 'app')
+    const srcDir = conf.rdtAppDir
+    const destDir = path.resolve(conf.cwd, 'app')
 
     await copy(srcDir, destDir)
   }

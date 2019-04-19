@@ -37,7 +37,7 @@ export default class Serve extends Base {
     // const {template} = Serve.rdeConf
     // const {docker} = template
     // if (!docker || !docker.ports || !docker.ports.length) {
-    //   throw Error(`${conf.getTemplateName()} doesn't support docker mode, please rerun with $ rde serve`)
+    //   throw Error(`${conf.templateName} doesn't support docker mode, please rerun with $ rde serve`)
     // }
 
     return {...args, ...flags}
@@ -66,7 +66,7 @@ export default class Serve extends Base {
   public async run() {
     logger.info('Start running serve...')
     await _.asyncSpawn('npm', ['run', 'serve'], {
-      cwd: `.${conf.getCliName()}`
+      cwd: conf.runtimeDir
     })
   }
 

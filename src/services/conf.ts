@@ -1,12 +1,15 @@
 import * as extend from 'deep-extend'
-import * as fs from 'fs'
 import * as path from 'path'
+
+import _ from '../util'
 
 const appConfName = 'rde.app.js'
 
 const rdtConfName = 'rde.template.js'
 
 const rdsConfName = 'rde.suite.js'
+
+const tmpDirName = '.tmp'
 
 export default {
   get cwd() {
@@ -17,31 +20,49 @@ export default {
     return path.resolve(this.cwd, appConfName)
   },
 
-  getCliName() { return 'rde' },
+  get tmpDir() {
+    return path.resolve(this.cwd, tmpDirName)
+  },
 
-  getAppConfName() { return appConfName },
+  get runtimeDir() {
+    return path.resolve(this.cwd, `.${this.cliName}`)
+  },
 
-  getRdtConfName() { return rdtConfName },
+  get cliName() { return 'rde' },
 
-  rdsConfName() { return rdsConfName },
+  get appConfName() { return appConfName },
 
-  getRdtModulePath() {
+  get rdtConfName() { return rdtConfName },
+
+  get rdsConfName() { return rdsConfName },
+
+  get rdtModulePath() {
     const {app} = this.getAppConf()
     return path.resolve(this.cwd, 'node_modules', app.template)
   },
 
-  getTemplateName() {
+  get templateName() {
     const {app} = this.getAppConf()
     return app.template
   },
 
-  getAppConf() {
-    if (!fs.existsSync(this.appConfPath)) {
-      throw Error('rde.app.js cannot be found in cwd')
-    }
+  get rdtAppDir() {
+    const {app} = this.getAppConf()
+    return path.resolve(this.cwd, 'node_modules', app.template, 'app')
+  },
 
+  get rdtTemplateDir() {
+    const {app} = this.getAppConf()
+    return path.resolve(this.cwd, 'node_modules', app.template, 'template')
+  },
+
+  getTmpRdtConf() {
+    return _.ensureRequire(path.resolve(this.tmpDir, this.rdtConfName))
+  },
+
+  getAppConf() {
     return {
-      app: require(this.appConfPath)
+      app: _.ensureRequire(this.appConfPath)
     }
   },
 
@@ -52,12 +73,9 @@ export default {
     }
 
     let rdtConfPath = path.resolve(this.cwd, 'node_modules', app.template, rdtConfName)
-    if (!fs.existsSync(rdtConfPath)) {
-      throw Error(`rde.template.js cannot be found in package ${app.template}, please check`)
-    }
 
     return {
-      template: require(rdtConfPath)
+      template: _.ensureRequire(rdtConfPath)
     }
   },
 
@@ -85,11 +103,8 @@ export default {
 
   getSingleRdsConf(suite: string) {
     let rdsConfPath = path.resolve(this.cwd, 'node_modules', suite, rdsConfName)
-    if (!fs.existsSync(rdsConfPath)) {
-      throw Error(`rde.suite.js cannot be found in package ${suite}, please check`)
-    }
 
-    return require(rdsConfPath)
+    return _.ensureRequire(rdsConfPath)
   },
 
   getRdeConf() {
@@ -97,15 +112,5 @@ export default {
     const rdtConf = this.getRdtConf()
 
     return extend(appConf, rdtConf)
-  },
-
-  getRdtAppDir() {
-    const {app} = this.getAppConf()
-    return path.resolve(this.cwd, 'node_modules', app.template, 'app')
-  },
-
-  getRdtTemplateDir() {
-    const {app} = this.getAppConf()
-    return path.resolve(this.cwd, 'node_modules', app.template, 'template')
   }
 }

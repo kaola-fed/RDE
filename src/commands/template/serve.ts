@@ -22,7 +22,7 @@ export default class Serve extends Base {
 
   public async preInit() {
     // 本地测试时使用
-    // process.chdir('rdt-hello')
+    process.chdir('rdt-hello')
     const {args, flags} = this.parse(Serve)
 
     return {...args, ...flags}
@@ -42,7 +42,7 @@ export default class Serve extends Base {
   public async run() {
     logger.info('Start running serve...')
     await _.asyncSpawn('npm', ['run', 'serve'], {
-      cwd: `.${conf.getCliName()}`
+      cwd: conf.runtimeDir
     })
   }
 }

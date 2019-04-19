@@ -4,10 +4,6 @@ import * as path from 'path'
 import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
-  public get cwd() {
-    return process.cwd()
-  }
-
   public get mustachesDir() {
     return path.resolve(__dirname, 'mustaches')
   }
