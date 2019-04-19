@@ -4,15 +4,15 @@ import * as path from 'path'
 import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
-  get cwd() {
+  public get cwd() {
     return process.cwd()
   }
 
-  get mustachesDir() {
+  public get mustachesDir() {
     return path.resolve(__dirname, 'mustaches')
   }
 
-  get frameworks() {
+  public get frameworks() {
     return {
       vue: {rdtStarter: '@rede/rdt-vue-starter'},
       react: {rdtStarter: '@rede/rdt-react-starter'},
@@ -20,7 +20,7 @@ export default abstract class Base extends Command {
     }
   }
 
-  async init() {
+  public async init() {
     try {
       // check user input args here
       const args = await this.preInit()
@@ -40,7 +40,7 @@ export default abstract class Base extends Command {
     }
   }
 
-  async finally(e: any) {
+  public async finally(e: any) {
     if (!e) {
       await this.postRun()
     }

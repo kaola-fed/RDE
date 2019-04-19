@@ -14,13 +14,13 @@ import render from '../../services/render'
 import _ from '../../util'
 
 export default class Create extends Base {
-  static description = 'create a rde template project'
+  public static description = 'create a rde template project'
 
-  static examples = [
+  public static examples = [
     '$ rde template:create <rdtname>',
   ]
 
-  static args = [{
+  public static args = [{
     name: 'rdtName',
     required: true,
     description: 'rde template project name, used by package.json',
@@ -34,7 +34,7 @@ export default class Create extends Base {
 
   public byExtend = false
 
-  get rdtPkgDir() {
+  public get rdtPkgDir() {
     return path.resolve(this.cwd, 'node_modules', this.rdtStarter)
   }
 
@@ -68,10 +68,10 @@ export default class Create extends Base {
     await _.asyncExec('rm package*.json')
   }
 
-  renderPkgJson() {
+  public renderPkgJson() {
     const json = require(path.resolve(this.cwd, 'package.json'))
-    const {template} = conf.getRdtConf()
-    const {packageWhiteList = []} = template
+    const rdtConf = require(path.resolve(this.cwd, 'node_modules', this.rdtStarter, conf.getRdtConfName()))
+    const {packageWhiteList = []} = rdtConf
 
     const resultJson: RdtPkgJson = {
       name: this.rdtName,
@@ -90,7 +90,7 @@ export default class Create extends Base {
     writePkgJson(resultJson)
   }
 
-  async run() {
+  public async run() {
     const {resolve} = path
     if (this.byExtend) {
       const srcDir = resolve(this.mustachesDir, 'rde.template')

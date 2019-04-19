@@ -1,21 +1,21 @@
 import Base from '../base'
 
 export default class Run extends Base {
-  static description = 'run scripts provided by @rede/template'
+  public static description = 'run scripts provided by @rede/template'
 
-  static examples = [
+  public static examples = [
     '$ rde run dev',
   ]
 
-  static args = [
+  public static args = [
     {name: 'cmd', required: true, description: 'commands provided by @rde/template'}
   ]
 
-  async preInit() {
+  public async preInit() {
     const {args} = this.parse(Run)
     return args
   }
 
-  async run() {
+  public async run() {
   }
 }

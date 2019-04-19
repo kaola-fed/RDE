@@ -10,15 +10,19 @@ import conf from './conf'
 
 export default class Watcher {
   private readonly mapping: Mapping[] = []
-  get cwd() {
+
+  public get cwd() {
     return process.cwd()
   }
-  get tmpDir() {
+
+  public get tmpDir() {
     return path.resolve(this.cwd, '.tmp')
   }
-  get rdtConf() {
+
+  public get rdtConf() {
     return _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
   }
+
   constructor(mapping?: Mapping[]) {
     if (mapping) {
       this.mapping = mapping
@@ -26,7 +30,8 @@ export default class Watcher {
       this.mapping = this.rdtConf.mapping
     }
   }
-  start() {
+
+  public start() {
     const cwd = this.cwd
     const watchFiles = this.mapping.map((item: any) => path.resolve(cwd, 'app', item.from))
     const watcher = chokidar.watch(watchFiles, {
@@ -41,7 +46,8 @@ export default class Watcher {
       .on('addDir', path => this.handler('addDir', path))
       .on('unlinkDir', path => this.handler('unlinkDir', path))
   }
-  async handler(type: string, filePath: string) {
+
+  public async handler(type: string, filePath: string) {
     const cwd = this.cwd
     const mapping = this.mapping
     const relativePath = path.relative(path.resolve(cwd, 'app'), filePath)

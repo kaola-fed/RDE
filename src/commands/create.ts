@@ -12,13 +12,13 @@ import render from '../services/render'
 import _ from '../util'
 
 export default class Create extends Base {
-  static description = 'create a rde project'
+  public static description = 'create a rde project'
 
-  static examples = [
+  public static examples = [
     '$ rde create <appname>',
   ]
 
-  static args = [{
+  public static args = [{
     name: 'appName',
     required: false,
     description: 'app name',

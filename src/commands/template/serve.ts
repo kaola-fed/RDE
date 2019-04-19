@@ -8,19 +8,19 @@ import Watcher from '../../services/watcher'
 import _ from '../../util'
 
 export default class Serve extends Base {
-  static description = 'start a template dev server'
+  public static description = 'start a template dev server'
 
-  static examples = [
+  public static examples = [
     '$ rde template:serve',
   ]
 
-  static flags = {
+  public static flags = {
     docker: flags.boolean({char: 'd'})
   }
 
   private docker = false
 
-  async preInit() {
+  public async preInit() {
     // 本地测试时使用
     // process.chdir('rdt-hello')
     const {args, flags} = this.parse(Serve)
@@ -28,18 +28,18 @@ export default class Serve extends Base {
     return {...args, ...flags}
   }
 
-  async initialize(args: any) {
+  public async initialize(args: any) {
     this.docker = args.docker
   }
 
-  async preRun() {
+  public async preRun() {
     const core = new Core('../')
     await core.prepare()
     const watcher = new Watcher()
     watcher.start()
   }
 
-  async run() {
+  public async run() {
     logger.info('Start running serve...')
     await _.asyncSpawn('npm', ['run', 'serve'], {
       cwd: `.${conf.getCliName()}`

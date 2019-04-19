@@ -18,19 +18,19 @@ export default class Core {
 
   private readonly rdtName: string
 
-  get cwd() {
+  public get cwd() {
     return process.cwd()
   }
 
-  get tmpDir() {
+  public get tmpDir() {
     return path.resolve(this.cwd, '.tmp')
   }
 
-  get runtimeDir() {
+  public get runtimeDir() {
     return path.resolve(this.cwd, `.${conf.getCliName()}`)
   }
 
-  get rdtConf() {
+  public get rdtConf() {
     return _.ensureRequire(path.resolve(this.tmpDir, conf.getRdtConfName()))
   }
 
@@ -38,7 +38,7 @@ export default class Core {
     this.rdtName = rdtNameOrPath
   }
 
-  async prepare() {
+  public async prepare() {
     // dependencies
     logger.info('Start collecting rdtDeps...')
     this.collectRdtDeps(this.rdtName)
@@ -56,11 +56,11 @@ export default class Core {
     await this.composeRuntime()
   }
 
-  getRdtPkgDir(rdtName: string) {
+  public getRdtPkgDir(rdtName: string) {
     return path.resolve(this.cwd, 'node_modules', rdtName)
   }
 
-  collectRdtDeps(rdtName: string) {
+  public collectRdtDeps(rdtName: string) {
     this.rdtDeps.push(rdtName)
     const rdtConfPath = path.resolve(this.getRdtPkgDir(rdtName), conf.getRdtConfName())
     if (!fs.existsSync(rdtConfPath)) {
@@ -74,7 +74,7 @@ export default class Core {
     this.collectRdtDeps(extendRdtName)
   }
 
-  mergeJsonFile(rdtName: string, filename: string) {
+  public mergeJsonFile(rdtName: string, filename: string) {
     const tmpFilePath = path.resolve(this.tmpDir, filename)
     let currentFile = {}
     if (fs.existsSync(tmpFilePath)) {
@@ -91,7 +91,7 @@ export default class Core {
   }
 
   // 在临时目录 组装 template
-  async composeTpl() {
+  public async composeTpl() {
     // await _.asyncExec(`rm -rf ${this.tmpDir}`)
     for (let rdtName of this.rdtDeps.reverse()) {
       // 覆盖式copy template，先忽略template中的需要合并的配置
@@ -107,7 +107,7 @@ export default class Core {
     }
   }
 
-  async renderTpl() {
+  public async renderTpl() {
     const srcDir = path.resolve(this.tmpDir, 'template')
     const destDir = this.runtimeDir
     const rdtConfRender = this.rdtConf.render
@@ -119,7 +119,7 @@ export default class Core {
     })
   }
 
-  async composeRuntime() {
+  public async composeRuntime() {
     // 根据配置文件中的mapping，覆盖式copy
     for (let item of this.rdtConf.mapping) {
       const appDir = path.resolve(this.cwd, 'app', item.from)

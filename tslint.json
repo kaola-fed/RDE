@@ -5,5 +5,13 @@
       "node_modules/**",
       "lib/**"
     ]
+  },
+  "rulesDirectory": [
+    "node_modules/tslint-lines-between-class-members"
+  ],
+  "rules": {
+    "lines-between-class-members": true,
+    "max-line-length": [true, 120],
+    "member-access": [true, "check-accessor"]
   }
 }

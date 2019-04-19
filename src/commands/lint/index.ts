@@ -1,11 +1,11 @@
 import Base from '../../base'
 
 export default class Index extends Base {
-  static description = '@rede/suite development tool'
+  public static description = '@rede/suite development tool'
 
-  static examples = [
+  public static examples = [
     '$ rde suite init',
   ]
 
-  async run() {}
+  public async run() {}
 }
