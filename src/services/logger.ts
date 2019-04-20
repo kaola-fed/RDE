@@ -4,28 +4,28 @@ export const logger = new Signale({
   scope: 'rde',
 })
 
-export const spinner = {
-  logger: null,
-  timerId: null,
-  interval: 80,
-  frames:  ['🌑 ', '🌒 ', '🌓 ', '🌔 ', '🌕 ', '🌖 ', '🌗 ', '🌘 '],
-  counter: 0,
+export class Spinner {
+  public readonly interval = 80
 
-  getLogger() {
-    return new Signale({interactive: true, scope: 'rde'})
-  },
+  public readonly frames = ['🌑 ', '🌒 ', '🌓 ', '🌔 ', '🌕 ', '🌖 ', '🌗 ', '🌘 ']
 
-  start(info) {
-    this.logger = this.getLogger()
+  public logger = null
+
+  public timerId = null
+
+  public counter = 0
+
+  public start(info) {
+    this.logger = new Signale({interactive: true, scope: 'rde'})
 
     this.timerId = setInterval(() => {
       this.counter = this.counter % (this.frames.length)
       this.logger.await(`${info} : %s`, this.frames[this.counter])
       this.counter++
     }, this.interval)
-  },
+  }
 
-  stop() {
+  public stop() {
     clearInterval(this.timerId)
     this.logger = null
   }

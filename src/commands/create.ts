@@ -10,6 +10,7 @@ import {logger} from '../services/logger'
 import npm from '../services/npm'
 import render from '../services/render'
 import _ from '../util'
+import * as flags from "@oclif/command/lib/flags";
 
 export default class Create extends Base {
   public static description = 'create a rde project'
@@ -23,6 +24,10 @@ export default class Create extends Base {
     required: false,
     description: 'app name',
   }]
+
+  public static flags = {
+    ...Base.flags,
+  }
 
   public appName = ''
 
@@ -45,17 +50,17 @@ export default class Create extends Base {
     await writePkgJson({name: this.appName})
     await npm.install(`${this.rdtName}`)
 
-    const appConfName = conf.appConfName
+    const {
+      appConfName,
+      getRdtConf,
+    } = conf
+
+    const {template} = getRdtConf(this.rdtName)
+
     await render.renderTo(appConfName.slice(0, -3), {
       templateName: this.rdtName,
+      templateDoc: template.docs,
     }, appConfName)
-
-    const {template} = conf.getRdtConf()
-    const {app} = conf.getAppConf()
-    app.readme.template = template.docs.homepage
-    await render.renderTo('module', {
-      obj: app
-    }, appConfName, {overwrite: true})
   }
 
   public async run() {

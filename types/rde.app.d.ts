@@ -1,9 +1,16 @@
-interface AppConf {
-  template: string
-  suites: string[]
-  readme: {
-    template: string,
-    suites: any[]
-  },
+interface AppConfTemplate {
+  name: string,
+  docs: string,
   render: { [key: string]: any }
+}
+
+interface AppConfSuite {
+  name: string,
+  docs: string,
+}
+
+interface AppConf {
+  template: AppConfTemplate,
+  suites: AppConfSuite[],
+  mappings: Mapping[]
 }

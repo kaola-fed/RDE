@@ -3,6 +3,8 @@ import * as path from 'path'
 
 import _ from '../util'
 
+const {resolve} = path
+
 const appConfName = 'rde.app.js'
 
 const rdtConfName = 'rde.template.js'
@@ -11,21 +13,21 @@ const rdsConfName = 'rde.suite.js'
 
 const tmpDirName = '.tmp'
 
-export default {
+const conf = {
   get cwd() {
     return process.cwd()
   },
 
   get appConfPath() {
-    return path.resolve(this.cwd, appConfName)
+    return resolve(conf.cwd, appConfName)
   },
 
   get tmpDir() {
-    return path.resolve(this.cwd, tmpDirName)
+    return resolve(conf.cwd, tmpDirName)
   },
 
   get runtimeDir() {
-    return path.resolve(this.cwd, `.${this.cliName}`)
+    return resolve(conf.cwd, `.${conf.cliName}`)
   },
 
   get cliName() { return 'rde' },
@@ -36,81 +38,94 @@ export default {
 
   get rdsConfName() { return rdsConfName },
 
-  get rdtModulePath() {
-    const {app} = this.getAppConf()
-    return path.resolve(this.cwd, 'node_modules', app.template)
-  },
-
-  get templateName() {
-    const {app} = this.getAppConf()
-    return app.template
-  },
-
   get rdtAppDir() {
-    const {app} = this.getAppConf()
-    return path.resolve(this.cwd, 'node_modules', app.template, 'app')
+    const {app} = conf.getAppConf()
+    return resolve(conf.cwd, 'node_modules', app.template.name, 'app')
   },
 
-  get rdtTemplateDir() {
-    const {app} = this.getAppConf()
-    return path.resolve(this.cwd, 'node_modules', app.template, 'template')
+  getRdtTemplateDir(rdtName) {
+    return resolve(conf.cwd, 'node_modules', rdtName, 'template')
   },
 
-  getTmpRdtConf() {
-    return _.ensureRequire(path.resolve(this.tmpDir, this.rdtConfName))
+  getTmpRdtConf(): RdtConf {
+    return _.ensureRequire(resolve(conf.tmpDir, conf.rdtConfName))
   },
 
-  getAppConf() {
+  getAppConf(): {app: AppConf} {
     return {
-      app: _.ensureRequire(this.appConfPath)
+      app: _.ensureRequire(conf.appConfPath)
     }
   },
 
-  getRdtConf() {
-    const {app} = this.getAppConf()
-    if (!app.template) {
-      throw Error('template is not set in rde.app.js, please check')
+  getRdtDir(srcDir: string, node: string): string {
+    return resolve(srcDir, 'node_modules', node)
+  },
+
+  getRdtConfPath(srcDir: string, node: string): RdtConf {
+    const rdtDir = conf.getRdtDir(srcDir, node)
+    return require(resolve(rdtDir, rdtConfName))
+  },
+
+  getRdtChain(node, chain = []): string[] {
+    chain.push(node)
+
+    const rdtConfPath = resolve(conf.getRdtDir(conf.cwd, node), conf.rdtConfName)
+    const {extend} = require(rdtConfPath)
+
+    if (!extend) {
+      return chain.reverse()
     }
 
-    let rdtConfPath = path.resolve(this.cwd, 'node_modules', app.template, rdtConfName)
+    return conf.getRdtChain(extend, chain)
+  },
 
+  getRdtConf(node): {template: RdtConf} {
+    const chain = conf.getRdtChain(node)
     return {
-      template: _.ensureRequire(rdtConfPath)
+      template: conf.getRdtConfFromChain(chain)
     }
   },
 
-  getRdsConf() {
-    const {app} = this.getAppConf()
-    let rdsConf = {}
+  getRdtConfFromChain(chain): RdtConf {
+    let merged: RdtConf
 
-    if (!app.suites) {
-      rdsConf = {}
+    for (let node of chain) {
+      merged = extend(
+        {},
+        conf.getRdtConfPath(conf.cwd, node),
+        merged || {}
+      )
     }
 
-    if (typeof app.suites === 'string') {
-      let conf = this.getSingleRdsConf(app.suites)
-      rdsConf = [].concat(conf)
-    }
+    return merged
+  },
+
+  getRdsConf(): RdsConf[] {
+    const {app} = conf.getAppConf()
+    let rdsConf = []
 
     if (app.suites instanceof Array) {
-      rdsConf = app.suites.map((suite: string) => {
-        return this.getSingleRdsConf(suite)
+      rdsConf = app.suites.map((suite: AppConfSuite) => {
+        return conf.getSingleRdsConf(suite.name)
       })
     }
 
     return rdsConf
   },
 
-  getSingleRdsConf(suite: string) {
-    let rdsConfPath = path.resolve(this.cwd, 'node_modules', suite, rdsConfName)
+  getSingleRdsConf(suite: string): RdsConf {
+    let rdsConfPath = resolve(conf.cwd, 'node_modules', suite, rdsConfName)
 
     return _.ensureRequire(rdsConfPath)
   },
 
-  getRdeConf() {
-    const appConf = this.getAppConf()
-    const rdtConf = this.getRdtConf()
+  getRdeConf(): RdeConf {
+    const {app} = conf.getAppConf()
+    const rdtConf = conf.getRdtConf(app.template.name)
+    const suites = conf.getRdsConf()
 
-    return extend(appConf, rdtConf)
+    return extend({}, {app}, rdtConf, {suites})
   }
 }
+
+export default conf

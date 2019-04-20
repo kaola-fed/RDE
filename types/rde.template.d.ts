@@ -8,8 +8,7 @@ interface Docs {
 interface Render {
   includes: string[],
   tags: string[],
-  mock: {[key: string]: any},
-  validate(dataView: any): boolean,
+  validate: ((dataView: any) => boolean)[],
 }
 
 interface Mapping {
@@ -26,7 +25,11 @@ interface RdtConf {
   framework: Framework
   docs: Docs
   render: Render
-  mapping: Mapping[]
+  mappings: Mapping[]
   docker: Docker,
-  packageWhiteList: string[]
+  packageWhiteList: string[],
+  dev: {
+    render: {[key: string]: any},
+    watchFiles: string[]
+  }
 }

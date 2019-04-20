@@ -12,7 +12,7 @@ const {resolve} = path
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
 
-const rdtName = '@rede/rdt-vue-starter'
+const rdtName = '@rde-pro/rdt-vue-starter'
 const projectName = 'demo.project'
 const cmdDir = resolve('./src/commands')
 const projectDir = resolve('./test/run/', projectName)
@@ -34,7 +34,7 @@ describe('rde create', () => {
 
   afterEach(async () => {
     process.chdir(originCwd)
-    await asyncExec('rm -rf ./test/run')
+    // await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })
@@ -50,10 +50,9 @@ describe('rde create', () => {
   })
 
   it('should create rde.app.js', async () => {
-    const {template, suites, readme} = require(resolve(projectDir, 'rde.app.js'))
+    const {template, suites} = require(resolve(projectDir, 'rde.app.js'))
 
-    expect(template).to.equal(`${rdtName}`)
+    expect(template.name).to.equal(`${rdtName}`)
     expect(suites).to.be.an.instanceOf(Array)
-    expect(readme).to.exist
   })
 })

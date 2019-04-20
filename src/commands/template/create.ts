@@ -76,7 +76,7 @@ export default class Create extends Base {
     const resultJson: RdtPkgJson = {
       name: this.rdtName,
       description: 'This is a rde-template, powered by rde',
-      keywords: ['@rede/rdt', `${this.framework}`],
+      keywords: ['@rde-pro/rdt', `${this.framework}`],
       dependencies: json.dependencies,
       devDependencies: json.devDependencies,
     }

@@ -7,18 +7,14 @@ import * as copy from 'recursive-copy'
 import conf from './conf'
 
 export default class Watcher {
-  private readonly mapping: Mapping[] = []
+  private readonly mappings: Mapping[] = []
 
-  constructor(mapping?: Mapping[]) {
-    if (mapping) {
-      this.mapping = mapping
-    } else {
-      this.mapping = conf.getTmpRdtConf().mapping
-    }
+  constructor(mappings: Mapping[] = []) {
+    this.mappings = mappings
   }
 
   public start() {
-    const watchFiles = this.mapping.map((item: any) => path.resolve(conf.cwd, 'app', item.from))
+    const watchFiles = this.mappings.map((item: any) => path.resolve(conf.cwd, 'app', item.from))
     const watcher = chokidar.watch(watchFiles, {
       ignored: /(\.git)|(node_modules)/,
       ignoreInitial: true,
@@ -35,7 +31,7 @@ export default class Watcher {
 
   protected async handler(type: string, filePath: string) {
     const cwd = conf.cwd
-    const mapping = this.mapping
+    const mapping = this.mappings
     const {resolve, relative} = path
     // 获取相对于 app 目录的路径
     const relativeToAppPath = relative(path.resolve(cwd, 'app'), filePath)
