@@ -1,11 +1,25 @@
-import Base from '../base'
+import Command from '@oclif/command'
 
-export default class Index extends Base {
-  public static description = '@rde-pro/suite development tool'
+import _ from '../util'
+
+import Run from './run'
+
+export default class Build extends Command {
+  public static description = 'start build'
 
   public static examples = [
-    '$ rde suite init',
+    '$ rde build',
   ]
 
-  public async run() {}
+  public static flags = {
+    ...Run.flags,
+  }
+
+  public async run() {
+    const {flags} = this.parse(Build)
+
+    const list = _.restoreFlags(flags)
+
+    await Run.run(['build', ...list])
+  }
 }

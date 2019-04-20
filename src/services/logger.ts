@@ -4,7 +4,7 @@ export const logger = new Signale({
   scope: 'rde',
 })
 
-export class Spinner {
+class Spinner {
   public readonly interval = 80
 
   public readonly frames = ['🌑 ', '🌒 ', '🌓 ', '🌔 ', '🌕 ', '🌖 ', '🌗 ', '🌘 ']
@@ -15,8 +15,16 @@ export class Spinner {
 
   public counter = 0
 
+  constructor() {}
+
   public start(info) {
-    this.logger = new Signale({interactive: true, scope: 'rde'})
+    if (!this.logger) {
+      this.logger = new Signale({interactive: true, scope: 'rde'})
+    }
+
+    if (this.timerId) {
+      clearInterval(this.timerId)
+    }
 
     this.timerId = setInterval(() => {
       this.counter = this.counter % (this.frames.length)
@@ -30,3 +38,5 @@ export class Spinner {
     this.logger = null
   }
 }
+
+export const spinner = new Spinner()

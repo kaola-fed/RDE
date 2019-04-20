@@ -30,5 +30,18 @@ export default {
       ...options,
       stdio: 'inherit'
     })
+  },
+
+  restoreFlags(flags) {
+    const list = []
+
+    Object.keys(flags).forEach(key => {
+      list.push(`--${key}`)
+      if (typeof flags[key] !== 'boolean') {
+        list.push(`${flags[key]}`)
+      }
+    })
+
+    return list
   }
 }

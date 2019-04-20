@@ -10,7 +10,6 @@ import {logger} from '../services/logger'
 import npm from '../services/npm'
 import render from '../services/render'
 import _ from '../util'
-import * as flags from "@oclif/command/lib/flags";
 
 export default class Create extends Base {
   public static description = 'create a rde project'

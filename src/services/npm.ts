@@ -1,10 +1,9 @@
 import _ from '../util'
 
-import {logger, Spinner} from './logger'
+import {logger, spinner} from './logger'
 
 export default {
   async install(pkg?: string, isDevDep = true, dir = process.cwd()) {
-    const spinner = new Spinner()
     spinner.start('Installing packages. This might take a while...')
 
     try {

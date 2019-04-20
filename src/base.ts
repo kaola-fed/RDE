@@ -1,5 +1,5 @@
 import {Command} from '@oclif/command'
-import * as flags from '@oclif/command/lib/flags';
+import * as flags from '@oclif/command/lib/flags'
 import * as path from 'path'
 
 import Core from './core'
@@ -7,10 +7,14 @@ import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
   public static flags = {
-    verbose: flags.boolean({char: 'v'})
+    verbose: flags.boolean({char: 'v', required: false, description: 'show verbose logs'}),
+    quickRun: flags.boolean({char: 'q', required: false, description: 'skip prepare runtime, run cmd immediately'}),
+    docker: flags.boolean({char: 'd', required: false, description: 'running with docker mode'})
   }
 
   public verbose = false
+
+  public quickRun = false
 
   public get mustachesDir() {
     return path.resolve(__dirname, 'mustaches')
@@ -32,6 +36,7 @@ export default abstract class Base extends Command {
     // @ts-ignore
     const {flags} = this.parse(this.constructor)
     this.verbose = flags.verbose
+    this.quickRun = flags.quickRun
 
     // check user input args here
     const args = await this.preInit()
@@ -48,7 +53,6 @@ export default abstract class Base extends Command {
 
   public async catch(e) {
     logger.error(e.message)
-    logger.error('is catched by hale')
     this.exit(1)
   }
 

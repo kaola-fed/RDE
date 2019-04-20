@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as copy from 'recursive-copy'
 
 import conf from './services/conf'
-import {Spinner} from './services/logger'
+import {spinner} from './services/logger'
 import npm from './services/npm'
 import render from './services/render'
 import Watcher from './services/watcher'
@@ -20,15 +20,17 @@ export default class Core {
 
   private readonly useDocker: boolean
 
-  constructor({topRdtNode, mappings = [], renderData, useDocker}) {
+  private readonly keepWatch: boolean
+
+  constructor({topRdtNode, mappings = [], renderData, useDocker, keepWatch}) {
     this.topRdtNode = topRdtNode
     this.mappings = mappings
     this.renderData = renderData
     this.useDocker = useDocker
+    this.keepWatch = keepWatch
   }
 
   public async prepare() {
-    const spinner = new Spinner()
     spinner.start('Preparing Rde Runtime...')
 
     // generate rdt template from rdt chain
@@ -106,8 +108,8 @@ export default class Core {
 
     await npm.install('', false, runtimeDir)
 
-    if (!this.useDocker) {
-      // new Watcher(mappings).start()
-    }
+    if (!this.useDocker && this.keepWatch) {
+      new Watcher(mappings).start()
+    } else if (this.useDocker) {}
   }
 }

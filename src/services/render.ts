@@ -6,7 +6,7 @@ import * as path from 'path'
 import * as copy from 'recursive-copy'
 import * as through from 'through2'
 
-import {Spinner} from './logger'
+import {spinner} from './logger'
 
 let defaultTags = ['{{', '}}']
 
@@ -34,7 +34,6 @@ export default {
   },
 
   async renderDir(src: string, dataView: any, includes: string[], dest: string, options = {}, tags = defaultTags) {
-    const spinner = new Spinner()
     spinner.start(`Rendering ${src}. This might take a while...`)
 
     await copy(src, dest, {

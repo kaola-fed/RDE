@@ -1,12 +1,12 @@
-import Base from '../base'
-import conf from '../services/conf'
-import _ from '../util'
+import Base from '../../base'
+import conf from '../../services/conf'
+import _ from '../../util'
 
-export default class Run extends Base {
-  public static description = 'run scripts provided by rdt'
+export default class RdtRun extends Base {
+  public static description = 'run script'
 
   public static examples = [
-    '$ rde run <script>',
+    '$ rde template:run',
   ]
 
   public static args = [{
@@ -19,11 +19,9 @@ export default class Run extends Base {
     ...Base.flags,
   }
 
-  public rdtName: string
+  public rdtName = '../'
 
   public useDocker: boolean
-
-  public renderData: any
 
   public mappings: Mapping[]
 
@@ -32,30 +30,35 @@ export default class Run extends Base {
   public quickRun: boolean
 
   public async preInit() {
-    const {args, flags} = this.parse(Run)
-
-    const {app} = conf.getRdeConf()
-    if (!app.template) {
-      throw Error('template is not provided in you config file, please check')
-    }
+    const {flags, args} = this.parse(RdtRun)
 
     return {
-      cmd: args.cmd,
       useDocker: flags.docker,
+      cmd: args.cmd,
       quickRun: flags.quickRun,
-      appConf: app
     }
   }
 
-  public async initialize({cmd, appConf, useDocker, quickRun}) {
-    const {template, mappings} = appConf
-
-    this.rdtName = template.name
+  public async initialize({useDocker, cmd, quickRun}) {
     this.useDocker = useDocker
-    this.renderData = template.render
-    this.mappings = mappings
     this.cmd = cmd
     this.quickRun = quickRun
+
+    // mapping from template to .rde
+    const {template} = conf.getRdtConf('../')
+    const {dev} = template
+
+    if (dev) {
+      const mappings = []
+      dev.watchFiles.forEach(file => {
+        mappings.push({
+          from: file,
+          to: file
+        })
+      })
+
+      this.mappings = mappings
+    }
   }
 
   public async preRun() {
@@ -66,15 +69,15 @@ export default class Run extends Base {
     const core = this.getCoreInstance({
       topRdtNode: this.rdtName,
       useDocker: this.useDocker,
-      renderData: this.renderData,
       mappings: this.mappings,
+      keepWatch: true
     })
 
     await core.prepare()
   }
 
   public async run() {
-    _.asyncSpawn('npm', ['run', `${this.cmd}`], {
+    await _.asyncSpawn('npm', ['run', `${this.cmd}`], {
       cwd: conf.runtimeDir
     })
   }
