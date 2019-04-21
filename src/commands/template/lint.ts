@@ -3,11 +3,11 @@ import Command from '@oclif/command'
 import _ from '../../util'
 import Run from '../run'
 
-export default class Lint extends Command {
+export default class RdtLint extends Command {
   public static description = 'run lint provided by rdt'
 
   public static examples = [
-    '$ rde lint',
+    '$ rde template:lint',
   ]
 
   public static flags = {
@@ -15,7 +15,7 @@ export default class Lint extends Command {
   }
 
   public async run() {
-    const {flags} = this.parse(Lint)
+    const {flags} = this.parse(RdtLint)
 
     const list = _.restoreFlags(flags)
 

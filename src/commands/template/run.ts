@@ -6,7 +6,7 @@ export default class RdtRun extends Base {
   public static description = 'run script'
 
   public static examples = [
-    '$ rde template:run',
+    '$ rde template:run <script>',
   ]
 
   public static args = [{
@@ -19,30 +19,28 @@ export default class RdtRun extends Base {
     ...Base.flags,
   }
 
-  public rdtName = '../'
-
-  public useDocker: boolean
+  public rdtName: string
 
   public mappings: Mapping[]
 
   public cmd: string
 
-  public quickRun: boolean
+  public renderData: any
 
   public async preInit() {
-    const {flags, args} = this.parse(RdtRun)
+    const {args} = this.parse(RdtRun)
 
     return {
-      useDocker: flags.docker,
       cmd: args.cmd,
-      quickRun: flags.quickRun,
     }
   }
 
-  public async initialize({useDocker, cmd, quickRun}) {
-    this.useDocker = useDocker
+  public async initialize({cmd}) {
     this.cmd = cmd
-    this.quickRun = quickRun
+
+    this.rdtName = '../'
+    this.renderData = null
+    this.mappings = []
 
     // mapping from template to .rde
     const {template} = conf.getRdtConf('../')
@@ -68,9 +66,10 @@ export default class RdtRun extends Base {
 
     const core = this.getCoreInstance({
       topRdtNode: this.rdtName,
-      useDocker: this.useDocker,
+      docker: this.docker,
+      renderData: this.renderData,
       mappings: this.mappings,
-      keepWatch: true
+      watch: this.watch,
     })
 
     await core.prepare()

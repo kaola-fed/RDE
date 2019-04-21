@@ -4,11 +4,11 @@ import _ from '../../util'
 
 import Run from './run'
 
-export default class RdtServe extends Command {
-  public static description = 'start dev'
+export default class RdtBuild extends Command {
+  public static description = 'start build'
 
   public static examples = [
-    '$ rde template:serve',
+    '$ rde template:build',
   ]
 
   public static flags = {
@@ -16,10 +16,10 @@ export default class RdtServe extends Command {
   }
 
   public async run() {
-    const {flags} = this.parse(RdtServe)
+    const {flags} = this.parse(RdtBuild)
 
     const list = _.restoreFlags(flags)
 
-    await Run.run(['serve', '--watch', ...list])
+    await Run.run(['build', ...list])
   }
 }

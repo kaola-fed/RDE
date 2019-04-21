@@ -1,19 +1,12 @@
-import Command from '@oclif/command'
-
 import _ from '../util'
 
 import Run from './run'
+import RdtBuild from './template/build'
 
-export default class Build extends Command {
-  public static description = 'start build'
-
+export default class Build extends RdtBuild {
   public static examples = [
     '$ rde build',
   ]
-
-  public static flags = {
-    ...Run.flags,
-  }
 
   public async run() {
     const {flags} = this.parse(Build)
