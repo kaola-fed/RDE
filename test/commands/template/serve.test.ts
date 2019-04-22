@@ -1,6 +1,7 @@
 import {assert} from 'chai'
 import {exec} from 'child_process'
 import * as fs from 'fs'
+import * as inquirer from 'inquirer'
 import * as path from 'path'
 import * as sinon from 'sinon'
 import * as util from 'util'
@@ -13,18 +14,19 @@ let CmdServe: any
 const originCwd = process.cwd()
 
 describe('rde template:serve', () => {
-  beforeEach(async () => {
+  before(async () => {
     await asyncExec('rm -rf ./test/run && mkdir ./test/run')
     process.chdir('test/run')
+
+    sandbox.stub(inquirer, 'prompt').resolves({framework: 'vue', byExtend: false})
 
     const CmdCreate = require('../../../src/commands/template/create').default
     await CmdCreate.run([rdtName])
     CmdServe = require('../../../src/commands/template/serve').default
   })
 
-  afterEach(async () => {
+  after(async () => {
     process.chdir(originCwd)
-    // await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })

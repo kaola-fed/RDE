@@ -69,7 +69,7 @@ export default class RdtRun extends Base {
       docker: this.docker,
       renderData: this.renderData,
       mappings: this.mappings,
-      watch: this.watch,
+      keepWatch: this.watch,
     })
 
     await core.prepare()

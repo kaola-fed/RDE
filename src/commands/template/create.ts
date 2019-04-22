@@ -65,11 +65,15 @@ export default class TemplateCreate extends Base {
 
     await writePkgJson({name: this.rdtName})
     await npm.install(this.rdtStarter, false)
-    await _.asyncExec('rm package*.json')
   }
 
-  public renderPkgJson() {
-    const json = require(path.resolve(conf.cwd, 'package.json'))
+  public async renderPkgJson() {
+    await _.asyncExec('rm package-lock.json')
+
+    const json = this.byExtend ?
+      require(path.resolve(conf.cwd, 'package.json')) :
+      require(path.resolve(conf.cwd, 'node_modules', this.rdtStarter, 'package.json'))
+
     const rdtConf = require(path.resolve(conf.cwd, 'node_modules', this.rdtStarter, conf.rdtConfName))
     const {packageWhiteList = []} = rdtConf
 
@@ -77,35 +81,38 @@ export default class TemplateCreate extends Base {
       name: this.rdtName,
       description: 'This is a rde-template, powered by rde',
       keywords: ['@rde-pro/rdt', `${this.framework}`],
-      dependencies: json.dependencies,
-      devDependencies: json.devDependencies,
+      dependencies: json.dependencies || {},
+      devDependencies: json.devDependencies || {},
     }
 
     Object.keys(json).forEach(key => {
-      if (packageWhiteList.includes[key]) {
+      if (packageWhiteList.includes(key)) {
         resultJson[key] = json[key]
       }
     })
-
-    writePkgJson(resultJson)
+    await writePkgJson(resultJson)
   }
 
   public async run() {
     const {resolve} = path
     if (this.byExtend) {
-      const srcDir = resolve(this.mustachesDir, 'rde.template')
+      const srcDir = resolve(this.mustachesDir, 'rdt.extend')
+
       await render.renderDir(srcDir, {
         parentRdtName: this.rdtStarter,
         framework: this.framework,
-      }, ['.mustaches'], conf.cwd)
+      }, ['.js'], conf.cwd)
+
+      await this.renderPkgJson()
 
     } else {
       await copy(this.rdtPkgDir, conf.cwd, {overwrite: true})
       await copy(resolve(this.rdtPkgDir, '.npmignore'), resolve(conf.cwd, '.gitignore'), {overwrite: true})
 
-      this.renderPkgJson()
+      await this.renderPkgJson()
+
+      await npm.install('')
     }
-    await npm.install('')
   }
 
   public async ask() {

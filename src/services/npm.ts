@@ -26,7 +26,7 @@ export default {
       return JSON.parse(stdout)
     } catch (e) {
       if (e) {
-        logger.error(e)
+        // logger.error(e)
       }
       return null
     }
