@@ -1,4 +1,3 @@
-import {assert} from 'chai'
 import {exec} from 'child_process'
 import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
@@ -16,7 +15,7 @@ const projectName = 'demo.project'
 const cmdDir = resolve('./src/commands')
 const projectDir = resolve('./test/run/', projectName)
 
-describe('rde serve', () => {
+describe('rde run', () => {
   before(async () => {
     await asyncExec('rm -rf ./test/run && mkdir ./test/run')
     process.chdir('test/run')
@@ -31,8 +30,8 @@ describe('rde serve', () => {
 
     // step2: cd project && rde serve
     process.chdir(projectDir)
-    const CmdServe = require(resolve(cmdDir, 'serve')).default
-    await CmdServe.run(['-v'])
+    const CmdServe = require(resolve(cmdDir, 'run')).default
+    await CmdServe.run(['build'])
   })
 
   after(async () => {

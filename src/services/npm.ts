@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import _ from '../util'
 
 import {logger, spinner} from './logger'
@@ -23,15 +21,14 @@ export default {
   },
 
   async getInfo(pkg: string) {
-    const registry = 'https://registry.npm.taobao.org'
-
     try {
-      const {data} = await axios.get(`${registry}/${pkg}`)
-      return data
-    } catch ({response}) {
-      if (response.status === 404) {
-        return null
+      const {stdout} = await _.asyncExec(`npm view ${pkg} -json`)
+      return JSON.parse(stdout)
+    } catch (e) {
+      if (e) {
+        logger.error(e)
       }
+      return null
     }
   }
 }

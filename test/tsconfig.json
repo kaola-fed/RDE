@@ -3,7 +3,7 @@
     "declaration": true,
     "importHelpers": true,
     "module": "commonjs",
-    "outDir": "./lib",
+    "outDir": "../lib",
     "typeRoots" : ["../node_modules/@types", "../types"],
     "strict": false,
     "target": "es2017",

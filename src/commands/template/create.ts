@@ -13,7 +13,7 @@ import npm from '../../services/npm'
 import render from '../../services/render'
 import _ from '../../util'
 
-export default class Create extends Base {
+export default class TemplateCreate extends Base {
   public static description = 'create a rde template project'
 
   public static examples = [
@@ -39,7 +39,7 @@ export default class Create extends Base {
   }
 
   public async preInit() {
-    const {args} = this.parse(Create)
+    const {args} = this.parse(TemplateCreate)
     const {rdtName} = args
 
     this.rdtName = rdtName.includes('rdt-') ? rdtName : `rdt-${rdtName}`
@@ -76,7 +76,7 @@ export default class Create extends Base {
     const resultJson: RdtPkgJson = {
       name: this.rdtName,
       description: 'This is a rde-template, powered by rde',
-      keywords: ['@rede/rdt', `${this.framework}`],
+      keywords: ['@rde-pro/rdt', `${this.framework}`],
       dependencies: json.dependencies,
       devDependencies: json.devDependencies,
     }

@@ -1,11 +1,18 @@
-import Base from '../base'
+import _ from '../util'
 
-export default class Index extends Base {
-  public static description = '@rede/suite development tool'
+import Run from './run'
+import RdtBuild from './template/build'
 
+export default class Build extends RdtBuild {
   public static examples = [
-    '$ rde suite init',
+    '$ rde build',
   ]
 
-  public async run() {}
+  public async run() {
+    const {flags} = this.parse(Build)
+
+    const list = _.restoreFlags(flags)
+
+    await Run.run(['build', ...list])
+  }
 }
