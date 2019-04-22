@@ -1,5 +1,6 @@
 import {expect} from 'chai'
 import {exec} from 'child_process'
+import * as fs from 'fs'
 import * as inquirer from 'inquirer'
 import * as path from 'path'
 import * as sinon from 'sinon'
@@ -40,8 +41,11 @@ describe('rde template:create', () => {
       sandbox.restore()
     })
 
-    it('should', () => {
-      expect(true).to.be.true
+    it('should has a proper project structure', () => {
+      expect(fs.existsSync('app')).to.be.true
+      expect(fs.existsSync('template')).to.be.true
+      expect(fs.existsSync('package.json')).to.be.true
+      expect(fs.existsSync('rde.template.js')).to.be.true
     })
   })
 
