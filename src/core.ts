@@ -98,7 +98,7 @@ export default class Core {
     const mappings = [...rdtConf.mappings, ...this.mappings]
 
     for (let {from, to} of mappings) {
-      const appDir = resolve(cwd, 'app', from)
+      const appDir = resolve(cwd, from)
       const destDir = resolve(runtimeDir, to)
 
       await copy(appDir, destDir, {

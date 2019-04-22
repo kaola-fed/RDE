@@ -107,7 +107,7 @@ export default class TemplateCreate extends Base {
 
     } else {
       await copy(this.rdtPkgDir, conf.cwd, {overwrite: true})
-      await copy(resolve(this.rdtPkgDir, '.npmignore'), resolve(conf.cwd, '.gitignore'), {overwrite: true})
+      // await copy(resolve(this.rdtPkgDir, '.npmignore'), resolve(conf.cwd, '.gitignore'), {overwrite: true})
 
       await this.renderPkgJson()
 

@@ -40,7 +40,9 @@ export default class RdtRun extends Base {
 
     this.rdtName = '../'
     this.renderData = null
-    this.mappings = []
+    this.mappings = [
+      {from: 'template', to: ''}
+    ]
 
     // mapping from template to .rde
     const {template} = conf.getRdtConf('../')
@@ -55,7 +57,7 @@ export default class RdtRun extends Base {
         })
       })
 
-      this.mappings = mappings
+      this.mappings = this.mappings.concat(mappings)
     }
   }
 

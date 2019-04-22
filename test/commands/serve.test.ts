@@ -1,6 +1,7 @@
-import {assert} from 'chai'
+import {assert, expect} from 'chai'
 import {exec} from 'child_process'
 import cli from 'cli-ux'
+import * as fs from 'fs'
 import * as inquirer from 'inquirer'
 import * as path from 'path'
 import * as sinon from 'sinon'
@@ -30,21 +31,21 @@ describe('rde serve', () => {
     await CmdCreate.run([projectName])
 
     // step2: cd project && rde serve
-    process.chdir(projectDir)
     const CmdServe = require(resolve(cmdDir, 'serve')).default
     await CmdServe.run(['-v'])
   })
 
   after(async () => {
     process.chdir(originCwd)
-    await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })
 
-  describe('work before run', () => {
-    it('should success if rde.app.js does provide required render prop', async () => {
+  it('should success if rde.app.js does provide required render prop', async () => {
+    const {template, suites} = require(resolve(projectDir, 'rde.app.js'))
 
-    })
+    expect(template.name).to.equal(`${rdtName}`)
+    expect(suites).to.be.an.instanceOf(Array)
+    assert.isOk(fs.existsSync(resolve(projectDir, '.rde')), 'runtimeDir is existed')
   })
 })

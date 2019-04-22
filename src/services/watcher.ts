@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as copy from 'recursive-copy'
 
 import conf from './conf'
+import {logger} from './logger'
 
 export default class Watcher {
   private readonly mappings: Mapping[] = []
@@ -14,7 +15,7 @@ export default class Watcher {
   }
 
   public start() {
-    const watchFiles = this.mappings.map((item: any) => path.resolve(conf.cwd, 'app', item.from))
+    const watchFiles = this.mappings.map((item: any) => path.resolve(conf.cwd, item.from))
     const watcher = chokidar.watch(watchFiles, {
       ignored: /(\.git)|(node_modules)/,
       ignoreInitial: true,
@@ -34,11 +35,11 @@ export default class Watcher {
     const mapping = this.mappings
     const {resolve, relative} = path
     // 获取相对于 app 目录的路径
-    const relativeToAppPath = relative(path.resolve(cwd, 'app'), filePath)
+    const relativeToAppPath = relative(cwd, filePath)
     // 从 mappping 中找到匹配的规则
     const mappingItem = mapping.find((item: any) => relativeToAppPath.includes(item.from))
     // 截取从from 到 变动文件的 路径
-    const relativeToFromPath = relative(resolve(cwd, 'app', mappingItem.from), filePath)
+    const relativeToFromPath = relative(resolve(cwd, mappingItem.from), filePath)
     // 将相对路径 加在 to 后面，拼成 完整的目标路径
     const destPath = resolve(conf.runtimeDir, mappingItem.to, relativeToFromPath)
 
@@ -52,7 +53,13 @@ export default class Watcher {
       fs.unlinkSync(destPath)
     }
     if (type === 'unlinkDir') {
-      fs.rmdirSync(destPath)
+      try {
+        fs.rmdirSync(destPath)
+      } catch (e) {
+        if (e) {
+          logger.warn(`Directory ${destPath} is not empty, delete filed!`)
+        }
+      }
     }
   }
 }

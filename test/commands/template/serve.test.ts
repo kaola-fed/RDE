@@ -23,6 +23,7 @@ describe('rde template:serve', () => {
     const CmdCreate = require('../../../src/commands/template/create').default
     await CmdCreate.run([rdtName])
     CmdServe = require('../../../src/commands/template/serve').default
+    await CmdServe.run([])
   })
 
   after(async () => {
@@ -30,9 +31,9 @@ describe('rde template:serve', () => {
 
     sandbox.restore()
   })
+
   it('should run a template project', async () => {
-    await CmdServe.run([])
-    const runtimeDir = path.resolve(originCwd, './test/run/rdt-hello/.rde')
+    const runtimeDir = path.resolve(originCwd, `test/run/${rdtName}/.rde`)
     assert.isOk(fs.existsSync(runtimeDir), 'runtimDir is existed')
   })
 
