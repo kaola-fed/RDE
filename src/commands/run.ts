@@ -1,13 +1,24 @@
+import Base from '../base'
 import conf from '../services/conf'
 
 import RdtRun from './template/run'
 
 export default class Run extends RdtRun {
-  public static description = 'run scripts provided by rdt'
+  public static description = 'run scripts provided by rde'
 
   public static examples = [
     '$ rde run <script>',
   ]
+
+  public static args = [{
+    name: 'cmd',
+    required: true,
+    description: 'scripts provided by rdt',
+  }]
+
+  public static flags = {
+    ...Base.flags,
+  }
 
   public async preInit() {
     const {args} = this.parse(Run)
