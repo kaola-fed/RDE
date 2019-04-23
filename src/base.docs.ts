@@ -1,7 +1,10 @@
 import Command from '@oclif/command/lib/command'
 import glob from 'glob'
+import * as path from 'path'
 
 import conf from './services/conf'
+
+const {resolve} = path
 
 export default abstract class extends Command {
   public isRdt: boolean
@@ -13,7 +16,7 @@ export default abstract class extends Command {
   public watch = false
 
   public async init() {
-    const {name} = require('./package.json')
+    const {name} = require(resolve(conf.cwd, './package.json'))
 
     if (!name.endsWith('-rdt') || !name.endsWith('-rds')) {
       throw Error('wrong package name format, please end it with -rdt or -rds')

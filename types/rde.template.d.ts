@@ -17,20 +17,14 @@ interface Mapping {
   transform?(from: string, to: string): string
 }
 
-interface Docker {
-  ports: number[]
-}
-
 interface RdtConf {
   extends: string
   framework: Framework
   docs: Docs
   render: Render
   mappings: Mapping[]
-  docker: Docker,
-  packageWhiteList: string[],
+  packageWhiteList: string[]
   dev: {
-    render: {[key: string]: any},
-    watchFiles: string[]
+    render: {[key: string]: any}
   }
 }

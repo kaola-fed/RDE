@@ -43,22 +43,6 @@ export default class RdtRun extends Base {
     this.mappings = [
       {from: 'template', to: ''}
     ]
-
-    // mapping from template to .rde
-    const {template} = conf.getRdtConf('../')
-    const {dev} = template
-
-    if (dev) {
-      const mappings = []
-      dev.watchFiles.forEach(file => {
-        mappings.push({
-          from: file,
-          to: file
-        })
-      })
-
-      this.mappings = this.mappings.concat(mappings)
-    }
   }
 
   public async preRun() {
