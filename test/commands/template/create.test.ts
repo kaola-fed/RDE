@@ -12,7 +12,7 @@ const {resolve} = path
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
 
-const rdtName = 'rdt-demo-project'
+const rdtName = 'test-rdt'
 const cmdDir = resolve('./src/commands')
 
 let CmdCreate: any = require(resolve(cmdDir, './template/create.ts')).default

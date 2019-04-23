@@ -12,7 +12,7 @@ const {resolve} = path
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
 
-const rdtName = '@rde-pro/rdt-vue-starter'
+const rdtName = '@rde-pro/vue-starter-rdt'
 const projectName = 'demo.project'
 const cmdDir = resolve('./src/commands')
 const projectDir = resolve('./test/run/', projectName)

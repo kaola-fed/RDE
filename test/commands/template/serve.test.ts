@@ -8,7 +8,7 @@ import * as util from 'util'
 
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
-const rdtName = 'rdt-hello'
+const rdtName = 'test-rdt'
 
 let CmdServe: any
 const originCwd = process.cwd()
