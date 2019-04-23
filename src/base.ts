@@ -9,7 +9,6 @@ export default abstract class Base extends Command {
   public static flags = {
     verbose: flags.boolean({char: 'v', required: false, description: 'show verbose logs'}),
     quickRun: flags.boolean({char: 'q', required: false, description: 'skip prepare runtime, run cmd immediately'}),
-    docker: flags.boolean({char: 'd', required: false, description: 'running with docker mode'}),
     watch: flags.boolean({char: 'w', required: false, description: 'watch file change when run script'})
   }
 
@@ -18,8 +17,6 @@ export default abstract class Base extends Command {
   public quickRun = false
 
   public watch = false
-
-  public docker = false
 
   public get mustachesDir() {
     return path.resolve(__dirname, 'mustaches')
@@ -43,7 +40,6 @@ export default abstract class Base extends Command {
     this.verbose = flags.verbose
     this.quickRun = flags.quickRun
     this.watch = flags.watch
-    this.docker = flags.docker
 
     // check user input args here
     const args = await this.preInit()
