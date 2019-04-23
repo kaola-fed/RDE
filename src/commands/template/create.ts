@@ -155,7 +155,7 @@ export default class TemplateCreate extends Base {
     await render.renderTo('rdt/README', {
       name: this.rdtName,
       homepage: conf.homepage,
-    }, 'README.md')
+    }, 'README.md', {overwrite: true})
 
     logger.complete('Created project')
     logger.star('Start with command:')
