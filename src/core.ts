@@ -22,12 +22,15 @@ export default class Core {
 
   private readonly keepWatch: boolean
 
-  constructor({topRdtNode, mappings = [], renderData, useDocker, keepWatch}) {
+  private readonly needInstall: boolean
+
+  constructor({topRdtNode, mappings = [], renderData, useDocker, keepWatch, needInstall = true}) {
     this.topRdtNode = topRdtNode
     this.mappings = mappings
     this.renderData = renderData
     this.useDocker = useDocker
     this.keepWatch = keepWatch
+    this.needInstall = needInstall
   }
 
   public async prepare() {
@@ -106,7 +109,9 @@ export default class Core {
       })
     }
 
-    await npm.install('', false, runtimeDir)
+    if (this.needInstall) {
+      await npm.install('', false, runtimeDir)
+    }
 
     if (!this.useDocker && this.keepWatch) {
       new Watcher(mappings).start()

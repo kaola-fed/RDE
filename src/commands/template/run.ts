@@ -27,6 +27,8 @@ export default class RdtRun extends Base {
 
   public renderData: any
 
+  public needInstall: boolean
+
   public async preInit() {
     const {args} = this.parse(RdtRun)
 
@@ -43,22 +45,11 @@ export default class RdtRun extends Base {
     this.mappings = [
       {from: 'template', to: ''}
     ]
+    this.needInstall = await this.getNeedInstall()
+  }
 
-    // mapping from template to .rde
-    const {template} = conf.getRdtConf('../')
-    const {dev} = template
-
-    if (dev) {
-      const mappings = []
-      dev.watchFiles.forEach(file => {
-        mappings.push({
-          from: file,
-          to: file
-        })
-      })
-
-      this.mappings = this.mappings.concat(mappings)
-    }
+  public async getNeedInstall(): Promise<boolean> {
+    return true
   }
 
   public async preRun() {
@@ -71,6 +62,7 @@ export default class RdtRun extends Base {
       renderData: this.renderData,
       mappings: this.mappings,
       keepWatch: this.watch,
+      needInstall: this.needInstall
     })
 
     await core.prepare()
