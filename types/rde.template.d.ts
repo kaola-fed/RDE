@@ -3,6 +3,7 @@ type Framework = 'vue' | 'regular' | 'react' | 'angular'
 interface Docs {
   logo: string
   keywords: string[]
+  url: string
 }
 
 interface Render {

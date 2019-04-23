@@ -1,4 +1,5 @@
 import cli from 'cli-ux'
+import * as fs from 'fs'
 import * as inquirer from 'inquirer'
 import * as path from 'path'
 import * as copy from 'recursive-copy'
@@ -31,6 +32,8 @@ export default class Create extends Base {
   public appName = ''
 
   public rdtName = ''
+
+  public ignoredDir = ['.rde']
 
   public async preInit() {
     const {args} = this.parse(Create)
@@ -75,6 +78,8 @@ export default class Create extends Base {
       name: this.appName,
       homepage: conf.homepage,
     }, 'README.md')
+
+    fs.writeFileSync('.gitignore', '/.rde', 'utf8')
 
     logger.complete(`Created project: ${this.appName}`)
     logger.star('Start with command:')

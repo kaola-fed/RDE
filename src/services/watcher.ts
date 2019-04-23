@@ -3,9 +3,10 @@ import * as Events from 'events'
 import * as fs from 'fs'
 import * as path from 'path'
 
+import _ from '../util'
+
 import conf from './conf'
 import {logger} from './logger'
-import _ from '../util'
 
 export default class Watcher extends Events {
   private readonly mappings: Mapping[] = []

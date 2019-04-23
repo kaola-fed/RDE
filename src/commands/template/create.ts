@@ -159,6 +159,8 @@ export default class TemplateCreate extends Base {
       overwrite: true,
     })
 
+    fs.writeFileSync('.gitignore', '/.rde\n/.docs\n/.tmp', 'utf8')
+
     logger.complete('Created project')
     logger.star('Start with command:')
     logger.star('$ rde template:serve')

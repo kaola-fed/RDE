@@ -22,11 +22,10 @@ export default class Core {
 
   private readonly keepWatch: boolean
 
-  constructor({topRdtNode, mappings = [], renderData, useDocker, keepWatch}) {
+  constructor({topRdtNode, mappings = [], renderData, keepWatch}) {
     this.topRdtNode = topRdtNode
     this.mappings = mappings
     this.renderData = renderData
-    this.useDocker = useDocker
     this.keepWatch = keepWatch
   }
 
