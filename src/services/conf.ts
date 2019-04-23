@@ -23,7 +23,7 @@ const conf = {
   },
 
   get docsPagesDir() {
-    return '_docs/.pages'
+    return '.docs'
   },
 
   get appConfPath() {

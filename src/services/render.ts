@@ -1,4 +1,5 @@
 // @ts-ignore
+import * as fs from 'fs'
 import * as beautify from 'js-beautify'
 import * as mustache from 'mustache'
 import * as path from 'path'
@@ -13,8 +14,14 @@ let defaultTags = ['{{', '}}']
 const mustachesDir = path.resolve(__dirname, '../mustaches')
 
 export default {
-  render(tpl: string, dataView: any, tags = defaultTags) {
-    return mustache.render(tpl, dataView, tags)
+  loadTemplate(template) {
+    return fs.readFileSync(
+      path.resolve(mustachesDir, `${template}.mustache`)
+    ).toString()
+  },
+
+  render(tpl: string, dataView: any, tags = defaultTags, partials = {}) {
+    return mustache.render(tpl, dataView, partials, tags)
   },
 
   async renderTo(tpl: string, dataView: any, dest: string, options = {}, tags = defaultTags) {

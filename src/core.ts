@@ -100,13 +100,11 @@ export default class Core {
 
     const mappings = [...rdtConf.mappings, ...this.mappings]
 
-    for (let {from, to} of mappings) {
+    for (let {from, to, option} of mappings) {
       const appDir = resolve(cwd, from)
       const destDir = resolve(runtimeDir, to)
 
-      await copy(appDir, destDir, {
-        overwrite: true
-      })
+      _.copy(appDir, destDir, {option})
     }
 
     if (this.needInstall) {
