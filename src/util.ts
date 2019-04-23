@@ -1,6 +1,8 @@
 import {exec, spawn, SpawnOptions} from 'child_process'
 import * as fs from 'fs'
 import * as util from 'util'
+import * as copy from 'recursive-copy'
+import * as path from "path";
 
 const asyncExec = util.promisify(exec)
 
@@ -43,5 +45,28 @@ export default {
     })
 
     return list
-  }
+  },
+
+  async copy(src, dest, mapping) {
+    let option = {
+      overwrite: true,
+      dot: true,
+    }
+
+    const mappingOpt = mapping.option
+    // fix rename problem if src type is file
+    if (mappingOpt) {
+      option = mappingOpt
+
+      if (fs.lstatSync(src).isFile() && mappingOpt.rename) {
+        const originRename = mappingOpt.rename
+        mapping.option.rename = () => {
+          const name = originRename(path.basename(src))
+          return `../${name}`
+        }
+      }
+    }
+
+    await copy(src, dest, option)
+  },
 }

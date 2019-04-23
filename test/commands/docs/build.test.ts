@@ -18,12 +18,12 @@ let CmdDocsBuild: any
 
 describe('docs:build', () => {
   before(async () => {
-    await asyncExec('rm -rf ./test/run && mkdir ./test/run')
-    process.chdir('./test/run')
-
-    sandbox.stub(inquirer, 'prompt').resolves({framework: 'vue', byExtend: false})
-
-    await CmdCreate.run([rdtName])
+    // await asyncExec('rm -rf ./test/run && mkdir ./test/run')
+    // process.chdir('./test/run')
+    //
+    // sandbox.stub(inquirer, 'prompt').resolves({framework: 'vue', byExtend: false})
+    //
+    // await CmdCreate.run([rdtName])
 
     process.chdir(resolve(originCwd, `./test/run/${rdtName}`))
     CmdDocsBuild = require(resolve(cmdDir, './docs/build.ts')).default
