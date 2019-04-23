@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
+import * as through from 'through2'
 
 import conf from './conf'
 import {logger} from './logger'
@@ -46,7 +47,13 @@ export default class Watcher {
     if (['add', 'change', 'addDir'].includes(type)) {
       await copy(filePath, destPath, {
         overwrite: true,
-        dot: true
+        dot: true,
+        transform: () => {
+          return through((chunk, _enc, done) => {
+            const output = mappingItem.transform ? mappingItem.transform(filePath, destPath) : chunk.toString()
+            done(null, output)
+          })
+        }
       })
     }
     if (type === 'unlink') {

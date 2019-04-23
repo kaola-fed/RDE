@@ -32,7 +32,7 @@ describe('rde serve', () => {
 
     // step2: cd project && rde serve
     const CmdServe = require(resolve(cmdDir, 'serve')).default
-    await CmdServe.run(['-v'])
+    await CmdServe.run([])
   })
 
   after(async () => {

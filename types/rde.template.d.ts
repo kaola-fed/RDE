@@ -14,6 +14,7 @@ interface Render {
 interface Mapping {
   from: string
   to: string
+  transform(from: string, to: string): string
 }
 
 interface Docker {
