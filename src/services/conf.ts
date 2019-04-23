@@ -18,6 +18,14 @@ const conf = {
     return process.cwd()
   },
 
+  get docsDir() {
+    return '_docs'
+  },
+
+  get docsPagesDir() {
+    return '_docs/.pages'
+  },
+
   get appConfPath() {
     return resolve(conf.cwd, appConfName)
   },
