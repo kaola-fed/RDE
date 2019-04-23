@@ -68,7 +68,6 @@ export default class RdtRun extends Base {
 
     const core = this.getCoreInstance({
       topRdtNode: this.rdtName,
-      docker: this.docker,
       renderData: this.renderData,
       mappings: this.mappings,
       keepWatch: this.watch,

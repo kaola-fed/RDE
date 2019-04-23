@@ -39,7 +39,7 @@ export default class Core {
     // template render to .rde
     await this.renderDir(conf.tmpDir, rdtConf)
 
-    // start watcher or generate docker files
+    // start watcher
     await this.createRuntime(rdtConf)
 
     spinner.stop()
