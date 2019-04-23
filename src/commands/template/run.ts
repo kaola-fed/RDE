@@ -27,6 +27,8 @@ export default class RdtRun extends Base {
 
   public renderData: any
 
+  public needInstall: boolean
+
   public async preInit() {
     const {args} = this.parse(RdtRun)
 
@@ -43,6 +45,11 @@ export default class RdtRun extends Base {
     this.mappings = [
       {from: 'template', to: ''}
     ]
+    this.needInstall = await this.getNeedInstall()
+  }
+
+  public async getNeedInstall(): Promise<boolean> {
+    return true
   }
 
   public async preRun() {
@@ -55,6 +62,7 @@ export default class RdtRun extends Base {
       renderData: this.renderData,
       mappings: this.mappings,
       keepWatch: this.watch,
+      needInstall: this.needInstall
     })
 
     await core.prepare()

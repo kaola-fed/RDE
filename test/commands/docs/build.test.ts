@@ -25,8 +25,8 @@ describe('docs:build', () => {
     //
     // await CmdCreate.run([rdtName])
 
-    process.chdir(resolve(originCwd, `./test/run/${rdtName}`))
     CmdDocsBuild = require(resolve(cmdDir, './docs/build.ts')).default
+
     await CmdDocsBuild.run([])
   })
 

@@ -58,8 +58,8 @@ describe('rde template:create', () => {
     })
 
     it('should has a proper project structure', () => {
-      expect(fs.existsSync('app')).to.be.true
-      expect(fs.existsSync('template')).to.be.true
+      expect(fs.existsSync('node_modules')).to.be.true
+      expect(fs.existsSync('README.md')).to.be.true
       expect(fs.existsSync('package.json')).to.be.true
       expect(fs.existsSync('rde.template.js')).to.be.true
     })

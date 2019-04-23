@@ -18,14 +18,20 @@ interface Mapping {
   option?: any
 }
 
+interface Docker {
+  ports: number[]
+}
+
 interface RdtConf {
   extends: string
   framework: Framework
   docs: Docs
   render: Render
   mappings: Mapping[]
-  packageWhiteList: string[]
+  docker: Docker,
+  packageWhiteList: string[],
   dev: {
-    render: {[key: string]: any}
+    render: {[key: string]: any},
+    watchFiles: string[]
   }
 }
