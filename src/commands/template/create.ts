@@ -42,7 +42,7 @@ export default class TemplateCreate extends Base {
     const {args} = this.parse(TemplateCreate)
     const {rdtName} = args
 
-    this.rdtName = rdtName.includes('rdt-') ? rdtName : `rdt-${rdtName}`
+    this.rdtName = rdtName.endsWith('-rdt') ? rdtName : `${rdtName}-rdt`
 
     if (fs.existsSync(this.rdtName)) {
       throw Error(`Directory ${this.rdtName} already exist`)
