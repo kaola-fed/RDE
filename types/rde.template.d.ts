@@ -1,14 +1,15 @@
 type Framework = 'vue' | 'regular' | 'react' | 'angular'
 
 interface Docs {
+  url: string
   logo: string
   keywords: string[]
 }
 
 interface Render {
-  includes: string[],
-  tags: string[],
-  validate: ((dataView: any) => boolean)[],
+  includes: string[]
+  tags: string[]
+  validate: ((dataView: any) => boolean)[]
 }
 
 interface Mapping {
@@ -27,9 +28,9 @@ interface RdtConf {
   render: Render
   mappings: Mapping[]
   docker: Docker,
-  packageWhiteList: string[],
+  packageWhiteList: string[]
   dev: {
-    render: {[key: string]: any},
+    render: {[key: string]: any}
     watchFiles: string[]
   }
 }

@@ -32,6 +32,8 @@ const conf = {
 
   get cliName() { return 'rde' },
 
+  get homepage() { return 'https://github.com/kaola-fed/RDE' },
+
   get appConfName() { return appConfName },
 
   get rdtConfName() { return rdtConfName },

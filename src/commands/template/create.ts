@@ -96,7 +96,7 @@ export default class TemplateCreate extends Base {
   public async run() {
     const {resolve} = path
     if (this.byExtend) {
-      const srcDir = resolve(this.mustachesDir, 'rdt.extend')
+      const srcDir = resolve(this.mustachesDir, 'rdt/by.extend')
 
       await render.renderDir(srcDir, {
         parentRdtName: this.rdtStarter,
@@ -152,6 +152,11 @@ export default class TemplateCreate extends Base {
   }
 
   public async postRun() {
+    await render.renderTo('rdt/README', {
+      name: this.rdtName,
+      homepage: conf.homepage,
+    }, 'README.md')
+
     logger.complete('Created project')
     logger.star('Start with command:')
     logger.star('$ rde template:serve')

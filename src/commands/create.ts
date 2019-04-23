@@ -55,10 +55,11 @@ export default class Create extends Base {
     } = conf
 
     const {template} = getRdtConf(this.rdtName)
+    const {url = ''} = template.docs || {}
 
-    await render.renderTo(appConfName.slice(0, -3), {
+    await render.renderTo(`app/${appConfName.slice(0, -3)}`, {
       templateName: this.rdtName,
-      templateDoc: template.docs,
+      templateDoc: url,
     }, appConfName)
   }
 
@@ -70,6 +71,11 @@ export default class Create extends Base {
   }
 
   public async postRun() {
+    await render.renderTo('app/README', {
+      name: this.appName,
+      homepage: conf.homepage,
+    }, 'README.md')
+
     logger.complete(`Created project: ${this.appName}`)
     logger.star('Start with command:')
     logger.star('$ rde run serve')
