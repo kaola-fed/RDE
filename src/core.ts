@@ -80,6 +80,7 @@ export default class Core {
   public async renderDir(dir: string, rdtConf: RdtConf) {
     const srcDir = resolve(dir, 'template')
     const {render: rdtRender, dev = {render: {}}} = rdtConf
+
     const {includes} = rdtRender
     const dataView = this.renderData || dev.render
 
