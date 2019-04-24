@@ -1,6 +1,8 @@
 import Command from '@oclif/command/lib/command'
+import * as dirTree from 'directory-tree'
 import * as fs from 'fs'
 import * as MarkdownIt from 'markdown-it'
+import * as markdownMeta from 'markdown-it-meta'
 import * as path from 'path'
 import * as copy from 'recursive-copy'
 import * as rimraf from 'rimraf'
@@ -9,29 +11,30 @@ import * as through from 'through2'
 import conf from './services/conf'
 import {logger} from './services/logger'
 import render from './services/render'
-import _ from './util'
 
 const {resolve} = path
 const mdIt = new MarkdownIt()
+mdIt.use(markdownMeta)
 
 export default abstract class extends Command {
   public isRdt: boolean
 
+  public pages: DocPageRoute[]
+
   public get navs() {
+    const navs = [
+      {title: 'Guide', url: '/index.html'},
+      {title: 'FAQ', url: '/FAQ.html'},
+      {title: 'ChangeLog', url: '/rde/changelog.html'},
+    ]
+
     if (this.isRdt) {
-      return [
-        {title: '指南', url: '/index.html'},
-        {title: 'Cheat Sheet', url: '/rde/cheat.sheet.html'},
-        {title: 'FAQ', url: '/faq.html'},
-        {title: 'ChangeLog', url: '/rde/changelog.html'},
-      ]
-    } else {
-      return [
-        {title: '指南', url: '/index.html'},
-        {title: 'FAQ', url: '/FAQ.html'},
-        {title: 'ChangeLog', url: '/rde/changelog.html'},
-      ]
+      const nav = {title: 'Cheat Sheet', url: '/rde/cheat.sheet.html'}
+      navs.splice(1, 0, nav)
+      return navs
     }
+
+    return navs
   }
 
   public get option() {
@@ -47,7 +50,7 @@ export default abstract class extends Command {
 
       transform: () => {
         return through((chunk, _enc, done) => {
-          const page = mdIt.render(chunk.toString())
+          const content = mdIt.render(chunk.toString())
 
           const {loadTemplate: load} = render
           const index = load('docs/index')
@@ -56,7 +59,9 @@ export default abstract class extends Command {
 
           const output = render.render(index, {
             title: 'RDE Suite',
-            page,
+            content,
+            navs: JSON.stringify(this.navs),
+            pages: JSON.stringify(this.pages),
           }, ['<%', '%>'], {
             style,
             layout,
@@ -84,6 +89,12 @@ export default abstract class extends Command {
       throw Error('cannot find index.md or faq.md in your _docs dir, please provide')
     }
 
+    if (!fs.existsSync(conf.docsDir)) {
+      throw Error('cannot find _docs dir, please provide')
+    }
+
+    this.pages = this.getPages()
+
     await this.render()
 
     process.on('SIGINT', () => {
@@ -103,6 +114,51 @@ export default abstract class extends Command {
     if (!e) {
       await this.postRun()
     }
+  }
+
+  public getPages() {
+    const pages: DocPageRoute[] = []
+
+    const files = dirTree(conf.docsDir, {
+      extensions: /\.md$/,
+      exclude: /^_docs\/[^\/]+\/(?!(.*\.md$))+/,
+    })
+
+    files.children.forEach(file => {
+      if (file.type === 'file') {
+        let content = fs.readFileSync(file.path).toString()
+        const {meta = {}} = mdIt.render(content)
+
+        pages.push({
+          title: meta.title || file.name,
+          url: `/${file.name.slice(0, -3)}.html`
+        })
+      }
+
+      if (file.type === 'directory') {
+        let category
+        const page = {
+          title: file.name,
+          children: file.children.map(child => {
+            let content = fs.readFileSync(child.path).toString()
+            const {meta = {}} = mdIt.render(content)
+
+            if (meta.category) {
+              category = meta.category
+            }
+
+            return {
+              title: meta.title || child.name,
+              url: `/${file.name}/${child.name.slice(0, -3)}.html`
+            }
+          })
+        }
+        page.title = category || file.name
+        pages.push(page)
+      }
+    })
+
+    return pages
   }
 
   public async render(): Promise<any> {

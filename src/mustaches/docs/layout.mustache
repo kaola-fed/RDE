@@ -1,9 +1,22 @@
 <header class="rde-header">
-  <div class="rde-header-container">
-    <h1 class="rde-header-container__logo">
-      <img data-v-88c41124="" src="//haitao.nos.netease.com/8f6c2273-57df-4c79-b714-4095502aa33b.svg" width="60px" alt="element-logo" class="nav-logo">
-      <%title%>
-    </h1>
-  </div>
+  <h1 class="rde-header-logo">
+    <img data-v-88c41124="" src="//haitao.nos.netease.com/8f6c2273-57df-4c79-b714-4095502aa33b.svg" width="60px" alt="element-logo" class="nav-logo">
+    &nbsp;<%title%>
+  </h1>
+
+  <ul class="rde-header-navs">
+    <li v-for="nav in navs"
+        class="rde-header-navs__item" >
+
+      <a :href="nav.url">{{nav.title}}</a>
+    </li>
+  </ul>
 </header>
-<header class="rde-container"></header>
+
+<aside class="rde-sidebar">
+  <vue-scroll>
+    <ul>
+      <li v-for="page in pages">{{page.title}}</li>
+    </ul>
+  </vue-scroll>
+</aside>

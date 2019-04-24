@@ -7,19 +7,24 @@
 
   <%>style%>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/vuescroll"></script>
 </head>
 <body>
-  <div id="layout">
+  <div id="rde-layout">
     <%>layout%>
   </div>
 
-  <div id="page">
-    <%{page}%>
+  <div id="rde-page">
+    <%{content}%>
   </div>
 
   <script>
     new Vue({
-      el: '#layout',
+      el: '#rde-layout',
+      data: {
+        navs: <%{navs}%>,
+        pages: <%{pages}%>
+      },
     })
   </script>
 </body>

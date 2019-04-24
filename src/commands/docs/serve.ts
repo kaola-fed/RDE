@@ -18,7 +18,7 @@ export default class DocsServe extends BaseDocs {
         port: 4040,
       },
       watch: true,
-      open: true,
+      open: false,
     })
   }
 
