@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import Base from '../base'
+import cache from '../services/cache'
 import conf from '../services/conf'
 import _ from '../util'
 
@@ -22,6 +23,21 @@ export default class Run extends RdtRun {
 
   public static flags = {
     ...Base.flags,
+  }
+
+  public get needInstall() {
+    const {resolve} = path
+    const {devDependencies = {}, dependencies = {}} = _.ensureRequire(resolve(conf.cwd, 'package.json'))
+    const rdtVersion = devDependencies[this.rdtName] || dependencies[this.rdtName]
+
+    const runtimeRdtVersion = cache.get(this.rdtName)
+
+    // 判断运行时目录的 rdt 版本 和 项目根目录下 package.json 的 rdt 版本是否一致
+    if (rdtVersion !== runtimeRdtVersion || !fs.existsSync(resolve(conf.runtimeDir, 'node_modules'))) {
+      cache.set(this.rdtName, rdtVersion)
+      return true
+    }
+    return false
   }
 
   public async preInit() {
@@ -47,29 +63,5 @@ export default class Run extends RdtRun {
     this.rdtName = rdtName
     this.renderData = renderData
     this.mappings = mappings
-    this.needInstall = await this.getNeedInstall()
-  }
-
-  public async getNeedInstall() {
-    const {resolve} = path
-    const pkgJson = _.ensureRequire(resolve(conf.cwd, 'package.json'))
-    const rdtVersion = pkgJson.devDependencies[this.rdtName] || pkgJson.dependencies[this.rdtName]
-
-    let runtimeRdt = ''
-    try {
-      runtimeRdt = fs.readFileSync(resolve(conf.runtimeDir, '.rdt'), {encoding: 'UTF-8'})
-    } catch (e) {
-      if (e) {
-        runtimeRdt = ''
-      }
-    }
-    const rdt = `${this.rdtName}:${rdtVersion}`
-
-    if (rdt !== runtimeRdt || !fs.existsSync(resolve(conf.runtimeDir, 'node_modules'))) {
-      fs.writeFileSync(resolve(conf.runtimeDir, '.rdt'), rdt, {encoding: 'UTF-8'})
-      return true
-    }
-    return false
-
   }
 }
