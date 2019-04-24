@@ -1,1 +1,4 @@
-interface RdsConf {}
+interface RdsConf {
+  framework: Framework
+  docs: Docs
+}

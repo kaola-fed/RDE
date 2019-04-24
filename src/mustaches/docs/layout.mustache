@@ -6,17 +6,38 @@
 
   <ul class="rde-header-navs">
     <li v-for="nav in navs"
-        class="rde-header-navs__item" >
+        class="rde-header-navs__item" :class="{'rde-header-navs__item--crt': isCrtNav(nav)}">
 
-      <a :href="nav.url">{{nav.title}}</a>
+      <a :href="nav.url || '/index.html'">{{nav.title}}</a>
     </li>
   </ul>
 </header>
 
-<aside class="rde-sidebar">
-  <vue-scroll>
-    <ul>
-      <li v-for="page in pages">{{page.title}}</li>
+<aside class="rde-sidebar-wrap">
+  <div style="height: 100%" ref="sidebarWrap">
+    <ul class="rde-sidebar">
+      <li v-for="nav in navs">
+        <a :href="nav.url" class="rde-sidebar__nav">{{nav.title}}</a>
+
+        <ul v-if="nav.main">
+          <li v-for="page in pages">
+            <ul v-if="page.children">
+              <li class="rde-sidebar__category">{{page.title.charAt(0).toUpperCase() + page.title.slice(1)}}</li>
+
+              <li v-for="child in page.children">
+                <a :href="child.url"
+                   class="rde-sidebar__page"
+                   :class="{'rde-sidebar__page--crt': isCrtPage(child)}">{{child.title}}</a>
+              </li>
+            </ul>
+
+            <a v-else
+               :href="page.url"
+               class="rde-sidebar__page"
+               :class="{'rde-sidebar__page--crt': isCrtPage(page)}">{{page.title}}</a>
+          </li>
+        </ul>
+      </li>
     </ul>
-  </vue-scroll>
+  </div>
 </aside>

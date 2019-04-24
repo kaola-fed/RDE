@@ -16,25 +16,51 @@ const {resolve} = path
 const mdIt = new MarkdownIt()
 mdIt.use(markdownMeta)
 
-export default abstract class extends Command {
+export default abstract class DocsBase extends Command {
+  public static excludeDirRule = /^_docs\/[^\/]+\/(?!([^\/]*\.md$))+/
+
   public isRdt: boolean
 
   public pages: DocPageRoute[]
 
+  public localConfig: RdtConf | RdsConf
+
   public get navs() {
     const navs = [
-      {title: 'Guide', url: '/index.html'},
+      {title: '文档', main: true},
       {title: 'FAQ', url: '/FAQ.html'},
-      {title: 'ChangeLog', url: '/rde/changelog.html'},
+      {title: '日志', url: '/rde/changelog.html'},
     ]
 
     if (this.isRdt) {
-      const nav = {title: 'Cheat Sheet', url: '/rde/cheat.sheet.html'}
+      const nav = {title: '速查', url: '/rde/cheat.sheet.html'}
       navs.splice(1, 0, nav)
       return navs
     }
 
     return navs
+  }
+
+  public get userScripts() {
+    const {docs} = this.localConfig
+    return docs.userScripts || ''
+  }
+
+  public get frameworkScripts() {
+    const {framework = 'vue'} = this.localConfig
+
+    if (!conf.frameworks[framework]) {
+      throw Error(`Rde doesn't support framework: ${framework}`)
+    }
+
+    const {cdn = []} = conf.frameworks[framework]
+
+    let scripts = ''
+    cdn.forEach(url => {
+      scripts += `<script src="${url}"><script>`
+    })
+
+    return scripts
   }
 
   public get option() {
@@ -43,9 +69,20 @@ export default abstract class extends Command {
 
       rename(filePath) {
         if (filePath.endsWith('.md')) {
-          return `${path.basename(filePath, '.md')}.html`
+          const dirname = path.dirname(filePath)
+          const filename = path.basename(filePath, '.md')
+          return `${dirname}/${filename}.html`
         }
         return filePath
+      },
+
+      filter(src) {
+        src = `${conf.docsDir}/${src}`
+        if (DocsBase.excludeDirRule.test(src)) {
+          return false
+        }
+
+        return true
       },
 
       transform: () => {
@@ -65,6 +102,8 @@ export default abstract class extends Command {
           }, ['<%', '%>'], {
             style,
             layout,
+            userScripts: this.userScripts,
+            frameworkScripts: this.frameworkScripts,
           })
 
           done(null, output)
@@ -91,6 +130,12 @@ export default abstract class extends Command {
 
     if (!fs.existsSync(conf.docsDir)) {
       throw Error('cannot find _docs dir, please provide')
+    }
+
+    if (this.isRdt) {
+      this.localConfig = require(`${conf.cwd}/${conf.rdtConfName}`)
+    } else {
+      this.localConfig = require(`${conf.cwd}/${conf.rdsConfName}`)
     }
 
     this.pages = this.getPages()
@@ -121,13 +166,14 @@ export default abstract class extends Command {
 
     const files = dirTree(conf.docsDir, {
       extensions: /\.md$/,
-      exclude: /^_docs\/[^\/]+\/(?!(.*\.md$))+/,
+      exclude: DocsBase.excludeDirRule,
     })
 
     files.children.forEach(file => {
       if (file.type === 'file') {
         let content = fs.readFileSync(file.path).toString()
-        const {meta = {}} = mdIt.render(content)
+        mdIt.render(content)
+        const {meta = {}} = mdIt
 
         pages.push({
           title: meta.title || file.name,
@@ -141,7 +187,8 @@ export default abstract class extends Command {
           title: file.name,
           children: file.children.map(child => {
             let content = fs.readFileSync(child.path).toString()
-            const {meta = {}} = mdIt.render(content)
+            mdIt.render(content)
+            const {meta = {}} = mdIt
 
             if (meta.category) {
               category = meta.category

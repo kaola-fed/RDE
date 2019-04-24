@@ -53,6 +53,26 @@ const conf = {
     return resolve(conf.cwd, 'node_modules', app.template.name, 'app')
   },
 
+  get frameworks() {
+    return {
+      vue: {
+        rdtStarter: '@rde-pro/vue-starter-rdt',
+        cdn: [],
+      },
+      react: {
+        rdtStarter: '@rde-pro/react-starter-rdt',
+        cdn: [
+          'https://unpkg.com/react/umd/react.production.min.js',
+          'https://unpkg.com/react-dom/umd/react-dom.production.min.js',
+        ],
+      },
+      angular: {
+        rdtStarter: '@rde-pro/angular-starter-rdt',
+        cdn: ['https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js'],
+      },
+    }
+  },
+
   getRdtTemplateDir(rdtName) {
     return resolve(conf.cwd, 'node_modules', rdtName, 'template')
   },

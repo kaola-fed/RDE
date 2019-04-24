@@ -7,23 +7,57 @@
 
   <%>style%>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <script src="https://unpkg.com/vuescroll"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
+  <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+
+  <%>frameworkScripts%>
+  <%>userScripts%>
 </head>
 <body>
-  <div id="rde-layout">
-    <%>layout%>
-  </div>
+  <div id="rde-docs">
+    <div id="rde-layout">
+      <%>layout%>
+    </div>
 
-  <div id="rde-page">
-    <%{content}%>
+    <div id="rde-page" data-simplebar>
+      <%{content}%>
+    </div>
   </div>
 
   <script>
+    window.rdeConf = {
+      navs: <%{navs}%>,
+      pages: <%{pages}%>,
+    };
+
     new Vue({
       el: '#rde-layout',
-      data: {
-        navs: <%{navs}%>,
-        pages: <%{pages}%>
+      data() {
+        return {
+          scrollbarOps: {
+            bar: { background: '#ECECEC' },
+          },
+          ...window.rdeConf,
+        };
+      },
+      mounted() {
+        const el = new SimpleBar(this.$refs.sidebarWrap);
+        el.recalculate();
+      },
+      methods: {
+        isCrtNav(nav) {
+          if (!nav.main && nav.url === location.pathname) {
+            return true;
+          }
+
+          if (nav.main) {
+            return true;
+          }
+        },
+        isCrtPage(page) {
+          return page.url === location.pathname;
+        },
       },
     })
   </script>

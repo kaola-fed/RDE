@@ -4,6 +4,7 @@ interface Docs {
   logo: string
   keywords: string[]
   url: string
+  userScripts?: string
 }
 
 interface Render {

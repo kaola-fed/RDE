@@ -3,6 +3,7 @@ import * as flags from '@oclif/command/lib/flags'
 import * as path from 'path'
 
 import Core from './core'
+import conf from './services/conf'
 import {logger} from './services/logger'
 
 export default abstract class Base extends Command {
@@ -23,11 +24,7 @@ export default abstract class Base extends Command {
   }
 
   public get frameworks() {
-    return {
-      vue: {rdtStarter: '@rde-pro/vue-starter-rdt'},
-      react: {rdtStarter: '@rde-pro/react-starter-rdt'},
-      angular: {rdtStarter: '@rde-pro/angular-starter-rdt'},
-    }
+    return conf.frameworks
   }
 
   public getCoreInstance(options) {
