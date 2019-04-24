@@ -17,6 +17,7 @@ interface Mapping {
   from: string
   to: string
   option?: any
+  merge?: string
 }
 
 interface Docker {
