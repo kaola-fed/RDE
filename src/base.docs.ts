@@ -1,8 +1,6 @@
 import Command from '@oclif/command/lib/command'
 import * as dirTree from 'directory-tree'
 import * as fs from 'fs'
-import * as MarkdownIt from 'markdown-it'
-import * as markdownMeta from 'markdown-it-meta'
 import * as path from 'path'
 import * as copy from 'recursive-copy'
 import * as rimraf from 'rimraf'
@@ -10,11 +8,10 @@ import * as through from 'through2'
 
 import conf from './services/conf'
 import {logger} from './services/logger'
+import mdIt from './services/markdown'
 import render from './services/render'
 
 const {resolve} = path
-const mdIt = new MarkdownIt()
-mdIt.use(markdownMeta)
 
 export default abstract class DocsBase extends Command {
   public static excludeDirRule = /^_docs\/[^\/]+\/(?!([^\/]*\.md$))+/

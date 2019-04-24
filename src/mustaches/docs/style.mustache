@@ -1,8 +1,9 @@
 <style>
   :root {
-    --font-size: 12px;
-    --font-color: #333;
+    --font-size: 14px;
+    --font-color: #666;
     --primary-color: #00C4C0;
+    --link-color: #0398FF;
 
     --header-height: 80px;
     --sidebar-width: 240px;
@@ -16,11 +17,11 @@
   ul, li { list-style: none; }
 
   #rde-docs { position: relative; width: 1200px; height: 100%; margin: 0 auto; }
-  #rde-page { position: absolute; left: var(--sidebar-width); top: var(--header-height); right: 0; bottom: 0; padding-top: 48px; padding-left: 20px; }
+  #rde-page { position: absolute; left: var(--sidebar-width); top: var(--header-height); right: calc((1200px - 100vw)/2); bottom: 0; padding: 48px calc((100vw - 1200px)/2) 48px 20px; }
 
   /* header */
   .rde-header { height: var(--header-height); border-bottom: 1px solid #DCDFE6;  }
-  .rde-header-logo { display: flex; float: left; height: 100%; align-items: center; font-size: 32px; font-weight: 300; }
+  .rde-header-logo { display: flex; float: left; height: 100%; margin: 0; align-items: center; font-size: 32px; font-weight: 300; }
 
   .rde-header-navs { float: right; height: 100%;  list-style: none; }
   .rde-header-navs__item { float: left; height: 100%; }
@@ -44,10 +45,23 @@
 
 <style>
   /* style md */
-  h1, h2, h3, h4, h5 { font-weight: 400; color: #1f2f3d; }
-  h1 { font-size: 28px; }
-  h2 { font-size: 28px; }
-  h3 { font-size: 22px; }
-  h4 { font-size: 18px; }
-  h5 { font-size: 14px; }
+  .rde-h1, .rde-h2, .rde-h3, .rde-h4, .rde-h5 { font-weight: 400; color: #1f2f3d; margin: 15px 0; }
+  .rde-h1 { font-size: 28px; }
+  .rde-h2 { font-size: 28px; }
+  .rde-h3 { font-size: 22px; margin-top: 40px; }
+  .rde-h4 { font-size: 18px; }
+  .rde-h5 { font-size: 14px; }
+
+  .rde-p { line-height: 1.5em; }
+  .rde-p + .rde-p { margin-top: 20px; }
+
+  .rde-a { color: var(--link-color); text-decoration: none; }
+  code { padding: 0 4px; background-color: #f9fafc; border: 1px solid #eaeefb; }
+</style>
+
+<style>
+  .hljs { padding: 16px 24px; margin: 24px 0;  background: #fafafa; border: 1px solid #eaeefb; line-height: 1.8; font-family: Menlo,Monaco,Consolas,Courier,monospace; }
+  .hljs code { font-size: 12px; color: #333; background: none; border: none; }
+  .hljs-keyword, .hljs-attribute, .hljs-selector-tag, .hljs-meta-keyword, .hljs-doctag, .hljs-name { color: #7EC9C9; }
+  .hljs-type, .hljs-string, .hljs-number, .hljs-selector-id, .hljs-selector-class, .hljs-quote, .hljs-template-tag, .hljs-deletion { color: #D4595C; }
 </style>
