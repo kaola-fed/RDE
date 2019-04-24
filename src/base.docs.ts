@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as MarkdownIt from 'markdown-it'
 import * as path from 'path'
 import * as copy from 'recursive-copy'
+import * as rimraf from 'rimraf'
 import * as through from 'through2'
 
 import conf from './services/conf'
@@ -83,9 +84,12 @@ export default abstract class extends Command {
       throw Error('cannot find index.md or faq.md in your _docs dir, please provide')
     }
 
-    _.asyncExec('rm -rf .docs')
-
     await this.render()
+
+    process.on('SIGINT', () => {
+      rimraf.sync(conf.docsPagesDir)
+      process.exit()
+    })
   }
 
   public async postRun() {}
