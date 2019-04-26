@@ -73,6 +73,23 @@ const conf = {
     }
   },
 
+  get rdTypes() {
+    return {
+      rda: {
+        alias: 'application',
+        desc: 'project with only business code'
+      },
+      rdc: {
+        alias: 'container',
+        desc: 'basement of the application'
+      },
+      rds: {
+        alias: 'suite',
+        desc: 'components、utils、directives、mixins...'
+      },
+    }
+  },
+
   getRdtTemplateDir(rdtName) {
     return resolve(conf.cwd, 'node_modules', rdtName, 'template')
   },
