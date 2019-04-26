@@ -1,6 +1,6 @@
 import * as browserSync from 'browser-sync'
 
-import BaseDocs from '../../base.docs'
+import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
 import Watcher from '../../services/watcher'
 

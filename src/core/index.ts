@@ -10,7 +10,7 @@ import _ from './util'
 
 const {resolve} = path
 
-export default class Core {
+export default class Index {
   // relative path like '../' or rdt package name
   private readonly topRdtNode: string
 

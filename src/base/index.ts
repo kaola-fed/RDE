@@ -2,11 +2,11 @@ import {Command} from '@oclif/command'
 import * as flags from '@oclif/command/lib/flags'
 import * as path from 'path'
 
-import Core from './core'
-import conf from './services/conf'
-import {logger} from './services/logger'
+import Core from '../core'
+import conf from '../services/conf'
+import {logger} from '../services/logger'
 
-export default abstract class Base extends Command {
+export default abstract class Index extends Command {
   public static flags = {
     verbose: flags.boolean({char: 'v', required: false, description: 'show verbose logs'}),
     quickRun: flags.boolean({char: 'q', required: false, description: 'skip prepare runtime, run cmd immediately'}),
