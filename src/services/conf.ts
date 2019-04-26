@@ -73,6 +73,20 @@ const conf = {
     }
   },
 
+  get rdTypes() {
+    return {
+      application: {
+        alias: 'rda',
+      },
+      container: {
+        alias: 'rdc',
+      },
+      suite: {
+        alias: 'rds',
+      },
+    }
+  },
+
   getRdtTemplateDir(rdtName) {
     return resolve(conf.cwd, 'node_modules', rdtName, 'template')
   },
