@@ -75,17 +75,14 @@ const conf = {
 
   get rdTypes() {
     return {
-      rda: {
-        alias: 'application',
-        desc: 'project with only business code'
+      application: {
+        alias: 'rda',
       },
-      rdc: {
-        alias: 'container',
-        desc: 'basement of the application'
+      container: {
+        alias: 'rdc',
       },
-      rds: {
-        alias: 'suite',
-        desc: 'components、utils、directives、mixins...'
+      suite: {
+        alias: 'rds',
       },
     }
   },
