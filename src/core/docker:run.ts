@@ -1,16 +1,16 @@
 import * as path from 'path'
 import * as copy from 'recursive-copy'
 
-import conf from './services/conf'
-import {spinner} from './services/logger'
-import npm from './services/npm'
-import render from './services/render'
-import Watcher from './services/watcher'
-import _ from './util'
+import conf from '../services/conf'
+import {spinner} from '../services/logger'
+import npm from '../services/npm'
+import render from '../services/render'
+import Watcher from '../services/watcher'
+import _ from '../util'
 
 const {resolve} = path
 
-export default class Index {
+export default class DockerRun {
   // relative path like '../' or rdt package name
   private readonly topRdtNode: string
 
