@@ -1,44 +1,53 @@
+import {flags} from '@oclif/command'
 import cli from 'cli-ux'
-import * as fs from 'fs'
 import * as inquirer from 'inquirer'
-import * as path from 'path'
-import * as copy from 'recursive-copy'
-import * as writePkgJson from 'write-pkg'
 
 import Base from '../base'
+import ApplicationCreate from '../core/create/application'
+import ContainerCreate from '../core/create/container'
+import SuiteCreate from '../core/create/suite'
 import conf from '../services/conf'
 import {logger} from '../services/logger'
-import npm from '../services/npm'
-import render from '../services/render'
 import _ from '../util'
 
 export default class Create extends Base {
-  public static description = 'create a rde project'
+  public static description = 'open RDE world'
 
   public static examples = [
-    '$ rde create <appname>',
+    '$ rde create',
   ]
-
-  public static args = [{
-    name: 'appName',
-    required: false,
-    description: 'app name',
-  }]
 
   public static flags = {
     ...Base.flags,
+    from: flags.string({
+      char: 'f',
+      description: 'create container from another one',
+      parse: input => {
+        if (!input.includes(':')) {
+          return `${input}:latest`
+        }
+        return input
+      },
+    }),
   }
 
-  public appName = ''
+  public name = ''
 
-  public rdtName = ''
+  public type = ''
 
-  public ignoredDir = ['.rde']
+  public framework = 'vue'
+
+  public rdc = ''
+
+  public from = ''
 
   public async preInit() {
-    const {args} = this.parse(Create)
-    this.appName = args.appName
-    return args
+    const {flags} = this.parse(Create)
+    const {from} = flags
+
+    this.from = from
+
+    return flags
   }
 
   public async initialize() {
@@ -46,62 +55,89 @@ export default class Create extends Base {
   }
 
   public async preRun() {
-    await _.asyncExec(`mkdir ${this.appName}`)
-    process.chdir(this.appName)
-
-    await writePkgJson({name: this.appName})
-    await npm.install(`${this.rdtName}`)
-
-    const {
-      appConfName,
-      getRdtConf,
-    } = conf
-
-    const {template} = getRdtConf(this.rdtName)
-    const {url = ''} = template.docs || {}
-
-    await render.renderTo(`app/${appConfName.slice(0, -3)}`, {
-      templateName: this.rdtName,
-      templateDoc: url,
-    }, appConfName)
+    await _.asyncExec(`mkdir ${this.name}`)
+    process.chdir(this.name)
   }
 
   public async run() {
-    const srcDir = conf.rdtAppDir
-    const destDir = path.resolve(conf.cwd, 'app')
+    const opts = {
+      name: this.name,
+      type: this.type,
+      framework: this.framework,
+      rdc: this.rdc,
+      extendRdc: !!this.from
+    }
 
-    await copy(srcDir, destDir)
+    let core = null
+    switch (this.type) {
+    case 'application':
+      core = new ApplicationCreate(opts)
+      break
+    case 'container':
+      core = new ContainerCreate(opts)
+      break
+    case 'suite':
+      core = new SuiteCreate(opts)
+    }
+
+    await core.start()
   }
 
   public async postRun() {
-    await render.renderTo('app/README', {
-      name: this.appName,
-      homepage: conf.homepage,
-    }, 'README.md')
-
-    fs.writeFileSync('.gitignore', '/.rde', 'utf8')
-
-    logger.complete(`Created project: ${this.appName}`)
-    logger.star('Start with command:')
-    logger.star('$ rde run serve')
+    logger.star('Run successfully')
+    logger.star('Hello from RDE, explore with:')
+    logger.star('$ rde serve')
   }
 
   public async ask() {
-    const {framework} = await inquirer.prompt([{
-      name: 'framework',
-      message: 'select a framework',
-      type: 'list',
-      choices: Object.keys(this.frameworks).map(name => ({name}))
-    }])
+    const {rdTypes, frameworks} = conf
 
-    const defaultRdt = this.frameworks[framework].rdtStarter
-    this.rdtName = await cli.prompt(`template package name: (${defaultRdt})`, {
-      required: false,
-      default: defaultRdt,
+    this.name = await cli.prompt('name of project', {
+      required: true,
     })
 
-    if (!(await npm.getInfo(this.rdtName))) {
-      throw Error(`Cannot find ${this.rdtName}, please check`)
+    if (this.from) {
+      this.type = 'container'
+      this.rdc = this.from
+      return
     }
+
+    const {type, framework} = await inquirer.prompt([
+      {
+        name: 'type',
+        message: 'what kind of project do you want to create?',
+        type: 'list',
+        choices: Object.keys(rdTypes).map(name => ({name})),
+        default: 'application',
+      },
+      {
+        name: 'framework',
+        message: 'what kind of framework do you prefer?',
+        type: 'list',
+        choices: Object.keys(frameworks).map(name => ({name})),
+        default: 'vue',
+      },
+    ])
+
+    if (type === 'application') {
+      const name = await cli.prompt('name of container', {
+        required: true,
+      })
+
+      const version = await cli.prompt('version of container(latest)', {
+        required: false,
+        default: 'latest',
+      })
+
+      this.rdc = `${name}:${version}`
+    }
+
+    if (type === 'container') {
+      const name = conf.frameworks[this.framework].rdcStarter
+      this.rdc = `${name}:latest`
+    }
+
+    this.type = type
+    this.framework = framework
   }
 }

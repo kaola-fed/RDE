@@ -21,19 +21,20 @@ interface Mapping {
 }
 
 interface Docker {
-  ports: number[]
+  ports: string[]
 }
 
-interface RdtConf {
+interface RdcConf {
   extends: string
   framework: Framework
   docs: Docs
   render: Render
   mappings: Mapping[]
   docker: Docker,
-  packageWhiteList: string[],
+  packageWhiteList: string[]
   dev: {
-    render: {[key: string]: any},
+    render: {[key: string]: any}
     watchFiles: string[]
-  }
+  },
+  nodeVersion: string
 }

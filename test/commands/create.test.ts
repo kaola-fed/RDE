@@ -12,10 +12,10 @@ const {resolve} = path
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
 
-const rdtName = '@rde-pro/vue-starter-rdt'
-const projectName = 'demo.project'
+const container = 'nupthale/rdc-vue-starter'
+const project = 'demo.project'
 const cmdDir = resolve('./src/commands')
-const projectDir = resolve('./test/run/', projectName)
+const projectDir = resolve('./test/run/', project)
 
 let CmdCreate: any
 
@@ -24,35 +24,32 @@ describe('rde create', () => {
     await asyncExec('rm -rf ./test/run && mkdir ./test/run')
     process.chdir('test/run')
 
-    const PromptStub = async () => rdtName
-    sandbox.stub(inquirer, 'prompt').resolves({framework: 'vue'})
+    const PromptStub = async (question: string) => {
+      if (question.includes('name of project')) {
+        return project
+      }
+
+      if (question.includes('version of container')) {
+        return 'latest'
+      }
+
+      return container
+    }
+    sandbox.stub(inquirer, 'prompt').resolves({framework: 'vue', type: 'application'})
     sandbox.stub(cli, 'prompt').get(() => PromptStub)
 
     CmdCreate = require(resolve(cmdDir, 'create.ts')).default
-    await CmdCreate.run([projectName])
+    // await CmdCreate.run(['--from', 'nupthale/rdc-vue-starter:latest'])
+    await CmdCreate.run([])
   })
 
   afterEach(async () => {
     process.chdir(originCwd)
-    // await asyncExec('rm -rf ./test/run')
 
     sandbox.restore()
   })
 
   it('should create an app dir', () => {
     expect(fs.existsSync(resolve(projectDir, 'app'))).to.be.true
-  })
-
-  it('should create an package.json and install rdt pkg', () => {
-    const json = require(resolve(projectDir, 'package.json'))
-    expect(json.name).equals(projectName)
-    expect(json.devDependencies[rdtName]).to.exist
-  })
-
-  it('should create rde.app.js', async () => {
-    const {template, suites} = require(resolve(projectDir, 'rde.app.js'))
-
-    expect(template.name).to.equal(`${rdtName}`)
-    expect(suites).to.be.an.instanceOf(Array)
   })
 })

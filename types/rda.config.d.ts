@@ -6,11 +6,13 @@ interface AppConfTemplate {
 
 interface AppConfSuite {
   name: string,
+  version: string,
   docs: string,
 }
 
 interface AppConf {
-  template: AppConfTemplate,
+  container: AppConfTemplate,
   suites: AppConfSuite[],
-  mappings: Mapping[]
+  mappings: Mapping[],
+  docker: Docker,
 }

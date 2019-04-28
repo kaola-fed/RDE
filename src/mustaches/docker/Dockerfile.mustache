@@ -1,13 +1,5 @@
-FROM node:10
+FROM {{{from}}}
 
-WORKDIR /usr/rde
+WORKDIR {{{workDir}}}
 
-COPY .rde .rde
-
-COPY package.json .
-
-RUN npm ci
-
-#ENTRYPOINT ["_git/install.hooks.sh"]
-
-CMD [ "npm", "run", "{{cmd}}" ]
+RUN npm i -g rde

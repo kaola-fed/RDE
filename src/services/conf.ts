@@ -5,11 +5,11 @@ import _ from '../util'
 
 const {resolve} = path
 
-const appConfName = 'rde.app.js'
+const appConfName = 'rda.config.js'
 
-const rdtConfName = 'rde.template.js'
+const rdcConfName = 'rdc.config.js'
 
-const rdsConfName = 'rde.suite.js'
+const rdsConfName = 'rds.config.js'
 
 const tmpDirName = '.tmp'
 
@@ -26,8 +26,16 @@ const conf = {
     return '.docs'
   },
 
+  get workDirRoot() {
+    return '/usr/rde'
+  },
+
   get appConfPath() {
     return resolve(conf.cwd, appConfName)
+  },
+
+  get rdcConfPath() {
+    return resolve(conf.cwd, rdcConfName)
   },
 
   get tmpDir() {
@@ -44,30 +52,30 @@ const conf = {
 
   get appConfName() { return appConfName },
 
-  get rdtConfName() { return rdtConfName },
+  get rdcConfName() { return rdcConfName },
 
   get rdsConfName() { return rdsConfName },
 
-  get rdtAppDir() {
+  get rdcAppDir() {
     const {app} = conf.getAppConf()
-    return resolve(conf.cwd, 'node_modules', app.template.name, 'app')
+    return resolve(conf.cwd, 'node_modules', app.container.name, 'app')
   },
 
   get frameworks() {
     return {
       vue: {
-        rdtStarter: '@rde-pro/vue-starter-rdt',
+        rdcStarter: 'rdc-vue-starter',
         cdn: [],
       },
       react: {
-        rdtStarter: '@rde-pro/react-starter-rdt',
+        rdcStarter: 'rdc-react-starter',
         cdn: [
           'https://unpkg.com/react/umd/react.production.min.js',
           'https://unpkg.com/react-dom/umd/react-dom.production.min.js',
         ],
       },
       angular: {
-        rdtStarter: '@rde-pro/angular-starter-rdt',
+        rdcStarter: 'rdc-angular-starter',
         cdn: ['https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js'],
       },
     }
@@ -87,12 +95,12 @@ const conf = {
     }
   },
 
-  getRdtTemplateDir(rdtName) {
-    return resolve(conf.cwd, 'node_modules', rdtName, 'template')
+  getRdcTemplateDir(rdc) {
+    return resolve(conf.cwd, 'node_modules', rdc, 'template')
   },
 
-  getTmpRdtConf(): RdtConf {
-    return _.ensureRequire(resolve(conf.tmpDir, conf.rdtConfName))
+  getTmpRdcConf(): RdcConf {
+    return _.ensureRequire(resolve(conf.tmpDir, conf.rdcConfName))
   },
 
   getAppConf(): {app: AppConf} {
@@ -101,42 +109,42 @@ const conf = {
     }
   },
 
-  getRdtDir(srcDir: string, node: string): string {
+  getRdcDir(srcDir: string, node: string): string {
     return resolve(srcDir, 'node_modules', node)
   },
 
-  getRdtConfPath(srcDir: string, node: string): RdtConf {
-    const rdtDir = conf.getRdtDir(srcDir, node)
-    return require(resolve(rdtDir, rdtConfName))
+  getRdcConfPath(srcDir: string, node: string): RdcConf {
+    const rdcDir = conf.getRdcDir(srcDir, node)
+    return require(resolve(rdcDir, conf.rdcConfName))
   },
 
-  getRdtChain(node, chain = []): string[] {
+  getRdcChain(node, chain = []): string[] {
     chain.push(node)
 
-    const rdtConfPath = resolve(conf.getRdtDir(conf.cwd, node), conf.rdtConfName)
-    const {extend} = require(rdtConfPath)
+    const rdcConfPath = resolve(conf.getRdcDir(conf.cwd, node), conf.rdcConfName)
+    const {extend} = require(rdcConfPath)
 
     if (!extend) {
       return chain.reverse()
     }
 
-    return conf.getRdtChain(extend, chain)
+    return conf.getRdcChain(extend, chain)
   },
 
-  getRdtConf(node): {template: RdtConf} {
-    const chain = conf.getRdtChain(node)
+  getRdcConf(node): {template: RdcConf} {
+    const chain = conf.getRdcChain(node)
     return {
-      template: conf.getRdtConfFromChain(chain)
+      template: conf.getRdcConfFromChain(chain)
     }
   },
 
-  getRdtConfFromChain(chain): RdtConf {
-    let merged: RdtConf
+  getRdcConfFromChain(chain): RdcConf {
+    let merged: RdcConf
 
     for (let node of chain) {
       merged = extend(
         {},
-        conf.getRdtConfPath(conf.cwd, node),
+        conf.getRdcConfPath(conf.cwd, node),
         merged || {}
       )
     }
@@ -165,10 +173,10 @@ const conf = {
 
   getRdeConf(): RdeConf {
     const {app} = conf.getAppConf()
-    const rdtConf = conf.getRdtConf(app.template.name)
+    const rdcConf = conf.getRdcConf(app.container.name)
     const suites = conf.getRdsConf()
 
-    return extend({}, {app}, rdtConf, {suites})
+    return extend({}, {app}, rdcConf, {suites})
   }
 }
 

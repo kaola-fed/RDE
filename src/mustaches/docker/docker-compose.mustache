@@ -1,16 +1,14 @@
 version: '3'
 services:
-  rede:
+  rde:
     build:
-      context: {{context}}
-      dockerfile: ./.rede/Dockerfile
+      context: '../'
+      dockerfile: ./.docker/Dockerfile
     volumes:
-    - {{context}}.git:/usr/rede/.git
-    {{#mapping}}
-    - {{context}}app/{{from}}:/usr/rede/{{to}}
-    {{/mapping}}
+    - ../app:./app
+    - ../template:./template
     ports:
     {{#ports}}
     - "{{.}}"
     {{/ports}}
-    command: npm run dev
+    command: rde docker:run {{{cmd}}} {{#watch}}--watch{{/watch}}
