@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import mdIt from '../../../src/services/markdown'
+import mdIt from '../../src/services/markdown'
 
 describe('markdown', () => {
   it('should return h1 with a class rde-h1', () => {

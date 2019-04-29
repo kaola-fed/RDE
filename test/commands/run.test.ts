@@ -43,7 +43,6 @@ describe('rde run', () => {
 
   describe('work before run', () => {
     it('should success if rde.app.js does provide required render prop', async () => {
-
     })
   })
 })

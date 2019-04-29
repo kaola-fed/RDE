@@ -25,7 +25,7 @@ export default class CreateCore {
   }
 
   public async start() {
-    _.asyncExec('mkdir .tmp')
+    await _.asyncExec('rm -rf .tmp && mkdir .tmp')
 
     // pull resources
     await this.prepare()
@@ -33,13 +33,11 @@ export default class CreateCore {
     await this.genConfFile()
 
     await this.genExtraFiles()
-
-    _.asyncExec('rm -rf .tmp')
   }
 
   public async getRdcConf() {
     const name = this.rdc.split(':')[0]
-    const confPath = `${conf.cwd}/.tmp/${conf.rdcConfName}`
+    const confPath = `${conf.tmpDir}/${conf.rdcConfName}`
 
     await docker.copy(
       this.rdc,

@@ -6,10 +6,10 @@ import * as copy from 'recursive-copy'
 import * as rimraf from 'rimraf'
 import * as through from 'through2'
 
-import conf from './services/conf'
-import {logger} from './services/logger'
-import mdIt from './services/markdown'
-import render from './services/render'
+import conf from '../services/conf'
+import {logger} from '../services/logger'
+import mdIt from '../services/markdown'
+import render from '../services/render'
 
 const {resolve} = path
 
@@ -20,7 +20,7 @@ export default abstract class DocsBase extends Command {
 
   public pages: DocPageRoute[]
 
-  public localConfig: RdtConf | RdsConf
+  public localConfig: RdcConf | RdsConf
 
   public get navs() {
     const navs = [
@@ -130,7 +130,7 @@ export default abstract class DocsBase extends Command {
     }
 
     if (this.isRdt) {
-      this.localConfig = require(`${conf.cwd}/${conf.rdtConfName}`)
+      this.localConfig = require(`${conf.cwd}/${conf.rdcConfName}`)
     } else {
       this.localConfig = require(`${conf.cwd}/${conf.rdsConfName}`)
     }

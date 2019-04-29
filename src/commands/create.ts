@@ -90,7 +90,7 @@ export default class Create extends Base {
   }
 
   public async ask() {
-    const {rdTypes, frameworks} = conf
+    const {RdTypes, frameworks} = conf
 
     this.name = await cli.prompt('name of project', {
       required: true,
@@ -107,7 +107,7 @@ export default class Create extends Base {
         name: 'type',
         message: 'what kind of project do you want to create?',
         type: 'list',
-        choices: Object.keys(rdTypes).map(name => ({name})),
+        choices: Object.keys(RdTypes).map(name => ({name})),
         default: 'application',
       },
       {
@@ -119,7 +119,7 @@ export default class Create extends Base {
       },
     ])
 
-    if (type === 'application') {
+    if (type === RdTypes.Application) {
       const name = await cli.prompt('name of container', {
         required: true,
       })
@@ -132,7 +132,7 @@ export default class Create extends Base {
       this.rdc = `${name}:${version}`
     }
 
-    if (type === 'container') {
+    if (type === RdTypes.Container) {
       const name = conf.frameworks[this.framework].rdcStarter
       this.rdc = `${name}:latest`
     }

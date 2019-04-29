@@ -31,15 +31,12 @@ export default abstract class Index extends Command {
     // check user input args here
     const args = await this.preInit()
 
-    logger.info('Start initializing')
     // initialize everything needed here
     await this.initialize(args)
 
     logger.info('Preparing')
     // prepare running context here
     await this.preRun()
-
-    logger.info('Start to run')
   }
 
   public async catch(e) {

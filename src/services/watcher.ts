@@ -48,7 +48,7 @@ export default class Watcher extends Events {
     const destPath = resolve(conf.runtimeDir, mapping.to, relativeToFromPath)
 
     if (['add', 'change', 'addDir'].includes(type)) {
-      _.copy(filePath, destPath, mapping)
+      await _.copy(filePath, destPath, mapping)
     }
 
     if (type === 'unlink') {

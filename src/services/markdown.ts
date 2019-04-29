@@ -9,7 +9,9 @@ const mdIt = new MarkdownIt({
         return '<pre class="hljs"><code>' +
           hl.highlight(lang, str, true).value +
           '</code></pre>'
-      } catch (__) {}
+      } catch (e) {
+        if (e) {}
+      }
     }
 
     return `<pre class="hljs"><code>${mdIt.utils.escapeHtml(str)}</code></pre>`

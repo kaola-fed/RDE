@@ -1,9 +1,9 @@
 import conf from '../../services/conf'
 import docker from '../../services/docker'
+import render from '../../services/render'
 import _ from '../../util'
 
 import CreateCore from './index'
-import render from "../../services/render";
 
 export default class ContainerCreate extends CreateCore {
   public async prepare() {
@@ -17,7 +17,7 @@ export default class ContainerCreate extends CreateCore {
         `${conf.cwd}/app`
       )
 
-      _.asyncExec('mkdir template')
+      await _.asyncExec('mkdir template')
     } else {
       await docker.copy(
         this.rdc,
@@ -26,7 +26,7 @@ export default class ContainerCreate extends CreateCore {
       )
     }
 
-    this.getRdcConf()
+    await this.getRdcConf()
   }
 
   public async genConfFile() {
@@ -37,7 +37,9 @@ export default class ContainerCreate extends CreateCore {
         extends: this.rdc,
         framework,
         docs: docs ? docs.url : '',
-      }, rdcConfName)
+      }, rdcConfName, {
+        overwrite: true,
+      })
     }
   }
 
@@ -45,8 +47,12 @@ export default class ContainerCreate extends CreateCore {
     await render.renderTo('rdc/README', {
       name: this.name,
       homepage: conf.homepage,
-    }, 'README.md')
+    }, 'README.md', {
+      overwrite: true,
+    })
 
-    await render.renderTo('.gitignore', {}, '.gitignore')
+    await render.renderTo('.gitignore', {}, '.gitignore', {
+      overwrite: true,
+    })
   }
 }

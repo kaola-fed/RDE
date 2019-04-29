@@ -26,16 +26,16 @@ const conf = {
     return '.docs'
   },
 
-  get workDirRoot() {
-    return '/usr/rde'
-  },
-
   get appConfPath() {
     return resolve(conf.cwd, appConfName)
   },
 
   get rdcConfPath() {
     return resolve(conf.cwd, rdcConfName)
+  },
+
+  get workDirRoot() {
+    return '/usr/rde'
   },
 
   get tmpDir() {
@@ -56,15 +56,10 @@ const conf = {
 
   get rdsConfName() { return rdsConfName },
 
-  get rdcAppDir() {
-    const {app} = conf.getAppConf()
-    return resolve(conf.cwd, 'node_modules', app.container.name, 'app')
-  },
-
   get frameworks() {
     return {
       vue: {
-        rdcStarter: 'rdc-vue-starter',
+        rdcStarter: 'nupthale/rdc-vue-starter',
         cdn: [],
       },
       react: {
@@ -81,26 +76,21 @@ const conf = {
     }
   },
 
-  get rdTypes() {
+  get RdTypes() {
     return {
-      application: {
-        alias: 'rda',
-      },
-      container: {
-        alias: 'rdc',
-      },
-      suite: {
-        alias: 'rds',
-      },
+      Application: 'rda',
+      Container: 'rdc',
+      Suite: 'rds',
     }
   },
 
-  getRdcTemplateDir(rdc) {
-    return resolve(conf.cwd, 'node_modules', rdc, 'template')
-  },
-
-  getTmpRdcConf(): RdcConf {
-    return _.ensureRequire(resolve(conf.tmpDir, conf.rdcConfName))
+  getWorkDir(type, rdc = '') {
+    const {RdTypes} = conf
+    if (type === RdTypes.Application) {
+      return `/usr/rde/${rdc}`
+    } else if (type === RdTypes.Container) {
+      return '/usr/rde'
+    }
   },
 
   getAppConf(): {app: AppConf} {
@@ -109,32 +99,37 @@ const conf = {
     }
   },
 
-  getRdcDir(srcDir: string, node: string): string {
-    return resolve(srcDir, 'node_modules', node)
+  getRdcDir(rdc: string): string {
+    const {getWorkDir, RdTypes} = conf
+    const workDir = getWorkDir(RdTypes.Container)
+    const rdcName = rdc.split(':')[0]
+
+    return `${workDir}/${rdcName}`
   },
 
-  getRdcConfPath(srcDir: string, node: string): RdcConf {
-    const rdcDir = conf.getRdcDir(srcDir, node)
-    return require(resolve(rdcDir, conf.rdcConfName))
+  getRdcConfPath(rdc: string): string {
+    const {rdcConfName} = conf
+
+    return `${conf.getRdcDir(rdc)}/${rdcConfName}`
   },
 
-  getRdcChain(node, chain = []): string[] {
-    chain.push(node)
+  getRdcChain(nodeDir, chain = []): string[] {
+    chain.push(nodeDir)
 
-    const rdcConfPath = resolve(conf.getRdcDir(conf.cwd, node), conf.rdcConfName)
+    const rdcConfPath = resolve(nodeDir, conf.rdcConfName)
     const {extend} = require(rdcConfPath)
 
     if (!extend) {
       return chain.reverse()
     }
 
-    return conf.getRdcChain(extend, chain)
+    return conf.getRdcChain(`${conf.getRdcDir(extend)}`, chain)
   },
 
-  getRdcConf(node): {template: RdcConf} {
-    const chain = conf.getRdcChain(node)
+  getRdcConf(nodeDir): {container: RdcConf} {
+    const chain = conf.getRdcChain(nodeDir)
     return {
-      template: conf.getRdcConfFromChain(chain)
+      container: conf.getRdcConfFromChain(chain)
     }
   },
 
@@ -142,42 +137,17 @@ const conf = {
     let merged: RdcConf
 
     for (let node of chain) {
+      const nodeConf = require(conf.getRdcConfPath(node))
+
       merged = extend(
         {},
-        conf.getRdcConfPath(conf.cwd, node),
-        merged || {}
+        nodeConf,
+        merged || {},
       )
     }
 
     return merged
   },
-
-  getRdsConf(): RdsConf[] {
-    const {app} = conf.getAppConf()
-    let rdsConf = []
-
-    if (app.suites instanceof Array) {
-      rdsConf = app.suites.map((suite: AppConfSuite) => {
-        return conf.getSingleRdsConf(suite.name)
-      })
-    }
-
-    return rdsConf
-  },
-
-  getSingleRdsConf(suite: string): RdsConf {
-    let rdsConfPath = resolve(conf.cwd, 'node_modules', suite, rdsConfName)
-
-    return _.ensureRequire(rdsConfPath)
-  },
-
-  getRdeConf(): RdeConf {
-    const {app} = conf.getAppConf()
-    const rdcConf = conf.getRdcConf(app.container.name)
-    const suites = conf.getRdsConf()
-
-    return extend({}, {app}, rdcConf, {suites})
-  }
 }
 
 export default conf

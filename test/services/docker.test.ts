@@ -13,14 +13,17 @@ describe('docker', () => {
 
       fake()
       expect(fake.callCount).equal(1)
-    } catch (_e) {}
+    } catch (e) {
+      if (e) {}
+    }
   })
 
   it('should be failed if docker or docker-compose is not installed, or docker is not running', async () => {
     try {
       await docker.checkEnv()
       fake()
-    } catch (_e) {
+    } catch (e) {
+      if (e) {}
       expect(fake.callCount).equal(0)
     }
   })
