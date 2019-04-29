@@ -38,6 +38,16 @@ export default {
     spinner.stop()
   },
 
+  async imageExist(name) {
+    try {
+      await _.asyncExec(`docker inspect --type=image ${name}`)
+      return true
+    } catch (e) {
+      if (e) {}
+      return false
+    }
+  },
+
   async containerExist(name) {
     try {
       await _.asyncExec(`docker ps -a | grep ${name}`)

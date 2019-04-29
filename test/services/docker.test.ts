@@ -27,4 +27,24 @@ describe('docker', () => {
       expect(fake.callCount).equal(0)
     }
   })
+
+  it('should return true if image exists locally', async () => {
+    try {
+      const result = await docker.imageExist('node:10')
+
+      expect(result).equal(true)
+    } catch (e) {
+      if (e) {}
+    }
+  })
+
+  it('should return false if image does not exist locally', async () => {
+    try {
+      const result = await docker.imageExist('node:1')
+
+      expect(result).equal(false)
+    } catch (e) {
+      if (e) {}
+    }
+  })
 })

@@ -1,6 +1,7 @@
 import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
+import {spinner} from '../services/logger'
 import {validateRda, validateRdc} from '../services/validate'
 import _ from '../util'
 
@@ -57,6 +58,8 @@ export default class Run extends RunBase {
   }
 
   public async preInit() {
+    await super.preInit()
+
     if (this.type === RdTypes.Container) {
       await validateRdc()
     }
@@ -81,13 +84,20 @@ export default class Run extends RunBase {
   }
 
   public async run() {
-    process.chdir(conf.tmpDir)
-    await _.asyncExec('docker-compose build')
+    if (!await docker.imageExist(this.tag)) {
+      spinner.start('Building image start')
+      await _.asyncExec(`cd ${conf.tmpDir} && docker-compose build`)
+      spinner.stop()
+    }
 
     if (this.watch) {
-      await _.asyncExec(`docker-compose run --rm rde rde docker:run ${this.cmd} --watch`)
+      await _.asyncSpawn('docker-compose', ['run', '--rm', 'rde', 'rde', 'docker:run', this.cmd, '--watch'], {
+        cwd: conf.tmpDir,
+      })
     } else {
-      await _.asyncExec(`docker-compose run --rm rde rde docker:run ${this.cmd}`)
+      await _.asyncSpawn('docker-compose', ['run', '--rm', 'rde', 'rde', 'docker:run', this.cmd], {
+        cwd: conf.tmpDir,
+      })
     }
   }
 }

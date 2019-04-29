@@ -1,5 +1,7 @@
 import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
+import conf from '../../services/conf'
+import _ from '../../util'
 
 export default class DockerRun extends RunBase {
   public static description = 'run script inside docker container'
@@ -21,8 +23,8 @@ export default class DockerRun extends RunBase {
   }
 
   public async run() {
-    // await _.asyncSpawn('npm', ['run', `${this.cmd}`], {
-    //   cwd: conf.runtimeDir
-    // })
+    await _.asyncSpawn('npm', ['run', `${this.cmd}`], {
+      cwd: conf.runtimeDir
+    })
   }
 }
