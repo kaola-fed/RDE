@@ -2,6 +2,7 @@ import conf from '../../services/conf'
 import docker from '../../services/docker'
 import _ from '../../util'
 
+const {RdTypes} = conf
 export default class CreateCore {
   public name = ''
 
@@ -14,14 +15,17 @@ export default class CreateCore {
 
   public rdcConf: RdcConf = null
 
-  public type: RdType = 'application'
+  public type = RdTypes.Application
 
-  constructor({name, type, framework, rdc, extendRdc}) {
+  public rdcRepo = ''
+
+  constructor({name, type, framework, rdc, extendRdc, rdcRepo}) {
     this.name = name
     this.type = type
     this.framework = framework
     this.rdc = rdc
     this.extendRdc = extendRdc
+    this.rdcRepo = rdcRepo
   }
 
   public async start() {

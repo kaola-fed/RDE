@@ -39,6 +39,8 @@ export default class Create extends Base {
 
   public rdc = ''
 
+  public rdcRepo = ''
+
   public from = ''
 
   public async preInit() {
@@ -65,18 +67,21 @@ export default class Create extends Base {
       type: this.type,
       framework: this.framework,
       rdc: this.rdc,
-      extendRdc: !!this.from
+      extendRdc: !!this.from,
+      rdcRepo: this.rdcRepo,
     }
 
     let core = null
+    const {RdTypes} = conf
+
     switch (this.type) {
-    case 'application':
+    case RdTypes.Application:
       core = new ApplicationCreate(opts)
       break
-    case 'container':
+    case RdTypes.Container:
       core = new ContainerCreate(opts)
       break
-    case 'suite':
+    case RdTypes.Suite:
       core = new SuiteCreate(opts)
     }
 
@@ -108,7 +113,7 @@ export default class Create extends Base {
         message: 'what kind of project do you want to create?',
         type: 'list',
         choices: Object.keys(RdTypes).map(name => ({name})),
-        default: 'application',
+        default: RdTypes.Application,
       },
       {
         name: 'framework',
@@ -133,6 +138,10 @@ export default class Create extends Base {
     }
 
     if (type === RdTypes.Container) {
+      this.rdcRepo = await cli.prompt('docker hub repository name', {
+        required: true,
+      })
+
       const name = conf.frameworks[this.framework].rdcStarter
       this.rdc = `${name}:latest`
     }

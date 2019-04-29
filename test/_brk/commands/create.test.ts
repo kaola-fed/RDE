@@ -12,7 +12,7 @@ const {resolve} = path
 const asyncExec = util.promisify(exec)
 const sandbox = sinon.createSandbox()
 
-const container = 'rdebase/rdc-vue-starter'
+const container = 'nupthale/rdc-vue-starter'
 const project = 'demo.project'
 const cmdDir = resolve('./src/commands')
 const projectDir = resolve('./test/run/', project)

@@ -1,6 +1,10 @@
+import * as path from 'path'
+
 import _ from '../util'
 
+import conf from './conf'
 import {spinner} from './logger'
+import render from './render'
 
 export default {
   async checkEnv() {
@@ -42,5 +46,49 @@ export default {
       if (e) {}
       return false
     }
+  },
+
+  async tag(name) {
+    await _.asyncExec(`docker tag -a | grep ${name}`)
+  },
+
+  async push(name) {
+    await _.asyncExec(`docker push ${name}`)
+  },
+
+  async genDockerFile(type, from, dir) {
+    // gen dockerfile
+    await render.renderTo('docker/.dockerignore', {}, `${dir}/.dockerignore`)
+
+    const workDir = conf.getWorkDir(type, from)
+    await render.renderTo('docker/Dockerfile', {
+      from,
+      workDir,
+    }, `${dir}/Dockerfile`)
+  },
+
+  async genDockerCompose(
+    type,
+    from,
+    cmd,
+    ports,
+    watch,
+    tag,
+    dir,
+  ) {
+    const workDir = conf.getWorkDir(type, from)
+
+    if (!tag) {
+      const name = path.basename(conf.cwd)
+      tag = `${name}:latest`
+    }
+
+    await render.renderTo('docker/docker-compose', {
+      workDir,
+      cmd,
+      ports,
+      watch,
+      tag,
+    }, `${dir}/docker-compose.yml`)
   }
 }

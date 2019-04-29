@@ -1,5 +1,12 @@
 module.exports = {
-  extends: '{{{extends}}}',
+  {{#extends}}extends: '{{{extends}}}',{{/extends}}
   framework: '{{{framework}}}',
-  docs: '{{{docs}}}',
+  docs: {
+    url: '{{{docs}}}'
+  },
+  mappings: [],
+  docker: {
+    tag: '{{{rdcRepo}}}:0.0.1-alpha.1',
+    ports: [],
+  },
 }

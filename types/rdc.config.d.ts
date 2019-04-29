@@ -21,6 +21,7 @@ interface Mapping {
 }
 
 interface Docker {
+  tag: string
   ports: string[]
 }
 
@@ -31,10 +32,8 @@ interface RdcConf {
   render: Render
   mappings: Mapping[]
   docker: Docker,
-  packageWhiteList: string[]
   dev: {
     render: {[key: string]: any}
-    watchFiles: string[]
   },
-  nodeVersion: string
+  nodeVersion: string,
 }

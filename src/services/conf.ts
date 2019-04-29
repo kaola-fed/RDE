@@ -78,9 +78,9 @@ const conf = {
 
   get RdTypes() {
     return {
-      Application: 'rda',
-      Container: 'rdc',
-      Suite: 'rds',
+      Application: 'Application',
+      Container: 'Container',
+      Suite: 'Suite',
     }
   },
 

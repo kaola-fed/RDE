@@ -30,13 +30,24 @@ export default class ContainerCreate extends CreateCore {
   }
 
   public async genConfFile() {
+    const {rdcConfName, rdcConfPath} = conf
+    const {docs, framework}: RdcConf = this.rdcConf
+
     if (this.extendRdc) {
-      const {rdcConfName} = conf
-      const {docs, framework}: RdcConf = this.rdcConf
-      await render.renderTo(`rda/${rdcConfName.slice(0, -3)}`, {
+      await render.renderTo(`rdc/${rdcConfName.slice(0, -3)}`, {
         extends: this.rdc,
         framework,
         docs: docs ? docs.url : '',
+        rdcRepo: this.rdcRepo,
+      }, rdcConfName, {
+        overwrite: true,
+      })
+    } else {
+      const rdcConf = require(rdcConfPath)
+      rdcConf.docker.tag = this.rdcRepo
+
+      await render.renderTo('module', {
+        obj: rdcConf,
       }, rdcConfName, {
         overwrite: true,
       })

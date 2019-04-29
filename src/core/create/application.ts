@@ -20,7 +20,7 @@ export default class ApplicationCreate extends CreateCore {
 
   public async genConfFile() {
     const {appConfName} = conf
-    const {docs, docker = {ports: []}}: RdcConf = this.rdcConf
+    const {docs, docker = {ports: []}} = this.rdcConf
     await render.renderTo(`rda/${appConfName.slice(0, -3)}`, {
       container: this.rdc,
       docs: docs ? docs.url : '',
