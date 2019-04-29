@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Recommanded Development Environment",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.5",
   "author": "kaolafed",
   "bin": {
     "rde": "./bin/run"
@@ -90,9 +90,9 @@
   },
   "repository": "kaolafed/rde",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
+    "postpack": "rm -f oclif.manifest.json && rm -rf lib",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "tsc -b && oclif-dev readme && cp -r src/mustaches lib/mustaches",
     "test": "nyc --extension .ts mocha --project ./test/tsconfig.json --opts ./test/mocha.opts --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
     "commitmsg": "validate-commit-msg",

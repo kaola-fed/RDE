@@ -10,6 +10,8 @@ export default class DockerRun extends RunBase {
     '$ rde docker:run <cmd>',
   ]
 
+  public static args = [...RunBase.args]
+
   public static flags = {
     ...RunBase.flags,
   }
