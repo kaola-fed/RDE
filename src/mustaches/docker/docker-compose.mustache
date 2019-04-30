@@ -4,7 +4,7 @@ services:
     image: {{{tag}}}
     build:
       context: '../'
-      dockerfile: ./.tmp/Dockerfile
+      dockerfile: ./.docker/Dockerfile
     volumes:
     - ../app:{{{workDir}}}/app
     - ../template:{{{workDir}}}/template

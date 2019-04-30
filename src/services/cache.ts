@@ -8,6 +8,10 @@ export default {
     return path.resolve(conf.runtimeDir, '.cache')
   },
 
+  get exist() {
+    return fs.existsSync(this.cachePath)
+  },
+
   getAll() {
     if (!fs.existsSync(this.cachePath)) {
       return {}

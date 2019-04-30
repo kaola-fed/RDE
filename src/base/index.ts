@@ -3,7 +3,6 @@ import * as flags from '@oclif/command/lib/flags'
 import * as path from 'path'
 
 import conf from '../services/conf'
-import docker from '../services/docker'
 import {logger} from '../services/logger'
 
 export default abstract class Index extends Command {
@@ -25,8 +24,6 @@ export default abstract class Index extends Command {
     // @ts-ignore
     const {flags} = this.parse(this.constructor)
     this.verbose = flags.verbose
-
-    await docker.checkEnv()
 
     // check user input args here
     const args = await this.preInit()

@@ -66,28 +66,28 @@ export default {
     await _.asyncExec(`docker push ${name}`)
   },
 
-  async genDockerFile(type, from, dir) {
+  async genDockerFile(workDir, from, dir) {
     // gen dockerfile
-    await render.renderTo('docker/.dockerignore', {}, `${dir}/.dockerignore`)
+    await render.renderTo('docker/.dockerignore', {}, `${dir}/.dockerignore`, {
+      overwrite: true,
+    })
 
-    const workDir = conf.getWorkDir(type, from)
     await render.renderTo('docker/Dockerfile', {
       from,
       workDir,
-    }, `${dir}/Dockerfile`)
+    }, `${dir}/Dockerfile`, {
+      overwrite: true,
+    })
   },
 
   async genDockerCompose(
-    type,
-    from,
+    workDir,
     cmd,
     ports,
     watch,
     tag,
     dir,
   ) {
-    const workDir = conf.getWorkDir(type, from)
-
     if (!tag) {
       const name = path.basename(conf.cwd)
       tag = `${name}:latest`
@@ -99,6 +99,8 @@ export default {
       ports,
       watch,
       tag,
-    }, `${dir}/docker-compose.yml`)
+    }, `${dir}/docker-compose.yml`, {
+      overwrite: true,
+    })
   }
 }

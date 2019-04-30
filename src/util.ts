@@ -54,7 +54,7 @@ export default {
       ...mapping.option,
       rename(filePath) {
         // fix rename problem if src type is file
-        if (fs.lstatSync(src).isFile() && mapping.option.rename) {
+        if (fs.lstatSync(src).isFile() && mapping.option && mapping.option.rename) {
           const name = mapping.option.rename(path.basename(src))
           return `../${name}`
         }

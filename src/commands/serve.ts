@@ -8,11 +8,15 @@ export default class Serve extends Base {
     '$ rde serve',
   ]
 
+  public static flags = {
+    ...Base.flags
+  }
+
   public async run() {
     const {flags} = this.parse(Serve)
 
     const list = _.restoreFlags(flags)
 
-    await Run.run(['serve', '--watch', ...list])
+    await Run.run(['serve', '-v', '--watch', ...list])
   }
 }

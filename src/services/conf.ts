@@ -11,7 +11,7 @@ const rdcConfName = 'rdc.config.js'
 
 const rdsConfName = 'rds.config.js'
 
-const tmpDirName = '.tmp'
+let rdType = ''
 
 const conf = {
   get cwd() {
@@ -34,16 +34,20 @@ const conf = {
     return resolve(conf.cwd, rdcConfName)
   },
 
-  get workDirRoot() {
+  get dockerWorkDirRoot() {
     return '/usr/rde'
   },
 
   get tmpDir() {
-    return resolve(conf.cwd, tmpDirName)
+    return '/tmp/rde_rdc_tmp'
   },
 
   get runtimeDir() {
     return resolve(conf.cwd, `.${conf.cliName}`)
+  },
+
+  get dockerTmpDir() {
+    return '.docker'
   },
 
   get cliName() { return 'rde' },
@@ -84,33 +88,23 @@ const conf = {
     }
   },
 
-  getWorkDir(type, rdc = '') {
-    const {RdTypes} = conf
-    if (type === RdTypes.Application) {
-      return `/usr/rde/${rdc}`
-    } else if (type === RdTypes.Container) {
-      return '/usr/rde'
-    }
+  get rdType() {
+    return rdType
   },
 
-  getAppConf(): {app: AppConf} {
-    return {
-      app: _.ensureRequire(conf.appConfPath)
-    }
+  set rdType(type) {
+    rdType = type
+  },
+
+  getAppConf(): AppConf {
+    return _.ensureRequire(conf.appConfPath)
   },
 
   getRdcDir(rdc: string): string {
-    const {getWorkDir, RdTypes} = conf
-    const workDir = getWorkDir(RdTypes.Container)
+    // rdeName is the dir contain the rdc codes
     const rdcName = rdc.split(':')[0]
 
-    return `${workDir}/${rdcName}`
-  },
-
-  getRdcConfPath(rdc: string): string {
-    const {rdcConfName} = conf
-
-    return `${conf.getRdcDir(rdc)}/${rdcConfName}`
+    return `../${rdcName}`
   },
 
   getRdcChain(nodeDir, chain = []): string[] {
@@ -126,18 +120,17 @@ const conf = {
     return conf.getRdcChain(`${conf.getRdcDir(extend)}`, chain)
   },
 
-  getRdcConf(nodeDir): {container: RdcConf} {
+  getRdcConf(nodeDir): RdcConf {
     const chain = conf.getRdcChain(nodeDir)
-    return {
-      container: conf.getRdcConfFromChain(chain)
-    }
+    return conf.getRdcConfFromChain(chain)
   },
 
   getRdcConfFromChain(chain): RdcConf {
     let merged: RdcConf
 
     for (let node of chain) {
-      const nodeConf = require(conf.getRdcConfPath(node))
+      // node is an array like ['.' '../rdc1', '../rdcScope/rdc2']
+      const nodeConf = require(resolve(conf.cwd, node, conf.rdcConfName))
 
       merged = extend(
         {},

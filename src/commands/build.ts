@@ -8,6 +8,10 @@ export default class Build extends Base {
     '$ rde build',
   ]
 
+  public static flags = {
+    ...Base.flags
+  }
+
   public async run() {
     const {flags} = this.parse(Build)
 

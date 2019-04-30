@@ -2,7 +2,6 @@ import conf from '../../services/conf'
 import docker from '../../services/docker'
 import _ from '../../util'
 
-const {RdTypes} = conf
 export default class CreateCore {
   public name = ''
 
@@ -15,13 +14,10 @@ export default class CreateCore {
 
   public rdcConf: RdcConf = null
 
-  public type = RdTypes.Application
-
   public rdcRepo = ''
 
-  constructor({name, type, framework, rdc, extendRdc, rdcRepo}) {
+  constructor({name, framework, rdc, extendRdc, rdcRepo}) {
     this.name = name
-    this.type = type
     this.framework = framework
     this.rdc = rdc
     this.extendRdc = extendRdc
@@ -29,7 +25,7 @@ export default class CreateCore {
   }
 
   public async start() {
-    await _.asyncExec('rm -rf .tmp && mkdir .tmp')
+    await _.asyncExec(`rm -rf ${conf.tmpDir} && mkdir ${conf.tmpDir}`)
 
     // pull resources
     await this.prepare()
@@ -45,7 +41,7 @@ export default class CreateCore {
 
     await docker.copy(
       this.rdc,
-      `${conf.workDirRoot}/${name}/${conf.rdcConfName}`,
+      `${conf.dockerWorkDirRoot}/${name}/${conf.rdcConfName}`,
       confPath,
     )
 

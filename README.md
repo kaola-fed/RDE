@@ -19,7 +19,7 @@ $ npm install -g rde
 $ rde COMMAND
 running command...
 $ rde (-v|--version|version)
-rde/0.0.1-alpha.5 darwin-x64 node-v10.5.0
+rde/0.0.1-alpha.16 darwin-x64 node-v10.5.0
 $ rde --help [COMMAND]
 USAGE
   $ rde COMMAND
@@ -39,6 +39,7 @@ USAGE
 * [`rde run CMD`](#rde-run-cmd)
 * [`rde serve`](#rde-serve)
 * [`rde suite`](#rde-suite)
+* [`rde update [CHANNEL]`](#rde-update-channel)
 
 ## `rde build`
 
@@ -53,7 +54,7 @@ EXAMPLE
   $ rde build
 ```
 
-_See code: [src/commands/build.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/build.ts)_
+_See code: [src/commands/build.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/build.ts)_
 
 ## `rde create`
 
@@ -71,7 +72,7 @@ EXAMPLE
   $ rde create
 ```
 
-_See code: [src/commands/create.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/create.ts)_
+_See code: [src/commands/create.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/create.ts)_
 
 ## `rde docker:run CMD`
 
@@ -92,7 +93,7 @@ EXAMPLE
   $ rde docker:run <cmd>
 ```
 
-_See code: [src/commands/docker/run.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/docker/run.ts)_
+_See code: [src/commands/docker/run.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/docker/run.ts)_
 
 ## `rde docs:publish`
 
@@ -104,7 +105,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [src/commands/docs/publish.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/docs/publish.ts)_
+_See code: [src/commands/docs/publish.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/docs/publish.ts)_
 
 ## `rde docs:serve`
 
@@ -116,7 +117,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [src/commands/docs/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/docs/serve.ts)_
+_See code: [src/commands/docs/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/docs/serve.ts)_
 
 ## `rde help [COMMAND]`
 
@@ -148,7 +149,7 @@ EXAMPLE
   $ rde lint
 ```
 
-_See code: [src/commands/lint.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/lint.ts)_
+_See code: [src/commands/lint.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/lint.ts)_
 
 ## `rde publish`
 
@@ -164,7 +165,7 @@ EXAMPLE
   $ rde publish
 ```
 
-_See code: [src/commands/publish.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/publish.ts)_
+_See code: [src/commands/publish.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/publish.ts)_
 
 ## `rde run CMD`
 
@@ -185,7 +186,7 @@ EXAMPLE
   $ rde run <cmd>
 ```
 
-_See code: [src/commands/run.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/run.ts)_
 
 ## `rde serve`
 
@@ -200,7 +201,7 @@ EXAMPLE
   $ rde serve
 ```
 
-_See code: [src/commands/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/serve.ts)_
+_See code: [src/commands/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/serve.ts)_
 
 ## `rde suite`
 
@@ -217,5 +218,16 @@ EXAMPLE
   $ rde suite init
 ```
 
-_See code: [src/commands/suite/index.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.5/src/commands/suite/index.ts)_
+_See code: [src/commands/suite/index.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/suite/index.ts)_
+
+## `rde update [CHANNEL]`
+
+update the rde CLI
+
+```
+USAGE
+  $ rde update [CHANNEL]
+```
+
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.3.9/src/commands/update.ts)_
 <!-- commandsstop -->

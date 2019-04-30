@@ -8,6 +8,10 @@ export default class Lint extends Base {
     '$ rde lint',
   ]
 
+  public static flags = {
+    ...Base.flags
+  }
+
   public async run() {
     const {flags} = this.parse(Lint)
 

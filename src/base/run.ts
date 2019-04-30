@@ -19,8 +19,6 @@ export default class RunBase extends Base {
     watch: flags.boolean({char: 'w'})
   }
 
-  public type = ''
-
   public cmd = ''
 
   public watch = false
@@ -36,24 +34,24 @@ export default class RunBase extends Base {
   }
 
   public async initialize() {
-    await _.asyncExec('rm -rf .tmp && mkdir .tmp')
+    await _.asyncExec(`rm -rf ${conf.tmpDir} && mkdir ${conf.tmpDir}`)
 
     const {appConfPath, rdcConfPath, cwd, RdTypes} = conf
     if (fs.existsSync(appConfPath)) {
-      this.type = RdTypes.Application
+      conf.rdType = RdTypes.Application
     }
 
     if (fs.existsSync(rdcConfPath)) {
-      this.type = RdTypes.Container
+      conf.rdType = RdTypes.Container
     }
 
-    if (!this.type) {
+    if (!conf.rdType) {
       throw Error('no rde config file found, please read docs first')
     }
 
     const appDir = resolve(`${cwd}/app`)
     const templateDir = resolve(`${cwd}/template`)
-    if (this.type === 'container' && !fs.existsSync(templateDir)) {
+    if (conf.rdType === 'container' && !fs.existsSync(templateDir)) {
       throw Error('template dir cannot be found in cwd, please provide')
     }
 

@@ -7,6 +7,7 @@ import ApplicationCreate from '../core/create/application'
 import ContainerCreate from '../core/create/container'
 import SuiteCreate from '../core/create/suite'
 import conf from '../services/conf'
+import docker from '../services/docker'
 import {logger} from '../services/logger'
 import _ from '../util'
 
@@ -33,8 +34,6 @@ export default class Create extends Base {
 
   public name = ''
 
-  public type = ''
-
   public framework = 'vue'
 
   public rdc = ''
@@ -49,6 +48,7 @@ export default class Create extends Base {
 
     this.from = from
 
+    await docker.checkEnv()
     return flags
   }
 
@@ -64,7 +64,7 @@ export default class Create extends Base {
   public async run() {
     const opts = {
       name: this.name,
-      type: this.type,
+      type: conf.rdType,
       framework: this.framework,
       rdc: this.rdc,
       extendRdc: !!this.from,
@@ -74,7 +74,7 @@ export default class Create extends Base {
     let core = null
     const {RdTypes} = conf
 
-    switch (this.type) {
+    switch (conf.rdType) {
     case RdTypes.Application:
       core = new ApplicationCreate(opts)
       break
@@ -102,7 +102,7 @@ export default class Create extends Base {
     })
 
     if (this.from) {
-      this.type = 'container'
+      conf.rdType = 'container'
       this.rdc = this.from
       return
     }
@@ -146,7 +146,7 @@ export default class Create extends Base {
       this.rdc = `${name}:latest`
     }
 
-    this.type = type
+    conf.rdType = type
     this.framework = framework
   }
 }

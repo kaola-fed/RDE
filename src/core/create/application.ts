@@ -11,7 +11,7 @@ export default class ApplicationCreate extends CreateCore {
     const name = this.rdc.split(':')[0]
     await docker.copy(
       this.rdc,
-      `${conf.workDirRoot}/${name}/app`,
+      `${conf.dockerWorkDirRoot}/${name}/app`,
       `${conf.cwd}/app`
     )
 
