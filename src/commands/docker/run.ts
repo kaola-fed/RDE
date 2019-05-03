@@ -25,8 +25,11 @@ export default class DockerRun extends RunBase {
   }
 
   public async run() {
+    process.env.PATH = `${process.env.PATH}:${conf.dockerWorkDirRoot}/node_modules/.bin`
+
     await _.asyncSpawn('npm', ['run', `${this.cmd}`], {
-      cwd: conf.runtimeDir
+      cwd: conf.runtimeDir,
+      env: process.env
     })
   }
 }

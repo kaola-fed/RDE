@@ -2,4 +2,6 @@ FROM {{{from}}}
 
 WORKDIR {{{workDir}}}
 
-RUN npm i -g rde
+COPY ./package.json {{{dockerWorkDirRoot}}}/package.json
+
+RUN npm i && npm i -g rde

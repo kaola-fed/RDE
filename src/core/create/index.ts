@@ -41,8 +41,10 @@ export default class CreateCore {
 
     await docker.copy(
       this.rdc,
-      `${conf.dockerWorkDirRoot}/${name}/${conf.rdcConfName}`,
-      confPath,
+      [{
+        from: `${conf.dockerWorkDirRoot}/${name}/${conf.rdcConfName}`,
+        to: confPath,
+      }]
     )
 
     this.rdcConf = require(confPath)

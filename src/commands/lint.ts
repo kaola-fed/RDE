@@ -9,7 +9,8 @@ export default class Lint extends Base {
   ]
 
   public static flags = {
-    ...Base.flags
+    ...Base.flags,
+    ...Run.flags,
   }
 
   public async run() {

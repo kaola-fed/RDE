@@ -31,7 +31,6 @@ export default abstract class Index extends Command {
     // initialize everything needed here
     await this.initialize(args)
 
-    logger.info('Preparing')
     // prepare running context here
     await this.preRun()
   }

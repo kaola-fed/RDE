@@ -5,7 +5,7 @@ import conf from './conf'
 
 export default {
   get cachePath() {
-    return path.resolve(conf.runtimeDir, '.cache')
+    return path.resolve(conf.localCacheDir, '.cache')
   },
 
   get exist() {
@@ -21,9 +21,6 @@ export default {
   },
 
   setAll(json) {
-    if (!fs.existsSync(conf.runtimeDir)) {
-      fs.mkdirSync(conf.runtimeDir)
-    }
     fs.writeFileSync(this.cachePath, JSON.stringify(json), {encoding: 'UTF-8'})
   },
 

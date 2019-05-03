@@ -1,9 +1,10 @@
+import {flags} from '@oclif/command'
+import {spawn} from 'child_process'
 import * as path from 'path'
 
 import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
-import {spinner} from '../services/logger'
 import {validateRda, validateRdc} from '../services/validate'
 import _ from '../util'
 
@@ -18,6 +19,7 @@ export default class Run extends RunBase {
 
   public static flags = {
     ...RunBase.flags,
+    rebuild: flags.boolean({char: 'r'}),
   }
 
   public static args = [{
@@ -25,6 +27,8 @@ export default class Run extends RunBase {
     required: true,
     description: 'scripts provided by container',
   }]
+
+  public rebuild = false
 
   public get from() {
     if (conf.rdType === RdTypes.Application) {
@@ -81,6 +85,9 @@ export default class Run extends RunBase {
   public async preInit() {
     await super.preInit()
 
+    const {flags} = this.parse(Run)
+    this.rebuild = flags.rebuild
+
     await docker.checkEnv()
 
     if (conf.rdType === RdTypes.Container) {
@@ -93,7 +100,7 @@ export default class Run extends RunBase {
   }
 
   public async preRun() {
-    await docker.genDockerFile(this.workDir, this.from, conf.dockerTmpDir)
+    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir)
 
     await docker.genDockerCompose(
       this.workDir,
@@ -101,25 +108,32 @@ export default class Run extends RunBase {
       this.ports,
       this.watch,
       this.tag,
-      conf.dockerTmpDir,
+      conf.localCacheDir,
     )
+
+    await docker.genPkgJson()
   }
 
   public async run() {
-    if (!await docker.imageExist(this.tag)) {
-      spinner.start('Building image start')
-      await _.asyncExec(`cd ${conf.dockerTmpDir} && docker-compose build`)
-      spinner.stop()
+    // not using docker-compose cuz .dockerignore in sub dir is not working,
+    // build with docker-compose is slow if node_modules exists
+    let args = ['build', '-t', this.tag, '.']
+    if (this.rebuild) {
+      args.splice(1, 0, '--no-cache')
+    }
+    await _.asyncSpawn('docker', args, {
+      cwd: conf.localCacheDir,
+    })
+
+    args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
+    if (this.watch) {
+      args.push('--watch')
     }
 
-    if (this.watch) {
-      await _.asyncSpawn('docker-compose', ['run', '--rm', 'rde', 'rde', 'docker:run', this.cmd, '--watch'], {
-        cwd: conf.dockerTmpDir,
-      })
-    } else {
-      await _.asyncSpawn('docker-compose', ['run', '--rm', 'rde', 'rde', 'docker:run', this.cmd], {
-        cwd: conf.dockerTmpDir,
-      })
-    }
+    // @TODO: ctrl+C not working when using stdio: inherit
+    spawn('docker-compose', (args as ReadonlyArray<string>), {
+      cwd: conf.localCacheDir,
+      stdio: 'inherit',
+    })
   }
 }

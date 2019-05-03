@@ -46,8 +46,8 @@ const conf = {
     return resolve(conf.cwd, `.${conf.cliName}`)
   },
 
-  get dockerTmpDir() {
-    return '.docker'
+  get localCacheDir() {
+    return '.cache'
   },
 
   get cliName() { return 'rde' },
@@ -101,10 +101,11 @@ const conf = {
   },
 
   getRdcDir(rdc: string): string {
-    // rdeName is the dir contain the rdc codes
+    // rdcName is the dir contain the rdc codes
+    // rdcName docker-hub format: 'scope/abc-c'
     const rdcName = rdc.split(':')[0]
 
-    return `../${rdcName}`
+    return `../../${rdcName}`
   },
 
   getRdcChain(nodeDir, chain = []): string[] {
@@ -129,7 +130,7 @@ const conf = {
     let merged: RdcConf
 
     for (let node of chain) {
-      // node is an array like ['.' '../rdc1', '../rdcScope/rdc2']
+      // node is an array like ['.' '../../scopeA/rdc1', '../../rdcScope/rdc2']
       const nodeConf = require(resolve(conf.cwd, node, conf.rdcConfName))
 
       merged = extend(

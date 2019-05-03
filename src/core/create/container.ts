@@ -13,16 +13,20 @@ export default class ContainerCreate extends CreateCore {
     if (this.extendRdc) {
       await docker.copy(
         this.rdc,
-        `${conf.dockerWorkDirRoot}/${name}/app`,
-        `${conf.cwd}/app`
+        [{
+          from: `${conf.dockerWorkDirRoot}/${name}/app`,
+          to: `${conf.cwd}/app`,
+        }],
       )
 
       await _.asyncExec('mkdir template')
     } else {
       await docker.copy(
         this.rdc,
-        `${conf.dockerWorkDirRoot}/${name}/.`,
-        `${conf.cwd}`
+        [{
+          from: `${conf.dockerWorkDirRoot}/${name}/.`,
+          to: `${conf.cwd}`,
+        }],
       )
     }
 

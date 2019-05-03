@@ -19,7 +19,7 @@ $ npm install -g rde
 $ rde COMMAND
 running command...
 $ rde (-v|--version|version)
-rde/0.0.1-alpha.16 darwin-x64 node-v10.5.0
+rde/0.0.1-alpha.20 darwin-x64 node-v10.5.0
 $ rde --help [COMMAND]
 USAGE
   $ rde COMMAND
@@ -48,13 +48,15 @@ USAGE
   $ rde build
 
 OPTIONS
+  -r, --rebuild
   -v, --verbose  show verbose logs
+  -w, --watch
 
 EXAMPLE
   $ rde build
 ```
 
-_See code: [src/commands/build.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/build.ts)_
+_See code: [lib/commands/build.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/build.js)_
 
 ## `rde create`
 
@@ -72,7 +74,7 @@ EXAMPLE
   $ rde create
 ```
 
-_See code: [src/commands/create.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/create.ts)_
+_See code: [lib/commands/create.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/create.js)_
 
 ## `rde docker:run CMD`
 
@@ -93,7 +95,7 @@ EXAMPLE
   $ rde docker:run <cmd>
 ```
 
-_See code: [src/commands/docker/run.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/docker/run.ts)_
+_See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/docker/run.js)_
 
 ## `rde docs:publish`
 
@@ -105,7 +107,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [src/commands/docs/publish.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/docs/publish.ts)_
+_See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/docs/publish.js)_
 
 ## `rde docs:serve`
 
@@ -117,7 +119,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [src/commands/docs/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/docs/serve.ts)_
+_See code: [lib/commands/docs/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/docs/serve.js)_
 
 ## `rde help [COMMAND]`
 
@@ -143,13 +145,15 @@ USAGE
   $ rde lint
 
 OPTIONS
+  -r, --rebuild
   -v, --verbose  show verbose logs
+  -w, --watch
 
 EXAMPLE
   $ rde lint
 ```
 
-_See code: [src/commands/lint.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/lint.ts)_
+_See code: [lib/commands/lint.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/lint.js)_
 
 ## `rde publish`
 
@@ -165,7 +169,7 @@ EXAMPLE
   $ rde publish
 ```
 
-_See code: [src/commands/publish.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/publish.ts)_
+_See code: [lib/commands/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/publish.js)_
 
 ## `rde run CMD`
 
@@ -179,6 +183,7 @@ ARGUMENTS
   CMD  scripts provided by container
 
 OPTIONS
+  -r, --rebuild
   -v, --verbose  show verbose logs
   -w, --watch
 
@@ -186,7 +191,7 @@ EXAMPLE
   $ rde run <cmd>
 ```
 
-_See code: [src/commands/run.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/run.ts)_
+_See code: [lib/commands/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/run.js)_
 
 ## `rde serve`
 
@@ -195,13 +200,15 @@ USAGE
   $ rde serve
 
 OPTIONS
+  -r, --rebuild
   -v, --verbose  show verbose logs
+  -w, --watch
 
 EXAMPLE
   $ rde serve
 ```
 
-_See code: [src/commands/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/serve.ts)_
+_See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/serve.js)_
 
 ## `rde suite`
 
@@ -218,7 +225,7 @@ EXAMPLE
   $ rde suite init
 ```
 
-_See code: [src/commands/suite/index.ts](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.16/src/commands/suite/index.ts)_
+_See code: [lib/commands/suite/index.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/suite/index.js)_
 
 ## `rde update [CHANNEL]`
 

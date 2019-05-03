@@ -6,8 +6,6 @@ import * as util from 'util'
 
 const asyncExec = util.promisify(exec)
 
-const asyncSpawn = util.promisify(spawn)
-
 export default {
   isEmptyDir(dir: string) {
     const files = fs.readdirSync(dir)
@@ -27,10 +25,23 @@ export default {
     return asyncExec(cmd)
   },
 
-  async asyncSpawn(cmd: string, args = [], options: SpawnOptions = {}) {
-    return asyncSpawn(cmd, args, {
+  async asyncSpawn(cmd: string, args: ReadonlyArray<string> = [], options: SpawnOptions = {}) {
+    const child = spawn(cmd, args, {
+      stdio: 'inherit',
       ...options,
-      stdio: 'inherit'
+    })
+
+    return new Promise((resolve, reject) => {
+      child.on('error', reject)
+
+      child.on('exit', code => {
+        if (code === 0) {
+          resolve()
+        } else {
+          const err = new Error(`child exited with code ${code}`)
+          reject(err)
+        }
+      })
     })
   },
 
