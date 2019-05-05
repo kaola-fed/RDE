@@ -16,18 +16,18 @@ export default class DockerRun extends RunBase {
 
   public static flags = {
     ...RunBase.flags,
-    toJson: flags.boolean({
+    json: flags.boolean({
       description: 'using with lint, format output to json',
     }),
   }
 
-  public toJson = false
+  public json = false
 
   public async preInit() {
     await super.preInit()
 
     const {flags} = this.parse(DockerRun)
-    this.toJson = flags.toJson
+    this.json = flags.json
   }
 
   public async preRun() {
@@ -42,7 +42,7 @@ export default class DockerRun extends RunBase {
     process.env.PATH = `${process.env.PATH}:${conf.dockerWorkDirRoot}/node_modules/.bin`
 
     let args = ['run', `${this.cmd}`]
-    if (this.toJson) {
+    if (this.json) {
       args = args.concat(['--', '--format', 'json'])
     }
 
