@@ -39,11 +39,9 @@ export default class DockerRun extends RunBase {
   public async run() {
     process.env.PATH = `${process.env.PATH}:${conf.dockerWorkDirRoot}/node_modules/.bin`
 
-    const args = ['run', `${this.cmd}`]
+    let args = ['run', `${this.cmd}`]
     if (this.toJson) {
-      args.push('--')
-      args.push('--format')
-      args.push('json')
+      args = args.concat(['--', '--format', 'json'])
     }
 
     await _.asyncSpawn('npm', args, {
