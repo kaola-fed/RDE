@@ -51,7 +51,7 @@ export default {
             const output = this.render(chunk.toString(), dataView, tags)
             done(null, output)
           } else {
-            done(null, chunk.toString())
+            done(null, chunk)
           }
         })
       }

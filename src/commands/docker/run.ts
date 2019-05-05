@@ -24,6 +24,8 @@ export default class DockerRun extends RunBase {
   public toJson = false
 
   public async preInit() {
+    await super.preInit()
+
     const {flags} = this.parse(DockerRun)
     this.toJson = flags.toJson
   }

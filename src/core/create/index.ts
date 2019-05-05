@@ -1,3 +1,5 @@
+import * as fs from 'fs'
+
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import _ from '../../util'
@@ -33,6 +35,8 @@ export default class CreateCore {
     await this.genConfFile()
 
     await this.genExtraFiles()
+
+    await this.registerHooks()
   }
 
   public async getRdcConf() {
@@ -48,6 +52,16 @@ export default class CreateCore {
     )
 
     this.rdcConf = require(confPath)
+  }
+
+  public async registerHooks() {
+    await _.asyncExec('git init')
+
+    fs.writeFileSync('.git/hooks/pre-commit',
+      `
+#!/bin/sh
+rde lint
+      `, {encoding: 'UTF-8', mode: '755'})
   }
 
   protected async prepare() {}
