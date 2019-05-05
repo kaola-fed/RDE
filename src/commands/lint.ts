@@ -4,6 +4,8 @@ import _ from '../util'
 import Run from './run'
 
 export default class Lint extends Base {
+  public static strict = false
+
   public static examples = [
     '$ rde lint',
   ]

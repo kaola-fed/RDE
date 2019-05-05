@@ -19,7 +19,13 @@ export default class Run extends RunBase {
 
   public static flags = {
     ...RunBase.flags,
-    rebuild: flags.boolean({char: 'r'}),
+    rebuild: flags.boolean({
+      char: 'r',
+      description: 'rebuild image before run',
+    }),
+    format: flags.string({
+      description: 'format linter output',
+    }),
   }
 
   public static args = [{
