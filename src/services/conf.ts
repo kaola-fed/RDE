@@ -65,7 +65,7 @@ const conf = {
   get frameworks() {
     return {
       vue: {
-        rdcStarter: 'nupthale/rdc-vue-starter',
+        rdcStarter: 'rdebase/rdc-vue-starter',
         cdn: [],
       },
       react: {
