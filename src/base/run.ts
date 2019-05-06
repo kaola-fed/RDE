@@ -16,12 +16,18 @@ export default class RunBase extends Base {
 
   public static flags = {
     ...Base.flags,
-    watch: flags.boolean({char: 'w'})
+    watch: flags.boolean({char: 'w'}),
+    extras: flags.string({
+      char: 'e',
+      description: 'arguments need to pass to npm run cmd',
+    }),
   }
 
   public cmd = ''
 
   public watch = false
+
+  public extras: string
 
   public async preInit() {
     // @ts-ignore
@@ -29,6 +35,7 @@ export default class RunBase extends Base {
 
     this.cmd = args.cmd
     this.watch = flags.watch
+    this.extras = flags.extras
 
     return flags
   }

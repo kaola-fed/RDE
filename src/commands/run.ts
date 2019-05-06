@@ -23,9 +23,6 @@ export default class Run extends RunBase {
       char: 'r',
       description: 'rebuild image before run',
     }),
-    format: flags.string({
-      description: 'format linter output',
-    }),
   }
 
   public static args = [{
@@ -134,6 +131,10 @@ export default class Run extends RunBase {
     args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
     if (this.watch) {
       args.push('--watch')
+    }
+
+    if (this.extras) {
+      args = args.concat(['-e', this.extras])
     }
 
     // @TODO: ctrl+C not working when using stdio: inherit

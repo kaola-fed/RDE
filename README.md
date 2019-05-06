@@ -19,7 +19,7 @@ $ npm install -g rde
 $ rde COMMAND
 running command...
 $ rde (-v|--version|version)
-rde/0.0.1-alpha.20 darwin-x64 node-v10.5.0
+rde/0.0.1-alpha.22 darwin-x64 node-v10.5.0
 $ rde --help [COMMAND]
 USAGE
   $ rde COMMAND
@@ -48,15 +48,16 @@ USAGE
   $ rde build
 
 OPTIONS
-  -r, --rebuild
-  -v, --verbose  show verbose logs
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
   -w, --watch
 
 EXAMPLE
   $ rde build
 ```
 
-_See code: [lib/commands/build.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/build.js)_
 
 ## `rde create`
 
@@ -74,7 +75,7 @@ EXAMPLE
   $ rde create
 ```
 
-_See code: [lib/commands/create.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/create.js)_
+_See code: [lib/commands/create.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/create.js)_
 
 ## `rde docker:run CMD`
 
@@ -88,14 +89,15 @@ ARGUMENTS
   CMD  scripts provided by container
 
 OPTIONS
-  -v, --verbose  show verbose logs
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -v, --verbose        show verbose logs
   -w, --watch
 
 EXAMPLE
   $ rde docker:run <cmd>
 ```
 
-_See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/docker/run.js)_
+_See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/docker/run.js)_
 
 ## `rde docs:publish`
 
@@ -107,7 +109,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/docs/publish.js)_
+_See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/docs/publish.js)_
 
 ## `rde docs:serve`
 
@@ -119,7 +121,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [lib/commands/docs/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/docs/serve.js)_
+_See code: [lib/commands/docs/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/docs/serve.js)_
 
 ## `rde help [COMMAND]`
 
@@ -145,15 +147,16 @@ USAGE
   $ rde lint
 
 OPTIONS
-  -r, --rebuild
-  -v, --verbose  show verbose logs
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
   -w, --watch
 
 EXAMPLE
   $ rde lint
 ```
 
-_See code: [lib/commands/lint.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/lint.js)_
+_See code: [lib/commands/lint.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/lint.js)_
 
 ## `rde publish`
 
@@ -169,7 +172,7 @@ EXAMPLE
   $ rde publish
 ```
 
-_See code: [lib/commands/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/publish.js)_
+_See code: [lib/commands/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/publish.js)_
 
 ## `rde run CMD`
 
@@ -183,15 +186,16 @@ ARGUMENTS
   CMD  scripts provided by container
 
 OPTIONS
-  -r, --rebuild
-  -v, --verbose  show verbose logs
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
   -w, --watch
 
 EXAMPLE
   $ rde run <cmd>
 ```
 
-_See code: [lib/commands/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/run.js)_
+_See code: [lib/commands/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/run.js)_
 
 ## `rde serve`
 
@@ -200,15 +204,16 @@ USAGE
   $ rde serve
 
 OPTIONS
-  -r, --rebuild
-  -v, --verbose  show verbose logs
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
   -w, --watch
 
 EXAMPLE
   $ rde serve
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/serve.js)_
 
 ## `rde suite`
 
@@ -225,7 +230,7 @@ EXAMPLE
   $ rde suite init
 ```
 
-_See code: [lib/commands/suite/index.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.20/lib/commands/suite/index.js)_
+_See code: [lib/commands/suite/index.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.22/lib/commands/suite/index.js)_
 
 ## `rde update [CHANNEL]`
 

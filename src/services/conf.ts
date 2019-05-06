@@ -13,6 +13,8 @@ const rdsConfName = 'rds.config.js'
 
 let rdType = ''
 
+let rdcConfMap: any = {}
+
 const conf = {
   get cwd() {
     return process.cwd()
@@ -122,8 +124,13 @@ const conf = {
   },
 
   getRdcConf(nodeDir): RdcConf {
+    if (rdcConfMap[nodeDir]) {
+      return rdcConfMap[nodeDir]
+    }
+
     const chain = conf.getRdcChain(nodeDir)
-    return conf.getRdcConfFromChain(chain)
+    rdcConfMap[nodeDir] = conf.getRdcConfFromChain(chain)
+    return rdcConfMap[nodeDir]
   },
 
   getRdcConfFromChain(chain): RdcConf {

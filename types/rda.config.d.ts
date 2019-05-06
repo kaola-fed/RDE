@@ -13,6 +13,5 @@ interface AppConfSuite {
 interface AppConf {
   container: AppConfTemplate,
   suites: AppConfSuite[],
-  mappings: Mapping[],
   docker: Docker,
 }
