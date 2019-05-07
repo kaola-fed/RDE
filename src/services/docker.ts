@@ -192,17 +192,16 @@ export default {
     const destRdcConfPath = `${localCacheDir}/${rdcConfName}`
 
     await this.copy(image, [{
-      from: `${srcDir}/package.json`,
+      from: `${srcDir}/template/package.json`,
       to: destPkgPath,
     }, {
       from: `${srcDir}/${rdcConfName}`,
       to: destRdcConfPath,
     }])
-
-    const rdcConf = require(destRdcConfPath)
+    const rdcConf = require(path.resolve(conf.cwd, destRdcConfPath))
     let pkgJson = {}
     if (fs.existsSync(destPkgPath)) {
-      pkgJson = require(destPkgPath)
+      pkgJson = require(path.resolve(conf.cwd, destPkgPath))
     }
     pkgJson = extend(pkgJson, result)
 
