@@ -124,6 +124,7 @@ export default {
     watch,
     tag,
     dir,
+    isApp = false,
   ) {
     if (!tag) {
       const name = path.basename(conf.cwd)
@@ -136,6 +137,7 @@ export default {
       ports,
       watch,
       tag,
+      isApp,
     }, `${dir}/docker-compose.yml`, {
       overwrite: true,
     })
@@ -212,6 +214,7 @@ export default {
       dockerWorkDirRoot,
       localCacheDir,
       rdcConfName,
+      cwd,
     } = conf
     const name = image.split(':')[0]
     const srcDir = `${dockerWorkDirRoot}/${name}`
@@ -225,10 +228,11 @@ export default {
       from: `${srcDir}/${rdcConfName}`,
       to: destRdcConfPath,
     }])
-    const rdcConf = require(path.resolve(conf.cwd, destRdcConfPath))
+
+    const rdcConf = require(resolve(cwd, destRdcConfPath))
     let pkgJson = {}
     if (fs.existsSync(destPkgPath)) {
-      pkgJson = require(path.resolve(conf.cwd, destPkgPath))
+      pkgJson = require(resolve(cwd, destPkgPath))
     }
     pkgJson = extend(pkgJson, result)
 

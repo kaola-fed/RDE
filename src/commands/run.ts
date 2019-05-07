@@ -69,6 +69,11 @@ export default class Run extends RunBase {
 
       return rdcConf.docker.tag || null
     }
+
+    if (conf.rdType === RdTypes.Application) {
+      // name app image with project dir name
+      return path.basename(cwd)
+    }
   }
 
   public get ports() {
@@ -111,6 +116,7 @@ export default class Run extends RunBase {
       this.watch,
       `dev-${this.tag}`,
       conf.localCacheDir,
+      conf.rdType === RdTypes.Application,
     )
 
     await docker.genPkgJson()
