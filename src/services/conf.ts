@@ -3,6 +3,8 @@ import * as path from 'path'
 
 import _ from '../util'
 
+import {spinner} from './logger'
+
 const {resolve} = path
 
 const appConfName = 'rda.config.js'
@@ -128,8 +130,10 @@ const conf = {
       return rdcConfMap[nodeDir]
     }
 
+    spinner.start('Composing container chain')
     const chain = conf.getRdcChain(nodeDir)
     rdcConfMap[nodeDir] = conf.getRdcConfFromChain(chain)
+    spinner.stop()
     return rdcConfMap[nodeDir]
   },
 

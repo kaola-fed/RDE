@@ -10,7 +10,7 @@ const {resolve} = path
 export default class RunBase extends Base {
   public static args = [{
     name: 'cmd',
-    required: true,
+    required: false,
     description: 'scripts provided by container',
   }]
 

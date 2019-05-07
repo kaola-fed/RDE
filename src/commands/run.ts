@@ -26,7 +26,7 @@ export default class Run extends RunBase {
 
   public static args = [{
     name: 'cmd',
-    required: true,
+    required: false,
     description: 'scripts provided by container',
   }]
 
@@ -128,6 +128,7 @@ export default class Run extends RunBase {
     await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild)
 
     let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
+
     if (this.watch) {
       args.push('--watch')
     }

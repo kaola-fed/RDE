@@ -22,11 +22,16 @@ export default class DockerRun {
   public async start() {
     spinner.start('Preparing Rde Runtime...')
 
-    // generate rdt template from rdt chain
-    const config = await this.composeRdcChain()
+    let config
+    if (!fs.existsSync(conf.runtimeDir)) {
+      // generate rdt template from rdt chain
+      config = await this.composeRdcChain()
 
-    // template render to .rde
-    await this.renderDir(conf.tmpDir, config)
+      // template render to .rde
+      await this.renderDir(conf.tmpDir, config)
+    } else {
+      config = require(resolve(conf.runtimeDir, conf.rdcConfName))
+    }
 
     // start watcher
     await this.createRuntime(config)

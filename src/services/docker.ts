@@ -7,32 +7,30 @@ import _ from '../util'
 
 import cache from './cache'
 import conf from './conf'
-import {spinner} from './logger'
+import log from './logger'
 import render from './render'
 
 const {resolve} = path
 const {RdTypes} = conf
-export default {
-  async checkEnv() {
+
+class Docker {
+  @log('Checking local environment...')
+  public async checkEnv() {
     await _.asyncExec('docker -v')
 
     await _.asyncExec('docker-compose -v')
 
     // whether is running or not
     await _.asyncExec('docker info')
-  },
+  }
 
-  async pull(image: string) {
-    spinner.start(`Pulling ${image} from docker...`)
-
+  @log('Pulling image from docker hub...')
+  public async pull(image: string) {
     await _.asyncExec(`docker pull ${image}`)
+  }
 
-    spinner.stop()
-  },
-
-  async copy(image: string, mappings: any[]) {
-    spinner.start(`Copy files from ${image}...`)
-
+  @log('Copying files from image...')
+  public async copy(image: string, mappings: any[]) {
     if (await this.containerExist('rde-dummy')) {
       await _.asyncExec('docker container rm /rde-dummy')
     }
@@ -44,10 +42,10 @@ export default {
     }
 
     await _.asyncExec('docker rm -fv rde-dummy')
-    spinner.stop()
-  },
+  }
 
-  async imageExist(name) {
+  @log('Checking image existance...')
+  public async imageExist(name) {
     try {
       await _.asyncExec(`docker inspect --type=image ${name}`)
       return true
@@ -55,9 +53,10 @@ export default {
       if (e) {}
       return false
     }
-  },
+  }
 
-  async containerExist(name) {
+  @log('Checking container existance...')
+  public async containerExist(name) {
     try {
       await _.asyncExec(`docker ps -a | grep ${name}`)
       return true
@@ -65,9 +64,14 @@ export default {
       if (e) {}
       return false
     }
-  },
+  }
 
-  async build(tag, cwd, noCache = false, context = '.') {
+  @log('Building docker image...')
+  public async build(tag, cwd, noCache = false, context = '.') {
+    if (!noCache && await this.imageExist(tag)) {
+      return
+    }
+
     let args = ['build', '-t', tag, '-f', 'Dockerfile', context]
     if (noCache) {
       args.splice(1, 0, '--no-cache')
@@ -78,17 +82,19 @@ export default {
     })
 
     await _.asyncExec('rm .dockerignore')
-  },
+  }
 
-  async tag(oldtag, newtag) {
+  public async tag(oldtag, newtag) {
     await _.asyncSpawn('docker', ['tag', oldtag, newtag])
-  },
+  }
 
-  async push(name) {
+  @log('Pushing image to docker hub...')
+  public async push(name) {
     await _.asyncSpawn('docker', ['push', name])
-  },
+  }
 
-  async genDockerFile(workDir, from, dir) {
+  @log('Generating docker files...')
+  public async genDockerFile(workDir, from, dir) {
     // gen dockerfile
     await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
       overwrite: true,
@@ -101,9 +107,10 @@ export default {
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })
-  },
+  }
 
-  async genDockerFile4Publish(workDir, from, dir) {
+  @log('Generating Dockerfile...')
+  public async genDockerFile4Publish(workDir, from, dir) {
     // gen dockerfile
     await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
       overwrite: true,
@@ -115,9 +122,10 @@ export default {
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })
-  },
+  }
 
-  async genDockerCompose(
+  @log('Generating docker-compose.yml...')
+  public async genDockerCompose(
     workDir,
     cmd,
     ports,
@@ -141,7 +149,7 @@ export default {
     }, `${dir}/docker-compose.yml`, {
       overwrite: true,
     })
-  },
+  }
 
   /**
    * rde will regenerate package.json under such condition:
@@ -150,16 +158,14 @@ export default {
    * 3. any package.json under template dir has changed if rdType is container
    * 4. extends attr in rdc.config.js has changed if rdType is container
    */
-  async genPkgJson() {
+  @log('Generating package.json from rdc chain...')
+  public async genPkgJson() {
     const {
       rdType,
-      runtimeDir,
       cwd,
       localCacheDir,
       rdcConfName,
     } = conf
-    const nodeModulesDir = resolve(runtimeDir, 'node_modules')
-
     const isApplication = rdType === RdTypes.Application
     let rdcName
     if (isApplication) {
@@ -184,7 +190,6 @@ export default {
 
     if (
       !cache.exist ||
-      !fs.existsSync(nodeModulesDir) ||
       (isApplication && rdcName !== cache.get('rda.container')) ||
       (isContainer && pkgJsonLMTs !== cache.get('rdc.pkg.lmts')) ||
       (isContainer && extendsName && extendsName !== cache.get('rdc.extends'))
@@ -203,9 +208,9 @@ export default {
         extendsName && cache.set('rdc.extends', extendsName)
       }
     }
-  },
+  }
 
-  async getPkgJson(image, result = {}) {
+  public async getPkgJson(image, result = {}) {
     if (!image) {
       return result
     }
@@ -244,3 +249,5 @@ export default {
     await this.getPkgJson(rdcConf.extends, pkgJson)
   }
 }
+
+export default new Docker()

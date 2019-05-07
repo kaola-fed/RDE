@@ -33,6 +33,10 @@ export default class DockerRun extends RunBase {
   }
 
   public async run() {
+    if (!this.cmd) {
+      return
+    }
+
     process.env.PATH = `${process.env.PATH}:${conf.dockerWorkDirRoot}/node_modules/.bin`
 
     let args = ['run', `${this.cmd}`]

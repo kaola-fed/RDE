@@ -10,7 +10,8 @@
     "target": "es2017",
     "composite": true,
     "noUnusedLocals": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*.ts",
