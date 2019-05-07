@@ -33,7 +33,6 @@ export const validateRdc = (useStrict = false) => {
   }
 
   const rdcConf: RdcConf = require(rdcConfPath)
-  this.rdcConf = rdcConf
   if (
     !rdcConf.framework ||
     !Object.keys(frameworks).includes(rdcConf.framework)
@@ -57,4 +56,6 @@ export const validateRdc = (useStrict = false) => {
   if (useStrict && (!docs || !docs.url)) {
     throw Error(MCOMMON.WRONG_DOCS_CONFIG)
   }
+
+  return rdcConf
 }

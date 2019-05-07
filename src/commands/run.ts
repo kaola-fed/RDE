@@ -6,7 +6,6 @@ import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
 import {validateRda, validateRdc} from '../services/validate'
-import _ from '../util'
 
 const {resolve} = path
 const {RdTypes, cwd, rdcConfName} = conf
@@ -110,7 +109,7 @@ export default class Run extends RunBase {
       this.cmd,
       this.ports,
       this.watch,
-      this.tag,
+      `dev-${this.tag}`,
       conf.localCacheDir,
     )
 
@@ -120,15 +119,9 @@ export default class Run extends RunBase {
   public async run() {
     // not using docker-compose cuz .dockerignore in sub dir is not working,
     // build with docker-compose is slow if node_modules exists
-    let args = ['build', '-t', this.tag, '.']
-    if (this.rebuild) {
-      args.splice(1, 0, '--no-cache')
-    }
-    await _.asyncSpawn('docker', args, {
-      cwd: conf.localCacheDir,
-    })
+    await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild)
 
-    args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
+    let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
     if (this.watch) {
       args.push('--watch')
     }
@@ -137,8 +130,12 @@ export default class Run extends RunBase {
       args = args.concat(['-e', this.extras])
     }
 
-    // @TODO: ctrl+C not working when using stdio: inherit
-    spawn('docker-compose', (args as ReadonlyArray<string>), {
+    let child = null
+    process.on('SIGINT', () => {
+      child.kill('SIGINT')
+    })
+
+    child = spawn('docker-compose', (args as ReadonlyArray<string>), {
       cwd: conf.localCacheDir,
       stdio: 'inherit',
     })
