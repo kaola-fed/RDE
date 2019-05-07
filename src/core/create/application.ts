@@ -26,7 +26,7 @@ export default class ApplicationCreate extends CreateCore {
     await render.renderTo(`rda/${appConfName.slice(0, -3)}`, {
       container: this.rdc,
       docs: docs ? docs.url : '',
-      ports: `[${docker.ports.join(',')}]`,
+      ports: JSON.stringify(docker.ports),
     }, appConfName)
   }
 

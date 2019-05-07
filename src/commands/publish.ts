@@ -25,6 +25,8 @@ export default class Publish extends Base {
 
   public rdcConf: RdcConf
 
+  public rdc: string
+
   public async preInit() {
     const {flags} = this.parse(Publish)
     this.tag = flags.tag
@@ -33,27 +35,28 @@ export default class Publish extends Base {
       throw Error('rde will automatic add latest for you, please use semver-like tag')
     }
 
-    await validateRdc(true)
+    this.rdcConf = await validateRdc(true)
     return flags
   }
 
   public async initialize() {
-    const {RdTypes} = conf
+    const {docker: dockerConf} = this.rdcConf
+    this.rdc = dockerConf.tag
+    const name = this.rdc.split(':')[0]
 
-    await docker.genDockerFile(
-      RdTypes.Container,
+    await docker.genDockerFile4Publish(
+      `${conf.dockerWorkDirRoot}/${name}`,
       this.rdcConf.extends || 'node:latest',
-      conf.tmpDir,
+      conf.localCacheDir,
     )
   }
 
   public async run() {
-    const {docker: dockerConf} = this.rdcConf
-    const name = dockerConf.tag.split(':')[0]
+    const name = this.rdc.split(':')[0]
 
-    await docker.tag(`docker tag ${name} ${name}:${this.tag}`)
-    await docker.tag(`docker tag ${name} ${name}:latest`)
-
+    await docker.build(this.rdc, conf.localCacheDir, true, '../')
+    await docker.tag(this.rdc, `${name}:${this.tag}`)
+    await docker.tag(this.rdc, `${name}:latest`)
     await docker.push(name)
 
     this.tag = `${name}:${this.tag}`
@@ -67,6 +70,6 @@ export default class Publish extends Base {
       obj: this.rdcConf,
     }, conf.rdcConfName, {overwrite: true})
 
-    logger.star('Docker tag has been updated successfully')
+    logger.star(`Published ${this.tag} successfully`)
   }
 }

@@ -67,17 +67,30 @@ export default {
     }
   },
 
-  async tag(name) {
-    await _.asyncExec(`docker tag -a | grep ${name}`)
+  async build(tag, cwd, noCache = false, context = '.') {
+    let args = ['build', '-t', tag, '-f', 'Dockerfile', context]
+    if (noCache) {
+      args.splice(1, 0, '--no-cache')
+    }
+
+    await _.asyncSpawn('docker', args, {
+      cwd,
+    })
+
+    await _.asyncExec('rm .dockerignore')
+  },
+
+  async tag(oldtag, newtag) {
+    await _.asyncSpawn('docker', ['tag', oldtag, newtag])
   },
 
   async push(name) {
-    await _.asyncExec(`docker push ${name}`)
+    await _.asyncSpawn('docker', ['push', name])
   },
 
   async genDockerFile(workDir, from, dir) {
     // gen dockerfile
-    await render.renderTo('docker/.dockerignore', {}, `${dir}/.dockerignore`, {
+    await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
       overwrite: true,
     })
 
@@ -85,6 +98,20 @@ export default {
       from,
       workDir,
       dockerWorkDirRoot: conf.dockerWorkDirRoot,
+    }, `${dir}/Dockerfile`, {
+      overwrite: true,
+    })
+  },
+
+  async genDockerFile4Publish(workDir, from, dir) {
+    // gen dockerfile
+    await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
+      overwrite: true,
+    })
+
+    await render.renderTo('docker/Dockerfile.publish', {
+      from,
+      workDir,
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })

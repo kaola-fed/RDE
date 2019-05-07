@@ -125,8 +125,10 @@ export default class Create extends Base {
     ])
 
     if (type === RdTypes.Application) {
-      const name = await cli.prompt('name of container', {
+      const defaultStarter = conf.frameworks[framework].rdcStarter
+      const name = await cli.prompt(`name of container(${defaultStarter})`, {
         required: true,
+        default: defaultStarter,
       })
 
       const version = await cli.prompt('version of container(latest)', {
