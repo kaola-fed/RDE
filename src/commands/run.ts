@@ -107,7 +107,7 @@ export default class Run extends RunBase {
   }
 
   public async preRun() {
-    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir)
+    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir, conf.rdType === RdTypes.Application)
 
     await docker.genDockerCompose(
       this.workDir,
@@ -125,7 +125,7 @@ export default class Run extends RunBase {
   public async run() {
     // not using docker-compose cuz .dockerignore in sub dir is not working,
     // build with docker-compose is slow if node_modules exists
-    await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild)
+    await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild, '../')
 
     let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
 

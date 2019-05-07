@@ -94,7 +94,7 @@ class Docker {
   }
 
   @log('Generating docker files...')
-  public async genDockerFile(workDir, from, dir) {
+  public async genDockerFile(workDir, from, dir, isApp) {
     // gen dockerfile
     await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
       overwrite: true,
@@ -104,6 +104,7 @@ class Docker {
       from,
       workDir,
       dockerWorkDirRoot: conf.dockerWorkDirRoot,
+      isApp,
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })
