@@ -107,7 +107,7 @@ export default class Run extends RunBase {
   }
 
   public async preRun() {
-    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir, conf.rdType === RdTypes.Application)
+    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir, conf.rdType === RdTypes.Container)
 
     await docker.genDockerCompose(
       this.workDir,

@@ -59,6 +59,7 @@ export default class DockerRun {
     for (let node of chain) {
       let srcDir = resolve(node, 'template')
 
+      // @TODO: copy chain with merge , not overriding
       await copy(srcDir, resolve(conf.tmpDir, 'template'), {
         overwrite: true,
         filter(filePath) {
@@ -69,7 +70,7 @@ export default class DockerRun {
 
     await render.renderTo('module', {
       obj: config
-    }, resolve(conf.tmpDir, conf.rdcConfName), {
+    }, resolve(conf.runtimeDir, conf.rdcConfName), {
       overwrite: true
     })
 
