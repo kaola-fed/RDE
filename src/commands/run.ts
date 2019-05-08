@@ -99,7 +99,7 @@ export default class Run extends RunBase {
     const {flags} = this.parse(Run)
     this.rebuild = flags.rebuild
 
-    await docker.checkEnv()
+    await docker.checkEnv(true)
 
     if (conf.rdType === RdTypes.Container) {
       await validateRdc()
@@ -111,7 +111,7 @@ export default class Run extends RunBase {
   }
 
   public async preRun() {
-    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir, conf.rdType === RdTypes.Container)
+    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir, conf.rdType === RdTypes.Application)
 
     await docker.genDockerCompose(
       this.workDir,
@@ -129,7 +129,7 @@ export default class Run extends RunBase {
   public async run() {
     // not using docker-compose cuz .dockerignore in sub dir is not working,
     // build with docker-compose is slow if node_modules exists
-    await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild, '../')
+    await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild)
 
     let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
 
@@ -143,7 +143,7 @@ export default class Run extends RunBase {
 
     let child = null
     process.on('SIGINT', () => {
-      child.kill('SIGINT')
+      child.kill()
     })
 
     child = spawn('docker-compose', (args as ReadonlyArray<string>), {
