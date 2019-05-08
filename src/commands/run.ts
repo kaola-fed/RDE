@@ -1,11 +1,13 @@
 import {flags} from '@oclif/command'
 import {spawn} from 'child_process'
+import * as fs from 'fs'
 import * as path from 'path'
 
 import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
 import {validateRda, validateRdc} from '../services/validate'
+import _ from '../util'
 
 const {resolve} = path
 const {RdTypes, cwd, rdcConfName} = conf
@@ -111,7 +113,13 @@ export default class Run extends RunBase {
   }
 
   public async preRun() {
-    await docker.genDockerFile(this.workDir, this.from, conf.localCacheDir, conf.rdType === RdTypes.Application)
+    await this.linkRde()
+
+    await docker.genDockerFile(
+      this.workDir, this.from,
+      conf.localCacheDir,
+      conf.rdType === RdTypes.Application,
+    )
 
     await docker.genDockerCompose(
       this.workDir,
@@ -129,7 +137,7 @@ export default class Run extends RunBase {
   public async run() {
     // not using docker-compose cuz .dockerignore in sub dir is not working,
     // build with docker-compose is slow if node_modules exists
-    await docker.build(`dev-${this.tag}`, conf.localCacheDir, this.rebuild)
+    await docker.build(`dev-${this.tag}`, cwd, this.rebuild, `${conf.localCacheDir}/Dockerfile`)
 
     let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
 
@@ -156,5 +164,28 @@ export default class Run extends RunBase {
         process.exit(code)
       }
     })
+  }
+
+  public async linkRde() {
+    const {stdout: rdePath} = await _.asyncExec('which rde')
+    const libPath = resolve(rdePath, '../../', 'lib/node_modules/rde/lib')
+    const {localCacheDir: cacheDir} = conf
+    const libDir = `${cacheDir}/lib`
+    const rdeFile = `${cacheDir}/rde`
+
+    if (!fs.existsSync(cacheDir)) {
+      fs.mkdirSync(cacheDir)
+    }
+
+    if (!fs.existsSync(libDir)) {
+      fs.symlinkSync(libPath, libDir, 'dir')
+    }
+
+    try {
+      fs.readlinkSync(rdeFile)
+    } catch (e) {
+      if (e) {}
+      fs.symlinkSync(rdePath, rdeFile, 'dir')
+    }
   }
 }

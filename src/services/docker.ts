@@ -68,12 +68,12 @@ class Docker {
   }
 
   @log('Building docker image...')
-  public async build(tag, cwd, noCache = false, context = '.') {
+  public async build(tag, cwd, noCache = false, dockerFile = 'Dockerfile') {
     if (!noCache && await this.imageExist(tag)) {
       return
     }
 
-    let args = ['build', '-t', tag, '-f', 'Dockerfile', context]
+    let args = ['build', '-t', tag, '-f', dockerFile, '.']
     if (noCache) {
       args.splice(1, 0, '--no-cache')
     }
