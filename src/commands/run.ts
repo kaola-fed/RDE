@@ -150,5 +150,11 @@ export default class Run extends RunBase {
       cwd: conf.localCacheDir,
       stdio: 'inherit',
     })
+
+    child.on('close', code => {
+      if (code !== 0) {
+        process.exit(code)
+      }
+    })
   }
 }
