@@ -22,6 +22,10 @@ export default class Run extends RunBase {
       char: 'r',
       description: 'rebuild image before run',
     }),
+    staged: flags.boolean({
+      char: 's',
+      description: 'lint staged',
+    }),
   }
 
   public static args = [{
