@@ -5,7 +5,7 @@ WORKDIR {{{workDir}}}
 COPY .cache/package.json {{{dockerWorkDirRoot}}}/package.json
 
 {{!cache node-modules}}
-RUN npm i & npm i -g git+https://git@github.com/visionmedia/express.git#develop
+RUN npm i & npm i -g rde
 
 {{!cache .runtime dir}}
 {{#isApp}}
