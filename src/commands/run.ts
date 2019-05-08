@@ -22,6 +22,10 @@ export default class Run extends RunBase {
       char: 'r',
       description: 'rebuild image before run',
     }),
+    staged: flags.boolean({
+      char: 's',
+      description: 'lint staged',
+    }),
   }
 
   public static args = [{
@@ -145,6 +149,12 @@ export default class Run extends RunBase {
     child = spawn('docker-compose', (args as ReadonlyArray<string>), {
       cwd: conf.localCacheDir,
       stdio: 'inherit',
+    })
+
+    child.on('close', code => {
+      if (code !== 0) {
+        process.exit(code)
+      }
     })
   }
 }

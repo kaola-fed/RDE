@@ -1,3 +1,6 @@
+import * as sgf from 'staged-git-files'
+import * as util from 'util'
+
 import Base from '../base'
 import _ from '../util'
 
@@ -19,6 +22,14 @@ export default class Lint extends Base {
     const {flags} = this.parse(Lint)
 
     const list = _.restoreFlags(flags)
+    if (flags.staged) {
+      let filenames = []
+      await util.promisify(sgf)('ACM').then(files => {
+        filenames = files.map(file => file.filename)
+      })
+
+      list.push(`--extras=${filenames.join(' ')}`)
+    }
 
     await Run.run(['lint', ...list])
   }

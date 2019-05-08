@@ -60,7 +60,7 @@ export default class CreateCore {
     fs.writeFileSync('.git/hooks/pre-commit',
       `
 #!/bin/sh
-rde lint
+rde lint -s
       `, {encoding: 'UTF-8', mode: '755'})
   }
 
