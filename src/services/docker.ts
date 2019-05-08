@@ -15,13 +15,14 @@ const {RdTypes} = conf
 
 class Docker {
   @log('Checking local environment...')
-  public async checkEnv() {
-    await _.asyncExec('docker -v')
-
-    await _.asyncExec('docker-compose -v')
-
+  public async checkEnv(timesaving = false) {
     // whether is running or not
-    await _.asyncExec('docker info')
+
+    if (timesaving) {
+      await _.asyncExec('docker info')
+    } else {
+      await _.asyncExec('docker -v & docker-compose -v & docker info')
+    }
   }
 
   @log('Pulling image from docker hub...')
@@ -94,7 +95,7 @@ class Docker {
   }
 
   @log('Generating docker files...')
-  public async genDockerFile(workDir, from, dir, isContainer) {
+  public async genDockerFile(workDir, from, dir, isApp) {
     // gen dockerfile
     await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
       overwrite: true,
@@ -104,7 +105,7 @@ class Docker {
       from,
       workDir,
       dockerWorkDirRoot: conf.dockerWorkDirRoot,
-      isContainer,
+      isApp,
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })

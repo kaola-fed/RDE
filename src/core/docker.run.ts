@@ -4,7 +4,6 @@ import * as path from 'path'
 import * as copy from 'recursive-copy'
 
 import conf from '../services/conf'
-import {spinner} from '../services/logger'
 import render from '../services/render'
 import Watcher from '../services/watcher'
 import _ from '../util'
@@ -20,10 +19,8 @@ export default class DockerRun {
   }
 
   public async start() {
-    spinner.start('Preparing Rde Runtime...')
-
     let config
-    if (!fs.existsSync(conf.runtimeDir)) {
+    if (conf.rdType !== conf.RdTypes.Application) {
       // generate rdt template from rdt chain
       config = await this.composeRdcChain()
 
@@ -35,8 +32,6 @@ export default class DockerRun {
 
     // start watcher
     await this.createRuntime(config)
-
-    spinner.stop()
   }
 
   public async composeRdcChain(): Promise<Config> {
@@ -95,7 +90,7 @@ export default class DockerRun {
   }
 
   public async createRuntime(config: Config) {
-    const {cwd, runtimeDir} = conf
+    const {cwd, runtimeDir, rdType, RdTypes} = conf
 
     for (let {from, to, option} of config.mappings) {
       const appDir = resolve(cwd, from)
@@ -105,7 +100,15 @@ export default class DockerRun {
     }
 
     if (this.watch) {
-      new Watcher(config.mappings).start()
+      let {mappings} = config
+      if (rdType === RdTypes.Container) {
+        mappings = mappings.concat([{
+          from: 'template',
+          to: '.'
+        }])
+      }
+
+      new Watcher(mappings).start()
     }
   }
 }

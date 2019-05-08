@@ -71,7 +71,7 @@ export default function log(message) {
       let now = +new Date()
       const result = await origin.apply(this, args)
 
-      logger.info(message, '| costing：', +new Date() - now, 'ms')
+      logger.info(message, '| cost：', +new Date() - now, 'ms')
       return result
     }
 
