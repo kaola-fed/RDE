@@ -9,5 +9,7 @@ RUN npm i && npm i -g rde
 
 {{!cache .runtime dir}}
 {{#isApp}}
+COPY . .
+
 RUN rde docker:run
 {{/isApp}}

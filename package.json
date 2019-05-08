@@ -75,9 +75,7 @@
     "commands": "./lib/commands",
     "bin": "rde",
     "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-update",
-      "@oclif/plugin-warn-if-update-available"
+      "@oclif/plugin-help"
     ]
   },
   "husky": {
