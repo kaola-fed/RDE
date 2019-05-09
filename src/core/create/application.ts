@@ -66,8 +66,16 @@ export default class ApplicationCreate extends CreateCore {
       homepage: conf.homepage,
     }, 'README.md')
 
+    await render.renderTo('.gitignore', {}, '.gitignore', {
+      overwrite: true,
+    })
+
     await _.copy(path.resolve(__dirname, '../../mustaches/rda/'), conf.cwd, {
-      filter: ['!.mustache']
+      option: {
+        filter(filename) {
+          return path.extname(filename) !== '.mustache'
+        }
+      }
     })
   }
 
