@@ -29,6 +29,7 @@
     "recursive-copy": "^2.0.10",
     "rimraf": "^2.6.3",
     "signale": "^1.4.0",
+    "standard-version": "^6.0.1",
     "through2": "^3.0.1",
     "ts-node": "^8.0.3",
     "typescript": "^3.3",

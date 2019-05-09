@@ -26,7 +26,7 @@ export default abstract class DocsBase extends Command {
     const navs = [
       {title: '文档', main: true},
       {title: 'FAQ', url: '/FAQ.html'},
-      {title: '日志', url: '/rde/changelog.html'},
+      {title: '日志', url: '/changelog.html'},
     ]
 
     if (this.isRdt) {
