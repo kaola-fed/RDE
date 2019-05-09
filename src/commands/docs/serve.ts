@@ -5,6 +5,10 @@ import conf from '../../services/conf'
 import Watcher from '../../services/watcher'
 
 export default class DocsServe extends BaseDocs {
+  public static flags = {
+    ...BaseDocs.flags,
+  }
+
   public static examples = [
     '$ rde docs:serve',
   ]

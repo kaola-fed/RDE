@@ -1,4 +1,5 @@
 import Command from '@oclif/command/lib/command'
+import * as flags from '@oclif/command/lib/flags'
 import * as dirTree from 'directory-tree'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -9,18 +10,23 @@ import * as through from 'through2'
 import conf from '../services/conf'
 import {logger} from '../services/logger'
 import mdIt from '../services/markdown'
+import {MCOMMON, MDOCS} from '../services/message'
 import render from '../services/render'
 
 const {resolve} = path
-
+const {RdTypes} = conf
 export default abstract class DocsBase extends Command {
-  public static excludeDirRule = /^_docs\/[^\/]+\/(?!([^\/]*\.md$))+/
+  public static flags = {
+    verbose: flags.boolean({char: 'v', required: false, description: 'show verbose logs'}),
+  }
 
-  public isRdt: boolean
+  public static excludeDirRule = /^_docs\/[^\/]+\/(?!([^\/]*\.md$))+/
 
   public pages: DocPageRoute[]
 
   public localConfig: RdcConf | RdsConf
+
+  public verbose = false
 
   public get navs() {
     const navs = [
@@ -29,7 +35,7 @@ export default abstract class DocsBase extends Command {
       {title: '日志', url: '/rde/changelog.html'},
     ]
 
-    if (this.isRdt) {
+    if (conf.rdType === RdTypes.Container) {
       const nav = {title: '速查', url: '/rde/cheat.sheet.html'}
       navs.splice(1, 0, nav)
       return navs
@@ -47,7 +53,7 @@ export default abstract class DocsBase extends Command {
     const {framework = 'vue'} = this.localConfig
 
     if (!conf.frameworks[framework]) {
-      throw Error(`Rde doesn't support framework: ${framework}`)
+      throw Error(MCOMMON.UNSUPPORTED_FRAMEWORK)
     }
 
     const {cdn = []} = conf.frameworks[framework]
@@ -110,29 +116,36 @@ export default abstract class DocsBase extends Command {
   }
 
   public async init() {
-    const {name} = require(resolve(conf.cwd, './package.json'))
+    // @ts-ignore
+    const {flags} = this.parse(this.constructor)
+    this.verbose = flags.verbose
 
-    if (!name.endsWith('-rdt') && !name.endsWith('-rds')) {
-      throw Error('wrong package name format, please end it with -rdt or -rds')
-    } else {
-      this.isRdt = name.endsWith('-rdt')
+    const {rdsConfPath, rdcConfPath, RdTypes} = conf
+    if (fs.existsSync(rdsConfPath)) {
+      conf.rdType = RdTypes.Suite
+    } else if (fs.existsSync(rdcConfPath)) {
+      conf.rdType = RdTypes.Container
+    }
+
+    if (!conf.rdType) {
+      throw Error(MDOCS.UNRECOGNIZED)
+    }
+
+    if (!fs.existsSync(conf.docsDir)) {
+      throw Error(MDOCS.MISSING_DOCS_DIR)
     }
 
     const homepagePath = resolve(conf.docsDir, 'index.md')
     const faqPath = resolve(conf.docsDir, 'faq.md')
 
     if (!fs.existsSync(homepagePath) || !fs.existsSync(faqPath)) {
-      throw Error('cannot find index.md or faq.md in your _docs dir, please provide')
+      throw Error(MDOCS.MISSING_REQUIRED_MD)
     }
 
-    if (!fs.existsSync(conf.docsDir)) {
-      throw Error('cannot find _docs dir, please provide')
-    }
-
-    if (this.isRdt) {
-      this.localConfig = require(`${conf.cwd}/${conf.rdcConfName}`)
+    if (conf.rdType === RdTypes.Container) {
+      this.localConfig = require(rdcConfPath)
     } else {
-      this.localConfig = require(`${conf.cwd}/${conf.rdsConfName}`)
+      this.localConfig = require(rdsConfPath)
     }
 
     this.pages = this.getPages()
@@ -148,7 +161,11 @@ export default abstract class DocsBase extends Command {
   public async postRun() {}
 
   public async catch(e) {
-    logger.error(e.message)
+    if (this.verbose) {
+      logger.error(e)
+    } else {
+      logger.error(e.message)
+    }
     this.exit(1)
   }
 

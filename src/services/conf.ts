@@ -38,6 +38,10 @@ const conf = {
     return resolve(conf.cwd, rdcConfName)
   },
 
+  get rdsConfPath() {
+    return resolve(conf.cwd, rdsConfName)
+  },
+
   get dockerWorkDirRoot() {
     return '/usr/rde'
   },
