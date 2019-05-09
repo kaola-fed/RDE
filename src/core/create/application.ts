@@ -1,3 +1,4 @@
+import * as npmWhich from 'npm-which'
 import * as path from 'path'
 
 import conf from '../../services/conf'
@@ -70,12 +71,15 @@ export default class ApplicationCreate extends CreateCore {
       overwrite: true,
     })
 
-    await _.copy(path.resolve(__dirname, '../../mustaches/rda/'), conf.cwd, {
-      option: {
-        filter(filename) {
-          return path.extname(filename) !== '.mustache'
-        }
-      }
+    const eslintBinPath = npmWhich(conf.cwd).sync('eslint')
+    const eslintLibPath = eslintBinPath.replace('bin/eslint', 'lib/node_modules/eslint')
+    await render.renderDir(path.resolve(__dirname, '../../mustaches/rda/'), {
+      eslintLibPath
+    }, ['.xml'], conf.cwd, {
+      filter(filename) {
+        return path.extname(filename) !== '.mustache'
+      },
+      overwrite: true
     })
   }
 
