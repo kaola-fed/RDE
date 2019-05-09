@@ -80,7 +80,7 @@ export default class DockerRun {
 
     const {includes} = rdtRender
 
-    if (suites.length) {
+    if (suites && suites.length) {
       container.render.suites = suites
     }
 
