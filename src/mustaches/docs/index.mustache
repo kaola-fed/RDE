@@ -6,9 +6,10 @@
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet"
         href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1183501_stmalbigu4h.css">
 
   <%>style%>
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 
   <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
   <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
@@ -24,6 +25,36 @@
 
     <div id="rde-page" data-simplebar>
       <%{content}%>
+
+      <div id="example1"></div>
+      <script>
+        Vue.component('component-box', {
+          el: 'example1',
+          template: `
+          <div class="rde-component">
+            <div id="test" class="rde-component__example">
+              <slot></slot>
+            </div>
+            <div class="rde-component__code" v-if="!collapse">
+             123
+            </div>
+            <div class="rde-component-control">
+              <a @click="collapse=!collapse"
+                class="rde-component-control__collapse"
+                href="javascript:;" v-html="collapse ? '显示代码' : '隐藏代码'">
+              </a>
+              <a class="rde-component-control__run"
+                   href="javascript:;">在线运行</a>
+            </div>
+          </div>
+          `,
+          data() {
+            return {
+              collapse: true,
+            }
+          },
+        });
+      </script>
     </div>
   </div>
 
@@ -61,7 +92,7 @@
           return page.url === location.pathname;
         },
       },
-    })
+    });
   </script>
 </body>
 </html>

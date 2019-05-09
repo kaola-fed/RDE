@@ -17,4 +17,28 @@ describe('markdown', () => {
     const str = mdIt.render('[this is a paragraph](http://www.kaola.com)')
     expect(str).to.equal('<p class="rde-p"><a class="rde-a" href="http://www.kaola.com">this is a paragraph</a></p>\n')
   })
+
+  it('should test', () => {
+    let md = '```component:vue'
+    md += `
+      <template>
+        <el-radio v-model="radio" label="1">备选项</el-radio>
+        <el-radio v-model="radio" label="2">备选项</el-radio>
+      </template>
+
+      <script>
+        export default {
+          data () {
+            return {
+              radio: '1'
+            };
+          }
+        }
+      </script>
+    `
+    md += '```'
+
+    const str = mdIt.render(md)
+    expect(str).to.equal('abc')
+  })
 })
