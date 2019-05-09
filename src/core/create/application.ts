@@ -1,6 +1,10 @@
+import * as path from 'path'
+
 import conf from '../../services/conf'
 import docker from '../../services/docker'
+import npm from '../../services/npm'
 import render from '../../services/render'
+import _ from '../../util'
 
 import CreateCore from './index'
 
@@ -9,15 +13,41 @@ export default class ApplicationCreate extends CreateCore {
     await docker.pull(this.rdc)
 
     const name = this.rdc.split(':')[0]
+
+    await _.asyncExec(`mkdir ${conf.localCacheDir}`)
+
+    const eslintrcPath = `${conf.cwd}/${conf.localCacheDir}/.eslintrc.js`
+
     await docker.copy(
       this.rdc,
       [{
         from: `${conf.dockerWorkDirRoot}/${name}/app`,
         to: `${conf.cwd}/app`,
+      }, {
+        from: `${conf.dockerWorkDirRoot}/${name}/.eslintrc.js`,
+        to: eslintrcPath
       }],
     )
 
     await this.getRdcConf()
+    await this.installEslintExtends(eslintrcPath)
+  }
+
+  public async installEslintExtends(eslintrcPath) {
+    const eslintrc = _.ensureRequire(eslintrcPath)
+    let eslintDevs = []
+    if (eslintrc.plugins) {
+      typeof eslintrc.plugins === 'string' ?
+        eslintDevs.push(this.getValidPluginName(eslintrc.plugins)) :
+        eslintrc.plugins.forEach(item => eslintDevs.push(this.getValidPluginName(item)))
+    }
+    if (eslintrc.extends) {
+      typeof eslintrc.extends === 'string' ?
+        eslintDevs.push(this.getValidConfigName(eslintrc.extends)) :
+        eslintrc.extends.forEach(item => eslintDevs.push(this.getValidConfigName(item)))
+    }
+    eslintDevs = [...new Set(eslintDevs)]
+    await npm.install(`${eslintDevs.join(' ')} -g`)
   }
 
   public async genConfFile() {
@@ -35,5 +65,38 @@ export default class ApplicationCreate extends CreateCore {
       name: this.name,
       homepage: conf.homepage,
     }, 'README.md')
+
+    await render.renderTo('.gitignore', {}, '.gitignore', {
+      overwrite: true,
+    })
+
+    await _.copy(path.resolve(__dirname, '../../mustaches/rda/'), conf.cwd, {
+      option: {
+        filter(filename) {
+          return path.extname(filename) !== '.mustache'
+        }
+      }
+    })
+  }
+
+  public getValidPluginName(plugin) {
+    if (plugin.includes('eslint-plugin-')) {
+      return plugin
+    }
+    return `eslint-plugin-${plugin}`
+  }
+
+  public getValidConfigName(name) {
+    if (name.includes('eslint-config-')) {
+      return name.split('/')[0]
+    }
+    if (name.includes('eslint:')) {
+      return ''
+    }
+    if (name.includes('plugin:')) {
+      const plugin = name.split(':')[1].split('/')[0]
+      return this.getValidPluginName(plugin)
+    }
+    return `eslint-config-${name.split('/')[0]}`
   }
 }

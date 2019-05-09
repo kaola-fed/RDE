@@ -7,7 +7,7 @@ import npm from '../services/npm'
 
 export default async function({ config }) {
   const file = path.join(config.cacheDir, 'version')
-  const delayInDays = 1
+  const delayInDays = 6
 
   const needCheck = async () => {
     try {
