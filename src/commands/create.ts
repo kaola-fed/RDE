@@ -43,6 +43,8 @@ export default class Create extends Base {
   public from = ''
 
   public async preInit() {
+    await this.config.runHook('checkUpdate', {})
+
     const {flags} = this.parse(Create)
     const {from} = flags
 

@@ -77,8 +77,8 @@
     "commands": "./lib/commands",
     "bin": "rde",
     "hooks": {
-      "init": [
-        "./lib/hooks/init"
+      "checkUpdate": [
+        "./lib/hooks/check.update"
       ]
     },
     "plugins": [

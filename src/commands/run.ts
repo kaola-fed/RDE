@@ -95,6 +95,7 @@ export default class Run extends RunBase {
 
   public async preInit() {
     await super.preInit()
+    await this.config.runHook('checkUpdate', {})
 
     const {flags} = this.parse(Run)
     this.rebuild = flags.rebuild
