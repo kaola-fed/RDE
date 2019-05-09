@@ -20,7 +20,8 @@ export default class DockerRun {
 
   public async start() {
     let config
-    if (conf.rdType !== conf.RdTypes.Application) {
+    if (conf.rdType === conf.RdTypes.Container ||
+      (conf.rdType === conf.RdTypes.Application && !fs.existsSync(conf.runtimeDir))) {
       // generate rdt template from rdt chain
       config = await this.composeRdcChain()
 
@@ -75,10 +76,10 @@ export default class DockerRun {
   public async renderDir(dir: string, config: Config) {
     const srcDir = resolve(dir, 'template')
     // @ts-ignore
-    const {render: rdtRender, dev = {render: {}}, container} = config
+    const {render: rdtRender, container} = config
 
     const {includes} = rdtRender
-    const dataView = container ? container.render : dev ? dev.render : {}
+    const dataView = container ? container.render : rdtRender.dev ? rdtRender.dev.render : {}
 
     await render.renderDir(srcDir, {
       ...dataView

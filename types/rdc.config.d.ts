@@ -11,6 +11,9 @@ interface Render {
   includes: string[],
   tags: string[],
   validate: ((dataView: any) => boolean)[],
+  dev: {
+    render: {[key: string]: any}
+  },
 }
 
 interface Mapping {
@@ -32,8 +35,5 @@ interface RdcConf {
   render: Render
   mappings: Mapping[]
   docker: Docker,
-  dev: {
-    render: {[key: string]: any}
-  },
   nodeVersion: string,
 }

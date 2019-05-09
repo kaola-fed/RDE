@@ -57,6 +57,20 @@
 
   .rde-a { color: var(--link-color); text-decoration: none; }
   code { padding: 0 4px; background-color: #f9fafc; border: 1px solid #eaeefb; }
+
+  /* rde-component box */
+  .rde-component { border: 1px solid #e1e6ec; border-radius: 4px; }
+  .rde-component:hover { box-shadow: 0 0 8px 0 rgba(232,237,250,0.6), 0 2px 4px 0 rgba(232,237,250,0.5); }
+
+  .rde-component__example, .rde-component__code { padding: 16px 24px; }
+  .rde-component__example, .rde-component__code { border-bottom: 1px solid #e1e6ec; }
+  .rde-component__code { font-size: 12px; }
+
+  .rde-component-control { display: flex; align-items: center; justify-content: center; height: 40px; line-height: 40px; padding: 0 24px; font-size: 12px; }
+  .rde-component-control__collapse, .rde-component-control__run { color: var(--link-color); text-decoration: none; }
+  .rde-component-control__collapse { flex: 1; text-align: center; }
+  .rde-component-control__collapse a { display: inline-block; }
+  .rde-component-control__run { margin-left: auto; }
 </style>
 
 <style>
