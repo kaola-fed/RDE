@@ -199,6 +199,13 @@ class Docker {
       const image = isApplication ? rdcName : extendsName
       const resultPkgJson = await this.getPkgJson(image, pkgJson)
 
+      if (isApplication) {
+        const rdaConf = conf.getAppConf()
+        rdaConf.suites.forEach(item => {
+          resultPkgJson.dependencies[item.name] = item.version
+        })
+      }
+
       await writePackage(`${localCacheDir}`, resultPkgJson)
 
       if (isApplication) {
@@ -237,7 +244,7 @@ class Docker {
     }])
 
     const rdcConf = require(resolve(cwd, destRdcConfPath))
-    let pkgJson = {}
+    let pkgJson: any = {}
     if (fs.existsSync(destPkgPath)) {
       pkgJson = require(resolve(cwd, destPkgPath))
     }
