@@ -1,6 +1,7 @@
 import {flags} from '@oclif/command'
 import {spawn} from 'child_process'
 import * as path from 'path'
+import * as readline from 'readline'
 
 import RunBase from '../base/run'
 import conf from '../services/conf'
@@ -149,6 +150,16 @@ export default class Run extends RunBase {
     let child = null
     process.on('SIGINT', () => {
       child.kill()
+    })
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    })
+
+    rl.on('SIGINT', () => {
+      child.kill()
+      process.exit(0)
     })
 
     child = spawn('docker-compose', (args as ReadonlyArray<string>), {
