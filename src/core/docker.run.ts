@@ -76,9 +76,14 @@ export default class DockerRun {
   public async renderDir(dir: string, config: Config) {
     const srcDir = resolve(dir, 'template')
     // @ts-ignore
-    const {render: rdtRender, container} = config
+    const {render: rdtRender, container, suites} = config
 
     const {includes} = rdtRender
+
+    if (suites && suites.length) {
+      container.render.suites = suites
+    }
+
     const dataView = container ? container.render : rdtRender.dev ? rdtRender.dev.render : {}
 
     await render.renderDir(srcDir, {

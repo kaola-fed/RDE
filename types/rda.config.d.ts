@@ -6,6 +6,7 @@ interface AppConfTemplate {
 
 interface AppConfSuite {
   name: string,
+  alias: string,
   version: string,
   docs: string,
 }
