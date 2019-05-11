@@ -25,36 +25,6 @@
 
     <div id="rde-page" data-simplebar>
       <%{content}%>
-
-      <div id="example1"></div>
-      <script>
-        Vue.component('component-box', {
-          el: 'example1',
-          template: `
-          <div class="rde-component">
-            <div id="test" class="rde-component__example">
-              <slot></slot>
-            </div>
-            <div class="rde-component__code" v-if="!collapse">
-             123
-            </div>
-            <div class="rde-component-control">
-              <a @click="collapse=!collapse"
-                class="rde-component-control__collapse"
-                href="javascript:;" v-html="collapse ? '显示代码' : '隐藏代码'">
-              </a>
-              <a class="rde-component-control__run"
-                   href="javascript:;">在线运行</a>
-            </div>
-          </div>
-          `,
-          data() {
-            return {
-              collapse: true,
-            }
-          },
-        });
-      </script>
     </div>
   </div>
 

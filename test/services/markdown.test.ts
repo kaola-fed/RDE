@@ -19,7 +19,7 @@ describe('markdown', () => {
   })
 
   it('should test', () => {
-    let md = '```component:vue'
+    let md = '```component_vue'
     md += `
       <template>
         <el-radio v-model="radio" label="1">备选项</el-radio>

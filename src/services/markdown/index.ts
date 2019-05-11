@@ -2,6 +2,7 @@ import * as hl from 'highlight.js'
 import * as MarkdownIt from 'markdown-it'
 import * as markdownMeta from 'markdown-it-meta'
 
+import markdownComponent from './component'
 import markdownTable from './table'
 
 const mdIt = new MarkdownIt({
@@ -39,5 +40,6 @@ mdIt.renderer.rules.link_open = (tokens, idx, _options, _env, slf) => {
 
 mdIt.use(markdownMeta)
 mdIt.use(markdownTable)
+mdIt.use(markdownComponent)
 
 export default mdIt
