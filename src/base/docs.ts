@@ -30,7 +30,7 @@ export default abstract class DocsBase extends Command {
     ]
 
     if (this.isRdt) {
-      const nav = {title: '速查', url: '/rde/cheat.sheet.html'}
+      const nav = {title: '速查', url: '/cheatSheet.html'}
       navs.splice(1, 0, nav)
       return navs
     }
