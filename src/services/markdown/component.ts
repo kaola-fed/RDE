@@ -1,26 +1,30 @@
-import * as deasync from 'deasync'
-import * as Vue from 'vue'
-import {createRenderer} from 'vue-server-renderer'
+import * as hljs from 'highlight.js'
 import {parseComponent} from 'vue-template-compiler'
 
 import conf from '../conf'
 
-const vueRenderer = createRenderer()
 let prefix = 'component'
 let frameworks = Object.keys(conf.frameworks)
+let counter = 0
 
-const codeBoxCode = `
+const getLine = (state, line) => {
+  const pos = state.bMarks[line] + state.blkIndent
+  const max = state.eMarks[line]
+  return state.src.substr(pos, max - pos)
+}
+
+let boxCode = `
   <template>
     <div>
       <div class="rde-component">
-        <div class="rde-component__example" @click="test">
+        <div class="rde-component__example">
            <example></example>
         </div>
         <div class="rde-component__code" v-if="!collapse">
-         __code__
+          <pre><code>__code__</code></pre>
         </div>
         <div class="rde-component-control">
-          <a @click="collapse=false"
+          <a @click="collapse=!collapse"
             class="rde-component-control__collapse"
             href="javascript:;" v-html="collapse ? '显示代码' : '隐藏代码'">
           </a>
@@ -35,12 +39,7 @@ const codeBoxCode = `
     export default {
       data() {
         return {
-          collapse: false,
-        }
-      },
-      methods: {
-        test() {
-          alert(123)
+          collapse: true,
         }
       }
     }
@@ -52,49 +51,66 @@ export default mdIt => {
     vue(tokens, idx) {
       if (tokens[idx].nesting === 0) {
         const {content} = tokens[idx]
+        let regexp = /export default \{([\s\S]*)\}/
+
         const SFC = parseComponent(content)
-        let example: any = {}
+        let exampleScript = ''
         if (SFC.script) {
-          // tslint:disable
-          example = eval(SFC.script.content.replace('export default', 'example = '))
-          // tslint:enable
-          example.template = `<div>${SFC.template.content}</div>`
+          const matches = SFC.script.content.match(regexp)
+          exampleScript = matches.length > 1 ? matches[1] : ''
         }
 
-        const codeBoxSFC = parseComponent(codeBoxCode)
-        let codebox: any = {}
-        // tslint:disable
-        codebox = eval(codeBoxSFC.script.content.replace('export default', 'codebox = '))
-        // tslint:enable
-        codebox.template = codeBoxSFC.template.content
-        codebox.components = {
-          example,
-        }
+        boxCode = boxCode.replace(/__code__/, hljs.highlightAuto(content, ['html', 'javascript']).value)
+        const boxSFC = parseComponent(boxCode)
+        const boxScript = boxSFC.script.content.match(regexp)[1]
 
-        // @ts-ignore
-        const component = new Vue(codebox)
-        const renderToString = deasync(vueRenderer.renderToString)
-        return renderToString(component)
+        counter++
+
+        return `
+          <div id="example-${counter}"></div>
+          <script>
+            new Vue({
+               template: \`${boxSFC.template.content.replace(/\`/gm, '\\`')}\`,
+               components: {
+                 example: {
+                   template: \`<div>${SFC.template.content.replace(/\`/gm, '\\`')}</div>\`,
+                   ${exampleScript}
+                 }
+               },
+               ${boxScript}
+            }).$mount('#example-${counter}')
+          </script>
+        `
       }
     },
   }
 
-  mdIt.block.ruler.before('fence', `${prefix}_x`, function (state, startLine, endLine) {
+  mdIt.block.ruler.before('fence', `${prefix}_x`, function (state, startLine) {
     const startLineEndPos = state.eMarks[startLine]
     // match string after ```
-    const marker = state.src.slice(3, startLineEndPos)
+    const pos = state.bMarks[startLine] + state.tShift[startLine]
+    const marker = state.src.slice(pos + 3, startLineEndPos)
 
     let token = null
 
     if (marker === 'component_vue') {
       token = state.push(`${prefix}_vue`, 'div', 0)
-      token.content = state.src.slice(state.bMarks[1], state.bMarks[endLine - 1])
+
+      let ruleEndLine = startLine
+      do {
+        ruleEndLine++
+      } while (getLine(state, ruleEndLine).trim() !== '```')
+      token.content = state.src.slice(state.bMarks[startLine + 1], state.bMarks[ruleEndLine])
+
+      state.line = ruleEndLine + 2
+      return true
     }
 
-    if (marker === 'component_react') {}
+    if (marker === 'component_react') {
+      return true
+    }
 
-    state.line = endLine + 1
-    return true
+    return false
   })
 
   frameworks.forEach(framework => {

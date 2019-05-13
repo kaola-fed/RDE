@@ -15,7 +15,12 @@
   <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
 
   <%>frameworkScripts%>
-  <%>userScripts%>
+  <%#userStyles%>
+    <link rel="stylesheet" href="<%{.}%>" />
+  <%/userStyles%>
+  <%#userScripts%>
+    <script src="<%{.}%>"></script>
+  <%/userScripts%>
 </head>
 <body>
   <div id="rde-docs">
@@ -23,7 +28,7 @@
       <%>layout%>
     </div>
 
-    <div id="rde-page" data-simplebar>
+    <div id="rde-page">
       <%{content}%>
     </div>
   </div>
@@ -47,6 +52,9 @@
       mounted() {
         const el = new SimpleBar(this.$refs.sidebarWrap);
         el.recalculate();
+
+        const contentEl = new SimpleBar(document.querySelector('#rde-page'))
+        contentEl.recalculate()
       },
       methods: {
         isCrtNav(nav) {

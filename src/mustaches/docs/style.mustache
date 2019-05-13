@@ -15,6 +15,7 @@
   body { overflow: hidden; }
   *  { margin: 0; padding: 0; }
   ul, li { list-style: none; }
+  table { border-collapse: collapse; border-spacing: 0; }
 
   #rde-docs { position: relative; width: 1200px; height: 100%; margin: 0 auto; }
   #rde-page { position: absolute; left: var(--sidebar-width); top: var(--header-height); right: calc((1200px - 100vw)/2); bottom: 0; padding: 48px calc((100vw - 1200px)/2) 48px 20px; }
@@ -56,10 +57,10 @@
   .rde-p + .rde-p { margin-top: 20px; }
 
   .rde-a { color: var(--link-color); text-decoration: none; }
-  code { padding: 0 4px; background-color: #f9fafc; border: 1px solid #eaeefb; }
+  code { padding: 0 4px; }
 
   /* rde-component box */
-  .rde-component { border: 1px solid #e1e6ec; border-radius: 4px; }
+  .rde-component { margin: 16px 0; border: 1px solid #e1e6ec; border-radius: 4px; }
   .rde-component:hover { box-shadow: 0 0 8px 0 rgba(232,237,250,0.6), 0 2px 4px 0 rgba(232,237,250,0.5); }
 
   .rde-component__example, .rde-component__code { padding: 16px 24px; }
@@ -71,6 +72,20 @@
   .rde-component-control__collapse { flex: 1; text-align: center; }
   .rde-component-control__collapse a { display: inline-block; }
   .rde-component-control__run { margin-left: auto; }
+
+  /* rde-component api */
+  .rde-api { margin: 16px 0; }
+  .rde-api__tt { font-family: monospace; font-size: 17px; margin:8px 0; padding: 16px 24px; border-left: 4px solid var(--primary-color); }
+  .rde-api__subtt { font-size: 16px; margin:8px 0; padding: 16px 0; border-bottom: 1px solid #e1e6ec; }
+  .rde-api__desc { margin: 24px 0 0 0; font-size: 15px; color: #999; }
+
+  /* rde-component api */
+  .rde-table { font-size: 12px; width: 100%; margin: 8px 0; }
+  .rde-table th { background: #eef1f4; border-bottom: 1px solid #ecf2f9; color: #666; text-align: left; }
+  .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.5em 1.4em; border: none; }
+  .rde-table td { border-bottom: 1px solid #ecf2f9; }
+  .rde-table tr:nth-child(2n-1) { background: #fff; }
+  .rde-table tr:nth-child(2n) { background: #f6f9fc; }
 </style>
 
 <style>
