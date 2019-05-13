@@ -2,8 +2,9 @@ import * as hl from 'highlight.js'
 import * as MarkdownIt from 'markdown-it'
 import * as markdownMeta from 'markdown-it-meta'
 
-import markdownComponent from './component'
-import markdownTable from './table'
+import api from './api'
+import component from './component'
+import table from './table'
 
 const mdIt = new MarkdownIt({
   highlight(str, lang) {
@@ -39,7 +40,8 @@ mdIt.renderer.rules.link_open = (tokens, idx, _options, _env, slf) => {
 }
 
 mdIt.use(markdownMeta)
-mdIt.use(markdownTable)
-mdIt.use(markdownComponent)
+mdIt.use(api)
+mdIt.use(component)
+mdIt.use(table)
 
 export default mdIt

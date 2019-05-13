@@ -1,4 +1,6 @@
 import {expect} from 'chai'
+import * as fs from 'fs'
+import * as path from 'path'
 
 import mdIt from '../../src/services/markdown'
 
@@ -19,9 +21,8 @@ describe('markdown', () => {
   })
 
   it('should test', () => {
-    let md = '```component_vue'
-    md += `
-      <template>
+    let md = '```component_vue\n'
+    md += `<template>
         <el-radio v-model="radio" label="1">备选项</el-radio>
         <el-radio v-model="radio" label="2">备选项</el-radio>
       </template>
@@ -38,6 +39,12 @@ describe('markdown', () => {
     `
     md += '```'
 
+    const str = mdIt.render(md)
+    expect(str).to.equal('abc')
+  })
+
+  it('should test api', () => {
+    let md = fs.readFileSync(path.resolve(__dirname, './test.md'), 'utf-8')
     const str = mdIt.render(md)
     expect(str).to.equal('abc')
   })

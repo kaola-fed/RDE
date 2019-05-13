@@ -44,9 +44,14 @@ export default abstract class DocsBase extends Command {
     return navs
   }
 
+  public get userStyles() {
+    const {docs} = this.localConfig
+    return docs.userStyles || []
+  }
+
   public get userScripts() {
     const {docs} = this.localConfig
-    return docs.userScripts || ''
+    return docs.userScripts || []
   }
 
   public get frameworkScripts() {
@@ -102,10 +107,11 @@ export default abstract class DocsBase extends Command {
             content,
             navs: JSON.stringify(this.navs),
             pages: JSON.stringify(this.pages),
+            userStyles: this.userStyles,
+            userScripts: this.userScripts,
           }, ['<%', '%>'], {
             style,
             layout,
-            userScripts: this.userScripts,
             frameworkScripts: this.frameworkScripts,
           })
 
