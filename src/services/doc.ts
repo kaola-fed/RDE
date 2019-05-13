@@ -1,13 +1,10 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import * as standardVersion from 'standard-version'
-import * as readPkgJson from 'read-package-json'
 import * as createHTML from 'create-html'
+import * as fs from 'fs'
+import * as readPkgJson from 'read-package-json'
+import * as standardVersion from 'standard-version'
 
 import conf from './conf'
 import mapping from './mapping'
-import render from './render';
-// import cache from './cache'
 
 export default {
   get lintFiles() {
@@ -17,7 +14,7 @@ export default {
 
   async getPkgData() {
     return new Promise(resolve => {
-      readPkgJson(`${conf.cwd}/template/package.json`, console.error, false, (err, data) => resolve(err ? {} : data))
+      readPkgJson(`${conf.cwd}/template/package.json`, console.log, false, (err, data) => resolve(err ? {} : data))
     })
   },
 
@@ -25,9 +22,9 @@ export default {
     return this.lintFiles.reduce((obj, val) => {
       try {
         const data = require(`${conf.cwd}/template/${val}`)
-        return { ...obj, [val]: data }
-      } catch(e) {
-        return { ...obj }
+        return {...obj, [val]: data}
+      } catch {
+        return {...obj}
       }
     }, {})
   },
@@ -41,8 +38,8 @@ export default {
   },
 
   renderTable(data, title) {
-    let content = '';
-    for (const [key ,value] of Object.entries(data)) {
+    let content = ''
+    for (const [key , value] of Object.entries(data)) {
       if (value.constructor === Object) {
         content += `<tr><td>${key}</td><td>${this.renderTable(value)}</td></tr>`
       } else if (value.constructor === Array) {
@@ -60,20 +57,21 @@ export default {
         content += `<tr><td>${key}</td><td>${JSON.stringify(value)}</td></tr>`
       }
     }
-    return title ? `<table><caption>${title}</caption>${content}</table>`: `<table class="inner-table">${content}</table>`
+    return title ? `<table><caption>${title}</caption>${content}</table>`
+    : `<table class="inner-table">${content}</table>`
   },
 
   async generateChangelog() {
-    const outputPath = `${conf.docsDir}/CHANGELOG.md`;
+    const outputPath = `${conf.docsDir}/CHANGELOG.md`
     await standardVersion({
       infile: outputPath,
       changelogHeader: ' ',
       // template: 'ss.hjs',
       // issueUrlFormat: '{{issues}}/{{id}}'
     }).then(() => {
-      console.log(`generate successfully: ${outputPath}`);
+      console.log(`generate successfully: ${outputPath}`)
     }).catch(err => {
-        console.error(`generate changelog file failed with message: ${err.message}`)
+      console.log(`generate changelog file failed with message: ${err.message}`)
     })
   },
 
@@ -86,11 +84,11 @@ export default {
     }
     let result = ''
     // 描述文件映射
-    const mappingData = data.mapping.reduce((obj, val) => { return { ...obj, [val.from]: val.to } }, {})
+    const mappingData = data.mapping.reduce((obj, val) => ({...obj, [val.from]: val.to}), {})
     result += this.renderTable(mappingData, '文件映射')
     // 描述package.json内容
-    const { name, version, description, dependencies } = data.pkg
-    result += this.renderTable({ name, version, description, dependencies }, 'package.json')
+    const {name, version, description, dependencies} = data.pkg
+    result += this.renderTable({name, version, description, dependencies}, 'package.json')
     // 描述lint规则
     Object.keys(data.lint).forEach(i => {
       result += this.renderTable(data.lint[i], i)
