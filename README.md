@@ -105,6 +105,9 @@ _See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.
 USAGE
   $ rde docs:publish
 
+OPTIONS
+  -v, --verbose  show verbose logs
+
 EXAMPLE
   $ rde docs:serve
 ```
@@ -116,6 +119,9 @@ _See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v
 ```
 USAGE
   $ rde docs:serve
+
+OPTIONS
+  -v, --verbose  show verbose logs
 
 EXAMPLE
   $ rde docs:serve
