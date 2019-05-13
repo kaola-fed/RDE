@@ -8,3 +8,5 @@
 node_modules
 .idea
 test/run
+tsconfig.tsbuildinfo
+.tsbuildinfo

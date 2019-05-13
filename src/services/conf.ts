@@ -1,4 +1,5 @@
 import * as extend from 'deep-extend'
+import * as os from 'os'
 import * as path from 'path'
 
 import _ from '../util'
@@ -47,7 +48,7 @@ const conf = {
   },
 
   get tmpDir() {
-    return '/tmp/rde_rdc_tmp'
+    return path.join(os.tmpdir(), 'rde_rdc_tmp')
   },
 
   get runtimeDir() {

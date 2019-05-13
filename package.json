@@ -109,8 +109,8 @@
     "test": "nyc --extension .ts mocha --project ./test/tsconfig.json --opts ./test/mocha.opts --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
     "commitmsg": "validate-commit-msg",
-    "lint": "tsc --pretty && tslint --project './tslint.json'",
-    "lint:fix": "tsc --pretty && tslint --project './tslint.json' --fix"
+    "lint": "tsc --pretty && tslint --project ./tslint.json",
+    "lint:fix": "tsc --pretty && tslint --project ./tslint.json --fix"
   },
   "types": "lib/index.d.ts"
 }
