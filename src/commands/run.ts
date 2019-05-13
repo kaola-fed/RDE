@@ -127,6 +127,7 @@ export default class Run extends RunBase {
       `dev-${this.tag}`,
       conf.localCacheDir,
       conf.rdType === RdTypes.Application,
+      this.cmd === 'build'
     )
 
     await docker.genPkgJson()

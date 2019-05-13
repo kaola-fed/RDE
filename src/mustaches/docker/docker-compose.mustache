@@ -14,6 +14,9 @@ services:
     - ../rdc.config.js:{{{workDir}}}/rdc.config.js
     - /Users/hale/Work/kaola/rde/lib:/usr/local/lib/node_modules/rde/lib
     {{/isApp}}
+    {{#isBuild}}
+    - ../.rde:{{{workDir}}}/.rde
+    {{/isBuild}}
     ports:
     {{#ports}}
     - "{{.}}"

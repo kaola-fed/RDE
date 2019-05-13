@@ -135,6 +135,7 @@ class Docker {
     tag,
     dir,
     isApp = false,
+    isBuild = false,
   ) {
     if (!tag) {
       const name = path.basename(conf.cwd)
@@ -148,6 +149,7 @@ class Docker {
       watch,
       tag,
       isApp,
+      isBuild,
     }, `${dir}/docker-compose.yml`, {
       overwrite: true,
     })

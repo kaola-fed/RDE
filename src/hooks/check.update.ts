@@ -1,17 +1,17 @@
 import * as Table from 'cli-table2'
-import * as semver from 'semver'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import * as semver from 'semver'
 
 import npm from '../services/npm'
 
-export default async function({ config }) {
+export default async function ({config}) {
   const file = path.join(config.cacheDir, 'version')
   const delayInDays = 6
 
   const needCheck = async () => {
     try {
-      const { mtime } = await fs.stat(file)
+      const {mtime} = await fs.stat(file)
       const expireDate = new Date(
         mtime.valueOf() + 1000 * 60 * 60 * 24 * delayInDays
       )
@@ -23,9 +23,9 @@ export default async function({ config }) {
   }
 
   const checkVersion = async () => {
-    const { latest } = await fs.readJson(file)
+    const {latest} = await fs.readJson(file)
 
-    if(!latest) await updateVersion()
+    if (!latest) await updateVersion()
 
     const table = new Table({
       head: ['package', 'current', 'latest'],
@@ -48,7 +48,7 @@ export default async function({ config }) {
           colSpan: 3
         }
       ])
-
+      // tslint:disable:no-console
       console.log(table.toString())
     }
   }

@@ -25,7 +25,7 @@ export default class ApplicationCreate extends CreateCore {
         from: `${conf.dockerWorkDirRoot}/${name}/app`,
         to: `${conf.cwd}/app`,
       }, {
-        from: `${conf.dockerWorkDirRoot}/${name}/.eslintrc.js`,
+        from: `${conf.dockerWorkDirRoot}/${name}/template/.eslintrc.js`,
         to: eslintrcPath
       }],
     )
