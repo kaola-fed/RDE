@@ -1,9 +1,11 @@
 import * as fs from 'fs'
+import * as path from 'path'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import _ from '../../util'
 
+const {join} = path
 export default class CreateCore {
   public name = ''
 
@@ -41,12 +43,12 @@ export default class CreateCore {
 
   public async getRdcConf() {
     const name = this.rdc.split(':')[0]
-    const confPath = `${conf.tmpDir}/${conf.rdcConfName}`
+    const confPath = join(conf.tmpDir, conf.rdcConfName)
 
     await docker.copy(
       this.rdc,
       [{
-        from: `${conf.dockerWorkDirRoot}/${name}/${conf.rdcConfName}`,
+        from: join(conf.dockerWorkDirRoot, name, conf.rdcConfName),
         to: confPath,
       }]
     )
@@ -57,7 +59,7 @@ export default class CreateCore {
   public async registerHooks() {
     await _.asyncExec('git init')
 
-    fs.writeFileSync('.git/hooks/pre-commit',
+    fs.writeFileSync(join('.git', 'hooks', 'pre-commit'),
       `
 #!/bin/sh
 rde lint -s

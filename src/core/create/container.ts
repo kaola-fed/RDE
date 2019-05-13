@@ -1,3 +1,5 @@
+import * as path from 'path'
+
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import render from '../../services/render'
@@ -5,6 +7,7 @@ import _ from '../../util'
 
 import CreateCore from './index'
 
+const {join} = path
 export default class ContainerCreate extends CreateCore {
   public async prepare() {
     await docker.pull(this.rdc)
@@ -14,8 +17,8 @@ export default class ContainerCreate extends CreateCore {
       await docker.copy(
         this.rdc,
         [{
-          from: `${conf.dockerWorkDirRoot}/${name}/app`,
-          to: `${conf.cwd}/app`,
+          from: join(conf.dockerWorkDirRoot, name, 'app'),
+          to: join(conf.cwd, 'app'),
         }],
       )
 
@@ -24,7 +27,7 @@ export default class ContainerCreate extends CreateCore {
       await docker.copy(
         this.rdc,
         [{
-          from: `${conf.dockerWorkDirRoot}/${name}/.`,
+          from: join(conf.dockerWorkDirRoot, name, '.'),
           to: `${conf.cwd}`,
         }],
       )
@@ -38,7 +41,7 @@ export default class ContainerCreate extends CreateCore {
     const {docs, framework}: RdcConf = this.rdcConf
 
     if (this.extendRdc) {
-      await render.renderTo(`rdc/${rdcConfName.slice(0, -3)}`, {
+      await render.renderTo(join('rdc', rdcConfName.slice(0, -3)), {
         extends: this.rdc,
         framework,
         docs: docs ? docs.url : '',
@@ -59,7 +62,7 @@ export default class ContainerCreate extends CreateCore {
   }
 
   public async genExtraFiles() {
-    await render.renderTo('rdc/README', {
+    await render.renderTo(join('rdc', 'README'), {
       name: this.name,
       homepage: conf.homepage,
     }, 'README.md', {

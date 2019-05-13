@@ -1,9 +1,11 @@
 import * as browserSync from 'browser-sync'
+import * as path from 'path'
 
 import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
 import Watcher from '../../services/watcher'
 
+const {join} = path
 export default class DocsServe extends BaseDocs {
   public static flags = {
     ...BaseDocs.flags,
@@ -30,7 +32,7 @@ export default class DocsServe extends BaseDocs {
     const mappings = [
       {
         from: conf.docsDir,
-        to: `../${conf.docsPagesDir}`,
+        to: join('..', conf.docsPagesDir),
         option: this.option,
       },
     ]

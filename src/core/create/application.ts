@@ -9,6 +9,7 @@ import _ from '../../util'
 
 import CreateCore from './index'
 
+const {join} = path
 export default class ApplicationCreate extends CreateCore {
   public async prepare() {
     await docker.pull(this.rdc)
@@ -17,15 +18,15 @@ export default class ApplicationCreate extends CreateCore {
 
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
 
-    const eslintrcPath = `${conf.cwd}/${conf.localCacheDir}/.eslintrc.js`
+    const eslintrcPath = join(conf.cwd, conf.localCacheDir, '.eslintrc.js')
 
     await docker.copy(
       this.rdc,
       [{
-        from: `${conf.dockerWorkDirRoot}/${name}/app`,
-        to: `${conf.cwd}/app`,
+        from: join(conf.dockerWorkDirRoot, name, 'app'),
+        to: join(conf.cwd, 'app'),
       }, {
-        from: `${conf.dockerWorkDirRoot}/${name}/template/.eslintrc.js`,
+        from: join(conf.dockerWorkDirRoot, name, 'template', '.eslintrc.js'),
         to: eslintrcPath
       }],
     )
@@ -54,7 +55,7 @@ export default class ApplicationCreate extends CreateCore {
   public async genConfFile() {
     const {appConfName} = conf
     const {docs, docker = {ports: []}} = this.rdcConf
-    await render.renderTo(`rda/${appConfName.slice(0, -3)}`, {
+    await render.renderTo(join('rda', appConfName.slice(0, -3)), {
       container: this.rdc,
       docs: docs ? docs.url : '',
       ports: JSON.stringify(docker.ports),
@@ -62,7 +63,7 @@ export default class ApplicationCreate extends CreateCore {
   }
 
   public async genExtraFiles() {
-    await render.renderTo('rda/README', {
+    await render.renderTo(join('rda', 'README'), {
       name: this.name,
       homepage: conf.homepage,
     }, 'README.md')

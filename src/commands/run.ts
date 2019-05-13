@@ -8,7 +8,7 @@ import conf from '../services/conf'
 import docker from '../services/docker'
 import {validateRda, validateRdc} from '../services/validate'
 
-const {resolve} = path
+const {resolve, join} = path
 const {RdTypes, cwd, rdcConfName} = conf
 export default class Run extends RunBase {
   public static description = 'run scripts provided by container'
@@ -70,7 +70,7 @@ export default class Run extends RunBase {
 
   public get tag() {
     if (conf.rdType === RdTypes.Container) {
-      const rdcConf = require(`${conf.cwd}/${conf.rdcConfName}`)
+      const rdcConf = require(join(conf.cwd, conf.rdcConfName))
 
       return rdcConf.docker.tag || null
     }
@@ -88,7 +88,7 @@ export default class Run extends RunBase {
     }
 
     if (conf.rdType === RdTypes.Container) {
-      const rdcConf = require(`${conf.cwd}/${conf.rdcConfName}`)
+      const rdcConf = require(join(conf.cwd, conf.rdcConfName))
 
       return rdcConf.docker.ports || []
     }

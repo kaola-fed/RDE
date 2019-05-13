@@ -13,7 +13,7 @@ import mdIt from '../services/markdown'
 import {MCOMMON, MDOCS} from '../services/message'
 import render from '../services/render'
 
-const {resolve} = path
+const {resolve, join} = path
 const {RdTypes} = conf
 export default abstract class DocsBase extends Command {
   public static flags = {
@@ -79,13 +79,13 @@ export default abstract class DocsBase extends Command {
         if (filePath.endsWith('.md')) {
           const dirname = path.dirname(filePath)
           const filename = path.basename(filePath, '.md')
-          return `${dirname}/${filename}.html`
+          return join(dirname, `${filename}.html`)
         }
         return filePath
       },
 
       filter(src) {
-        src = `${conf.docsDir}/${src}`
+        src = join(conf.docsDir, src)
         if (DocsBase.excludeDirRule.test(src)) {
           return false
         }
@@ -103,7 +103,7 @@ export default abstract class DocsBase extends Command {
           const layout = load('docs/layout')
 
           const output = render.render(index, {
-            title: 'RDE Suite',
+            title: 'RDE',
             content,
             navs: JSON.stringify(this.navs),
             pages: JSON.stringify(this.pages),

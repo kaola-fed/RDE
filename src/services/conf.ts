@@ -6,7 +6,7 @@ import _ from '../util'
 
 import {spinner} from './logger'
 
-const {resolve} = path
+const {resolve, join} = path
 
 const appConfName = 'rda.config.js'
 
@@ -114,7 +114,7 @@ const conf = {
     // rdcName docker-hub format: 'scope/abc-c'
     const rdcName = rdc.split(':')[0]
 
-    return `../../${rdcName}`
+    return join('../../', rdcName)
   },
 
   getRdcChain(nodeDir, chain = []): string[] {

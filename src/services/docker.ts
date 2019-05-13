@@ -10,7 +10,7 @@ import conf from './conf'
 import log from './logger'
 import render from './render'
 
-const {resolve} = path
+const {resolve, join} = path
 const {RdTypes} = conf
 
 class Docker {
@@ -233,15 +233,15 @@ class Docker {
       cwd,
     } = conf
     const name = image.split(':')[0]
-    const srcDir = `${dockerWorkDirRoot}/${name}`
-    const destPkgPath = `${localCacheDir}/package.json`
-    const destRdcConfPath = `${localCacheDir}/${rdcConfName}`
+    const srcDir = join(dockerWorkDirRoot, name)
+    const destPkgPath = join(localCacheDir, 'package.json')
+    const destRdcConfPath = join(localCacheDir, rdcConfName)
 
     await this.copy(image, [{
-      from: `${srcDir}/template/package.json`,
+      from: join(srcDir, 'template/package.json'),
       to: destPkgPath,
     }, {
-      from: `${srcDir}/${rdcConfName}`,
+      from: join(srcDir, rdcConfName),
       to: destRdcConfPath,
     }])
 
