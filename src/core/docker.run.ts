@@ -58,6 +58,7 @@ export default class DockerRun {
       // @TODO: copy chain with merge , not overriding
       await copy(srcDir, resolve(conf.tmpDir, 'template'), {
         overwrite: true,
+        dot: true,
         filter(filePath) {
           return !filePath.includes('node_modules')
         },
@@ -90,6 +91,7 @@ export default class DockerRun {
       ...dataView
     }, includes, conf.runtimeDir, {
       overwrite: true,
+      dot: true
     })
 
     await _.asyncExec(`rm -rf ${dir}`)
