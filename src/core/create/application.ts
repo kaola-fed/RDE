@@ -1,9 +1,8 @@
-import * as npmWhich from 'npm-which'
 import * as path from 'path'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
-import npm from '../../services/npm'
+import eslint from '../../services/eslint'
 import render from '../../services/render'
 import _ from '../../util'
 
@@ -32,24 +31,7 @@ export default class ApplicationCreate extends CreateCore {
     )
 
     await this.getRdcConf()
-    await this.installEslintExtends(eslintrcPath)
-  }
-
-  public async installEslintExtends(eslintrcPath) {
-    const eslintrc = _.ensureRequire(eslintrcPath)
-    let eslintDevs = []
-    if (eslintrc.plugins) {
-      typeof eslintrc.plugins === 'string' ?
-        eslintDevs.push(this.getValidPluginName(eslintrc.plugins)) :
-        eslintrc.plugins.forEach(item => eslintDevs.push(this.getValidPluginName(item)))
-    }
-    if (eslintrc.extends) {
-      typeof eslintrc.extends === 'string' ?
-        eslintDevs.push(this.getValidConfigName(eslintrc.extends)) :
-        eslintrc.extends.forEach(item => eslintDevs.push(this.getValidConfigName(item)))
-    }
-    eslintDevs = [...new Set(eslintDevs)]
-    await npm.install(`${eslintDevs.join(' ')} -g`)
+    await eslint.installEslintExtends(eslintrcPath)
   }
 
   public async genConfFile() {
@@ -72,36 +54,6 @@ export default class ApplicationCreate extends CreateCore {
       overwrite: true,
     })
 
-    const eslintBinPath = npmWhich(conf.cwd).sync('eslint')
-    const eslintLibPath = eslintBinPath.replace('bin/eslint', 'lib/node_modules/eslint')
-    await render.renderDir(path.resolve(__dirname, '../../mustaches/rda/'), {
-      eslintLibPath
-    }, ['.xml'], conf.cwd, {
-      filter(filename) {
-        return path.extname(filename) !== '.mustache'
-      },
-      overwrite: true
-    })
-  }
-
-  public getValidPluginName(plugin) {
-    if (plugin.includes('eslint-plugin-')) {
-      return plugin
-    }
-    return `eslint-plugin-${plugin}`
-  }
-
-  public getValidConfigName(name) {
-    if (name.includes('eslint-config-')) {
-      return name.split('/')[0]
-    }
-    if (name.includes('eslint:')) {
-      return ''
-    }
-    if (name.includes('plugin:')) {
-      const plugin = name.split(':')[1].split('/')[0]
-      return this.getValidPluginName(plugin)
-    }
-    return `eslint-config-${name.split('/')[0]}`
+    await eslint.renderDir()
   }
 }
