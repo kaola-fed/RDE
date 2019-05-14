@@ -19,7 +19,7 @@ $ npm install -g rde
 $ rde COMMAND
 running command...
 $ rde (-v|--version|version)
-rde/0.0.1-alpha.25 darwin-x64 node-v10.5.0
+rde/0.0.1-alpha.26 darwin-x64 node-v10.5.0
 $ rde --help [COMMAND]
 USAGE
   $ rde COMMAND
@@ -57,7 +57,7 @@ EXAMPLE
   $ rde build
 ```
 
-_See code: [lib/commands/build.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/build.js)_
 
 ## `rde create`
 
@@ -75,7 +75,7 @@ EXAMPLE
   $ rde create
 ```
 
-_See code: [lib/commands/create.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/create.js)_
+_See code: [lib/commands/create.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/create.js)_
 
 ## `rde docker:run [CMD]`
 
@@ -97,7 +97,7 @@ EXAMPLE
   $ rde docker:run <cmd>
 ```
 
-_See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/docker/run.js)_
+_See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/docker/run.js)_
 
 ## `rde docs:publish`
 
@@ -112,7 +112,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/docs/publish.js)_
+_See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/docs/publish.js)_
 
 ## `rde docs:serve`
 
@@ -127,7 +127,7 @@ EXAMPLE
   $ rde docs:serve
 ```
 
-_See code: [lib/commands/docs/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/docs/serve.js)_
+_See code: [lib/commands/docs/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/docs/serve.js)_
 
 ## `rde help [COMMAND]`
 
@@ -163,7 +163,7 @@ EXAMPLE
   $ rde lint
 ```
 
-_See code: [lib/commands/lint.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/lint.js)_
+_See code: [lib/commands/lint.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/lint.js)_
 
 ## `rde publish`
 
@@ -179,7 +179,7 @@ EXAMPLE
   $ rde publish
 ```
 
-_See code: [lib/commands/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/publish.js)_
+_See code: [lib/commands/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/publish.js)_
 
 ## `rde run [CMD]`
 
@@ -203,7 +203,7 @@ EXAMPLE
   $ rde run <cmd>
 ```
 
-_See code: [lib/commands/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/run.js)_
+_See code: [lib/commands/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/run.js)_
 
 ## `rde serve`
 
@@ -222,7 +222,7 @@ EXAMPLE
   $ rde serve
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/serve.js)_
 
 ## `rde suite`
 
@@ -239,5 +239,5 @@ EXAMPLE
   $ rde suite init
 ```
 
-_See code: [lib/commands/suite/index.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.25/lib/commands/suite/index.js)_
+_See code: [lib/commands/suite/index.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.26/lib/commands/suite/index.js)_
 <!-- commandsstop -->

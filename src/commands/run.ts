@@ -153,15 +153,17 @@ export default class Run extends RunBase {
       child.kill()
     })
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    })
+    if (this.watch) {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
 
-    rl.on('SIGINT', () => {
-      child.kill()
-      process.exit(0)
-    })
+      rl.on('SIGINT', () => {
+        child.kill()
+        process.exit(0)
+      })
+    }
 
     child = spawn('docker-compose', (args as ReadonlyArray<string>), {
       cwd: conf.localCacheDir,

@@ -1,6 +1,5 @@
 import {flags} from '@oclif/command'
-import cli from 'cli-ux'
-import * as inquirer from 'inquirer'
+import * as enquirer from 'enquirer'
 
 import Base from '../base'
 import ApplicationCreate from '../core/create/application'
@@ -99,9 +98,13 @@ export default class Create extends Base {
   public async ask() {
     const {RdTypes, frameworks} = conf
 
-    this.name = await cli.prompt('name of project', {
+    const {name} = await enquirer.prompt({
+      type: 'input',
+      name: 'name',
+      message: 'What is the name of project?',
       required: true,
     })
+    this.name = name
 
     if (this.from) {
       conf.rdType = 'container'
@@ -109,42 +112,52 @@ export default class Create extends Base {
       return
     }
 
-    const {type, framework} = await inquirer.prompt([
+    const {type, framework} = await enquirer.prompt([
       {
         name: 'type',
-        message: 'what kind of project do you want to create?',
-        type: 'list',
+        message: 'What kind of project to create?',
+        type: 'select',
         choices: Object.keys(RdTypes).map(name => ({name})),
-        default: RdTypes.Application,
+        initial: RdTypes.Application,
       },
       {
         name: 'framework',
-        message: 'what kind of framework do you prefer?',
-        type: 'list',
+        message: 'What kind of framework to use?',
+        type: 'select',
         choices: Object.keys(frameworks).map(name => ({name})),
-        default: 'vue',
+        initial: 'vue',
       },
     ])
 
     if (type === RdTypes.Application) {
       const defaultStarter = conf.frameworks[framework].rdcStarter
-      const name = await cli.prompt(`name of container(${defaultStarter})`, {
+      const {rdcName} = await enquirer.prompt({
+        type: 'input',
+        name: 'rdcName',
+        message: 'What is the name of container on docker hub?',
         required: true,
-        default: defaultStarter,
+        initial: defaultStarter,
       })
 
-      const version = await cli.prompt('version of container(latest)', {
-        required: false,
-        default: 'latest',
+      const {version} = await enquirer.prompt({
+        type: 'input',
+        name: 'version',
+        message: 'What is the version of container?',
+        required: true,
+        initial: 'latest',
       })
 
-      this.rdc = `${name}:${version}`
+      this.rdc = `${rdcName}:${version}`
     }
 
     if (type === RdTypes.Container) {
-      this.rdcRepo = await cli.prompt('docker hub repository name', {
+      const {rdcRepo} = await enquirer.prompt({
+        type: 'input',
+        name: 'rdcRepo',
+        message: 'What is the repository name on docker hub?',
         required: true,
       })
+      this.rdcRepo = rdcRepo
 
       const name = conf.frameworks[this.framework].rdcStarter
       this.rdc = `${name}:latest`

@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Recommanded Development Environment",
-  "version": "0.0.1-alpha.25",
+  "version": "0.0.1-alpha.26",
   "author": "kaolafed",
   "bin": {
     "rde": "./bin/run"
@@ -11,18 +11,16 @@
     "@oclif/command": "^1.5.12",
     "@oclif/config": "^1.12.12",
     "@oclif/plugin-help": "^2",
-    "@types/inquirer": "^6.0.0",
     "axios": "^0.18.0",
     "browser-sync": "^2.26.4",
     "chokidar": "^2.1.5",
     "cli-table2": "^0.2.0",
-    "cli-ux": "^5.2.1",
     "deasync": "^0.1.15",
     "deep-extend": "^0.6.0",
     "directory-tree": "^2.2.1",
+    "enquirer": "^2.3.0",
     "fs-extra": "^7.0.1",
     "highlight.js": "^9.15.6",
-    "inquirer": "^6.3.1",
     "js-beautify": "^1.9.1",
     "markdown-it": "^8.4.2",
     "markdown-it-meta": "0.0.1",

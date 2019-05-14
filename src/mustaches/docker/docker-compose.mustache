@@ -13,6 +13,7 @@ services:
     - ../template:{{{workDir}}}/template
     - ../rdc.config.js:{{{workDir}}}/rdc.config.js
     - /Users/hale/Work/kaola/rde/lib:/usr/local/lib/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
     {{/isApp}}
     {{#isBuild}}
     - ../.rde:{{{workDir}}}/.rde

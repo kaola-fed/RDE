@@ -27,7 +27,8 @@ export default class ContainerCreate extends CreateCore {
       await docker.copy(
         this.rdc,
         [{
-          from: join(conf.dockerWorkDirRoot, name, '.'),
+          // does not need to join, cuz it's docker path
+          from: `${conf.dockerWorkDirRoot}/${name}/.`,
           to: `${conf.cwd}`,
         }],
       )
