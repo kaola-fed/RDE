@@ -2,6 +2,7 @@ import * as path from 'path'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
+import eslint from '../../services/eslint'
 import render from '../../services/render'
 import _ from '../../util'
 
@@ -73,5 +74,7 @@ export default class ContainerCreate extends CreateCore {
     await render.renderTo('.gitignore', {}, '.gitignore', {
       overwrite: true,
     })
+
+    await eslint.renderDir(false)
   }
 }

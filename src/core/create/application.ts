@@ -54,6 +54,6 @@ export default class ApplicationCreate extends CreateCore {
       overwrite: true,
     })
 
-    await eslint.renderDir()
+    await eslint.renderDir(true)
   }
 }
