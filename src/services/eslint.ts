@@ -27,7 +27,15 @@ export default {
 
   async renderDir(isRda) {
     const join = path.join
-    const eslintBinPath = npmWhich(conf.cwd).sync('eslint')
+    let eslintBinPath = ''
+    try {
+      eslintBinPath = npmWhich(conf.cwd).sync('eslint')
+    } catch (err) {
+      if (err) {
+        eslintBinPath = ''
+      }
+    }
+
     const eslintLibPath = eslintBinPath.replace(join('bin', 'eslint'), join('lib', 'node_modules', 'eslint'))
     const eslintrcPath = isRda ? '.cache/.eslintrc.js' : 'template/.eslintrc.js'
     await render.renderDir(path.resolve(__dirname, '..' , 'mustaches', 'eslint'), {
