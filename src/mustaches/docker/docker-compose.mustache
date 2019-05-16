@@ -18,8 +18,10 @@ services:
     {{#isBuild}}
     - ../.rde:{{{workDir}}}/.rde
     {{/isBuild}}
+    {{#watch}}
     ports:
     {{#ports}}
     - "{{.}}"
     {{/ports}}
+    {{/watch}}
     command: rde docker:run {{{cmd}}} {{#watch}}--watch{{/watch}}

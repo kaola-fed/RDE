@@ -4,6 +4,7 @@ import * as path from 'path'
 import * as copy from 'recursive-copy'
 
 import conf from '../services/conf'
+import {debug} from '../services/logger'
 import render from '../services/render'
 import Watcher from '../services/watcher'
 import _ from '../util'
@@ -54,6 +55,8 @@ export default class DockerRun {
 
     for (let node of chain) {
       let srcDir = resolve(node, 'template')
+
+      debug(`copying files from ${srcDir} to ${resolve(conf.tmpDir, 'template')}`)
 
       // @TODO: copy chain with merge , not overriding
       await copy(srcDir, resolve(conf.tmpDir, 'template'), {

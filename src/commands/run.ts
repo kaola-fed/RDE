@@ -6,6 +6,7 @@ import * as readline from 'readline'
 import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
+import {debug} from '../services/logger'
 import {validateRda, validateRdc} from '../services/validate'
 
 const {resolve, join} = path
@@ -101,8 +102,6 @@ export default class Run extends RunBase {
     const {flags} = this.parse(Run)
     this.rebuild = flags.rebuild
 
-    await docker.checkEnv(true)
-
     if (conf.rdType === RdTypes.Container) {
       await validateRdc()
     }
@@ -140,8 +139,14 @@ export default class Run extends RunBase {
 
     let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
 
+    debug(`docker build dev-${this.tag}`)
+
     if (this.watch) {
       args.push('--watch')
+    }
+
+    if (this.verbose) {
+      args.push('-v')
     }
 
     if (this.extras) {
@@ -164,6 +169,8 @@ export default class Run extends RunBase {
         process.exit(0)
       })
     }
+
+    debug(`docker-compose ${args.join(' ')}`)
 
     child = spawn('docker-compose', (args as ReadonlyArray<string>), {
       cwd: conf.localCacheDir,

@@ -8,6 +8,7 @@ import * as util from 'util'
 
 import conf from '../../src/services/conf'
 import docker from '../../src/services/docker'
+import _ from '../../src/util'
 
 const originCwd = process.cwd()
 const {resolve} = path
@@ -16,7 +17,7 @@ const sandbox = sinon.createSandbox()
 const {RdTypes} = conf
 
 const framework = 'vue'
-const project = 'demo'
+const project = 'demo-app'
 const cmdDir = resolve(__dirname, '../../src/commands')
 const projectDir = resolve(__dirname, '../.tmp/', project)
 
@@ -61,24 +62,22 @@ const PromptStub = question => {
 describe('app', async () => {
   before(async () => {
     sandbox.stub(enquirer, 'prompt').get(() => PromptStub)
-    CmdCreate = require(resolve(cmdDir, 'create.ts')).default
+    CmdCreate = _.ensureRequire(resolve(cmdDir, 'create.ts')).default
+
+    await asyncExec('mkdir -p ./test/.tmp')
+    process.chdir('test/.tmp')
+
+    await CmdCreate.run([])
   })
 
   after(async () => {
     sandbox.restore()
 
     process.chdir(originCwd)
-    await asyncExec('rm -rf ./test/.tmp')
+    // await asyncExec(`rm -rf ./test/.tmp/${project}`)
   })
 
   describe('create', async () => {
-    before(async () => {
-      await asyncExec('rm -rf ./test/.tmp && mkdir ./test/.tmp')
-      process.chdir('test/.tmp')
-
-      await CmdCreate.run([])
-    })
-
     it('should create a dir called app', async () => {
       const appPath = resolve(projectDir, 'app')
       expect(fs.existsSync(appPath)).to.be.true
@@ -108,7 +107,7 @@ describe('app', async () => {
       const fake = sinon.fake()
       try {
         process.chdir(projectDir)
-        CmdLint = require(resolve(cmdDir, 'lint.ts')).default
+        CmdLint = _.ensureRequire(resolve(cmdDir, 'lint.ts')).default
         await CmdLint.run([])
         fake()
       } catch (e) {
@@ -128,7 +127,7 @@ describe('app', async () => {
 
       before(async () => {
         confPath = resolve(projectDir, 'rda.config.js')
-        rdaConf = require(confPath)
+        rdaConf = _.ensureRequire(confPath)
         container = rdaConf.container
         docker = rdaConf.docker
         suites = rdaConf.suites
@@ -155,7 +154,7 @@ describe('app', async () => {
 
     before(async () => {
       process.chdir(projectDir)
-      CmdRun = require(resolve(cmdDir, 'run.ts')).default
+      CmdRun = _.ensureRequire(resolve(cmdDir, 'run.ts')).default
 
       // remove created images previously
       if (await docker.imageExist(appImg)) {

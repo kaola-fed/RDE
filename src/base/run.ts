@@ -4,6 +4,7 @@ import * as path from 'path'
 
 import Base from '../base'
 import conf from '../services/conf'
+import {debug} from '../services/logger'
 import _ from '../util'
 
 const {resolve} = path
@@ -51,6 +52,8 @@ export default class RunBase extends Base {
     if (fs.existsSync(rdcConfPath)) {
       conf.rdType = RdTypes.Container
     }
+
+    debug(`rd type recognized as ${conf.rdType}`)
 
     if (!conf.rdType) {
       throw Error('no rde config file found, please read docs first')

@@ -1,3 +1,4 @@
+import * as debugLib from 'debug'
 import * as signale from 'signale'
 
 signale.config({
@@ -7,6 +8,8 @@ signale.config({
 
 const {Signale} = signale
 export const logger = signale.scope('RDE')
+
+export const debug = debugLib('rde')
 
 class Spinner {
   public readonly interval = 80

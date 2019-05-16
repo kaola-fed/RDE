@@ -6,7 +6,6 @@ import ApplicationCreate from '../core/create/application'
 import ContainerCreate from '../core/create/container'
 import SuiteCreate from '../core/create/suite'
 import conf from '../services/conf'
-import docker from '../services/docker'
 import {logger} from '../services/logger'
 import _ from '../util'
 
@@ -49,7 +48,6 @@ export default class Create extends Base {
 
     this.from = from
 
-    await docker.checkEnv()
     return flags
   }
 

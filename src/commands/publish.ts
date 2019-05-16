@@ -54,7 +54,7 @@ export default class Publish extends Base {
   public async run() {
     const name = this.rdc.split(':')[0]
 
-    await docker.build(this.rdc, conf.cwd, true, `${conf.localCacheDir}/Dockerfile`)
+    await docker.build(this.rdc, conf.localCacheDir, true, 'Dockerfile', '..')
     await docker.tag(this.rdc, `${name}:${this.tag}`)
     await docker.tag(this.rdc, `${name}:latest`)
     await docker.push(name)

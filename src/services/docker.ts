@@ -7,24 +7,13 @@ import _ from '../util'
 
 import cache from './cache'
 import conf from './conf'
-import log from './logger'
+import log, {debug} from './logger'
 import render from './render'
 
 const {resolve, join} = path
 const {RdTypes} = conf
 
 class Docker {
-  @log('Checking local environment...')
-  public async checkEnv(timesaving = false) {
-    // whether is running or not
-
-    if (timesaving) {
-      await _.asyncExec('docker info')
-    } else {
-      await _.asyncExec('docker -v & docker-compose -v & docker info')
-    }
-  }
-
   @log('Pulling image from docker hub...')
   public async pull(image: string) {
     await _.asyncExec(`docker pull ${image}`)
@@ -68,17 +57,21 @@ class Docker {
   }
 
   @log('Building docker image...')
-  public async build(tag, cwd, noCache = false, dockerFile = 'Dockerfile') {
-    let args = ['build', '-t', tag, '-f', dockerFile, '.']
+  public async build(tag, cwd, noCache = false, dockerFile = 'Dockerfile', context = '.') {
+    let args = ['build', '-t', tag, '-f', dockerFile, context]
     if (noCache) {
       args.splice(1, 0, '--no-cache')
     }
+
+    debug(`cwd ${cwd}`)
+    debug(`docker ${args.join(' ')}`)
 
     await _.asyncSpawn('docker', args, {
       cwd,
     })
 
     await _.asyncExec('rm .dockerignore')
+    await _.asyncExec('docker image prune -f')
   }
 
   public async tag(oldtag, newtag) {

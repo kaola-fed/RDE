@@ -10,7 +10,7 @@ import render from './render'
 export default {
   async installEslintExtends(eslintrcPath) {
     const eslintrc = _.ensureRequire(eslintrcPath)
-    let eslintDevs = []
+    let eslintDevs = ['eslint', 'babel-eslint']
     if (eslintrc.plugins) {
       typeof eslintrc.plugins === 'string' ?
         eslintDevs.push(this.getValidPluginName(eslintrc.plugins)) :
@@ -22,6 +22,7 @@ export default {
         eslintrc.extends.forEach(item => eslintDevs.push(this.getValidConfigName(item)))
     }
     eslintDevs = [...new Set(eslintDevs)]
+
     await npm.install(`${eslintDevs.join(' ')} -g`)
   },
 

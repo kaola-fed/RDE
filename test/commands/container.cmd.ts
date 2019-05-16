@@ -10,6 +10,7 @@ import dockerRunCore from '../../src/core/docker.run'
 import conf from '../../src/services/conf'
 import docker from '../../src/services/docker'
 import Watcher from '../../src/services/watcher'
+import _ from '../../src/util'
 
 const originCwd = process.cwd()
 const {resolve} = path
@@ -18,7 +19,7 @@ const sandbox = sinon.createSandbox()
 const {RdTypes} = conf
 
 const framework = 'vue'
-const project = 'demo'
+const project = 'demo-container'
 const cmdDir = resolve(__dirname, '../../src/commands')
 const projectDir = resolve(__dirname, '../.tmp/', project)
 
@@ -64,24 +65,22 @@ const PromptStub = question => {
 describe('container', async () => {
   before(async () => {
     sandbox.stub(enquirer, 'prompt').get(() => PromptStub)
-    CmdCreate = require(resolve(cmdDir, 'create.ts')).default
+    CmdCreate = _.ensureRequire(resolve(cmdDir, 'create.ts')).default
+
+    await asyncExec('mkdir -p ./test/.tmp')
+    process.chdir('test/.tmp')
+
+    await CmdCreate.run([])
   })
 
   after(async () => {
     sandbox.restore()
 
     process.chdir(originCwd)
-    await asyncExec('rm -rf ./test/.tmp')
+    await asyncExec(`rm -rf ./test/.tmp/${project}`)
   })
 
   describe('create', async () => {
-    before(async () => {
-      await asyncExec('rm -rf ./test/.tmp && mkdir ./test/.tmp')
-      process.chdir('test/.tmp')
-
-      await CmdCreate.run([])
-    })
-
     it('should create app/template dir, and a rdc.config.js file', async () => {
       const appPath = resolve(projectDir, 'app')
       const tplPath = resolve(projectDir, 'template')
@@ -111,13 +110,13 @@ describe('container', async () => {
       const fake = sinon.fake()
       try {
         process.chdir(projectDir)
-        CmdLint = require(resolve(cmdDir, 'lint.ts')).default
+        CmdLint = _.ensureRequire(resolve(cmdDir, 'lint.ts')).default
         await CmdLint.run([])
         fake()
       } catch (e) {
         expect(e).is.not.null
-        expect(fake.callCount).equal(1)
       } finally {
+        expect(fake.callCount).equal(1)
         process.chdir('../')
       }
     })
@@ -129,7 +128,7 @@ describe('container', async () => {
       let mappings = null
 
       before(async () => {
-        rdcConf = require(resolve(projectDir, 'rdc.config.js'))
+        rdcConf = _.ensureRequire(resolve(projectDir, 'rdc.config.js'))
         framework = rdcConf.framework
         docker = rdcConf.docker
         mappings = rdcConf.mappings
@@ -158,7 +157,7 @@ describe('container', async () => {
 
     before(async () => {
       process.chdir(projectDir)
-      CmdRun = require(resolve(cmdDir, 'run.ts')).default
+      CmdRun = _.ensureRequire(resolve(cmdDir, 'run.ts')).default
 
       // remove created images previously
       if (await docker.imageExist(rdcImg)) {
@@ -236,7 +235,7 @@ describe('container', async () => {
   describe('docker:run', async () => {
     before(async () => {
       process.chdir(projectDir)
-      CmdDockerRun = require(resolve(cmdDir, 'docker/run.ts')).default
+      CmdDockerRun = _.ensureRequire(resolve(cmdDir, 'docker/run.ts')).default
       await CmdDockerRun.run([])
     })
 

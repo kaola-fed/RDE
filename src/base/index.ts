@@ -1,9 +1,10 @@
 import {Command} from '@oclif/command'
 import * as flags from '@oclif/command/lib/flags'
+import * as debugLib from 'debug'
 import * as path from 'path'
 
 import conf from '../services/conf'
-import {logger} from '../services/logger'
+import {debug, logger} from '../services/logger'
 
 export default abstract class Index extends Command {
   public static flags = {
@@ -23,7 +24,11 @@ export default abstract class Index extends Command {
   public async init() {
     // @ts-ignore
     const {flags} = this.parse(this.constructor)
-    this.verbose = flags.verbose
+    if (flags.verbose) {
+      debugLib.enable('rde')
+    }
+
+    debug(`cwd ${conf.cwd}`)
 
     // check user input args here
     const args = await this.preInit()
@@ -36,11 +41,8 @@ export default abstract class Index extends Command {
   }
 
   public async catch(e) {
-    if (this.verbose) {
-      logger.error(e)
-    } else {
-      logger.error(e.message)
-    }
+    logger.error(e.message)
+    debug('stack: %O', e)
     this.exit(1)
   }
 
