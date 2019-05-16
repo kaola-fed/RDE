@@ -22,7 +22,7 @@ export default (mdIt, opt) => {
     return Array(opt.indent + 1).join(' ')
   }
 
-  mdIt.block.ruler.before('paragraph', 'table', function (state, startLine, _endLine, _silent) {
+  mdIt.block.ruler.at('table', function (state, startLine, _endLine, _silent) {
     function getLine(state, line) {
       const pos = state.bMarks[line] + state.blkIndent
       const max = state.eMarks[line]
@@ -46,6 +46,10 @@ export default (mdIt, opt) => {
     // if (startLine + 2 > endLine) {
     //   return false
     // }
+
+    if (startLine === 0 && getLine(state, startLine) !== 'table') {
+      return false
+    }
 
     nextLine = startLine + 1
 
