@@ -3,13 +3,39 @@ import * as path from 'path'
 
 import _ from '../util'
 
+import cache from './cache'
 import conf from './conf'
+import docker from './docker'
 import npm from './npm'
 import render from './render'
 
 export default {
-  async installEslintExtends(eslintrcPath) {
-    const eslintrc = _.ensureRequire(eslintrcPath)
+  get localEslintrcPath() {
+    return path.resolve(conf.cwd, conf.localCacheDir, '.eslintrc.js')
+  },
+
+  async prepare(rdc) {
+    if (rdc === cache.get('rda.container')) {
+      return
+    }
+    const rdcName = rdc.split(':')[0]
+    await docker.copy(
+      rdc, [
+        {
+          from: this.getDockerEslintrcPath(rdcName),
+          to: this.localEslintrcPath
+        }
+      ]
+    )
+    await this.installEslintExtends()
+  },
+
+  getDockerEslintrcPath(rdcName) {
+    return path.resolve(conf.dockerWorkDirRoot, rdcName, 'template', '.eslintrc.js')
+  },
+
+  async installEslintExtends() {
+    const eslintrc = _.ensureRequire(this.localEslintrcPath)
     let eslintDevs = ['eslint', 'babel-eslint']
     if (eslintrc.plugins) {
       typeof eslintrc.plugins === 'string' ?
