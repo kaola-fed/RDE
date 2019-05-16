@@ -20,4 +20,8 @@ export default class Build extends Base {
 
     await Run.run(['build', ...list])
   }
+
+  public async preInit() {
+    await this.config.runHook('checkApplication', {})
+  }
 }

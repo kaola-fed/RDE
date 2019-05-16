@@ -9,7 +9,7 @@ export default async function ({config}) {
   const file = path.join(config.cacheDir, 'version')
   const delayInDays = 6
 
-  const needCheck = async () => {
+  const needUpdate = async () => {
     try {
       const {mtime} = await fs.stat(file)
       const expireDate = new Date(
@@ -22,7 +22,7 @@ export default async function ({config}) {
     }
   }
 
-  const checkVersion = async () => {
+  const compareVersion = async () => {
     const {latest} = await fs.readJson(file)
 
     if (!latest) await updateVersion()
@@ -42,7 +42,7 @@ export default async function ({config}) {
       table.push([config.name, config.version, latest])
       table.push([
         {
-          content: `New version available. Please enter 'npm update -g ${
+          content: `New version available. Please enter 'npm i -g ${
             config.name
           }' to update`,
           colSpan: 3
@@ -65,9 +65,9 @@ export default async function ({config}) {
     )
   }
 
-  if (await needCheck()) {
+  if (await needUpdate()) {
     await updateVersion()
   }
 
-  await checkVersion()
+  await compareVersion()
 }

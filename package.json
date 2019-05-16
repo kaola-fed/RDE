@@ -80,9 +80,8 @@
     "commands": "./lib/commands",
     "bin": "rde",
     "hooks": {
-      "checkUpdate": [
-        "./lib/hooks/check.update"
-      ]
+      "checkUpdate": "./lib/hooks/check.update",
+      "checkApplication": "./lib/hooks/check.application"
     },
     "plugins": [
       "@oclif/plugin-help"
