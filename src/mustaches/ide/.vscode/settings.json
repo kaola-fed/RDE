@@ -13,5 +13,11 @@
   "eslint.autoFixOnSave": true,
   "eslint.options": {
     "configFile": "{{{eslintrcPath}}}"
+  },
+  "files.exclude": {
+    "**/.cache": true,
+    "**/.idea": true,
+    "**/.rde": true,
+    "**/.vscode": true
   }
 }
