@@ -9,6 +9,7 @@ import docker from './docker'
 import npm from './npm'
 import render from './render'
 
+const {resolve} = path
 export default {
   get localEslintrcPath() {
     return path.resolve(conf.cwd, conf.localCacheDir, '.eslintrc.js')
@@ -65,11 +66,11 @@ export default {
 
     const eslintLibPath = eslintBinPath.replace(join('bin', 'eslint'), join('lib', 'node_modules', 'eslint'))
     const eslintrcPath = isRda ? '.cache/.eslintrc.js' : 'template/.eslintrc.js'
-    await render.renderDir(path.resolve(__dirname, '..' , 'mustaches', 'eslint'), {
+    await render.renderDir(resolve(__dirname, '..' , 'mustaches', 'ide'), {
       eslintLibPath,
       eslintrcPath
     }, ['.xml', '.json'], conf.cwd, {
-      overwrite: true
+      overwrite: true,
     })
   },
 

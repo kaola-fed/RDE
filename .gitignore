@@ -10,3 +10,5 @@ node_modules
 test/run
 tsconfig.tsbuildinfo
 .tsbuildinfo
+
+!src/mustaches/*
