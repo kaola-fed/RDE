@@ -6,6 +6,7 @@ import _ from '../util'
 import cache from './cache'
 import conf from './conf'
 import docker from './docker'
+import {debug} from './logger'
 import npm from './npm'
 import render from './render'
 
@@ -66,6 +67,10 @@ export default {
 
     const eslintLibPath = eslintBinPath.replace(join('bin', 'eslint'), join('lib', 'node_modules', 'eslint'))
     const eslintrcPath = isRda ? '.cache/.eslintrc.js' : 'template/.eslintrc.js'
+
+    debug(`global eslint path: ${eslintLibPath}`)
+    debug(`eslintrc path: ${eslintrcPath}`)
+
     await render.renderDir(resolve(__dirname, '..' , 'mustaches', 'ide'), {
       eslintLibPath,
       eslintrcPath
