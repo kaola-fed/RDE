@@ -74,7 +74,7 @@ describe('app', async () => {
     sandbox.restore()
 
     process.chdir(originCwd)
-    // await asyncExec(`rm -rf ./test/.tmp/${project}`)
+    await asyncExec(`rm -rf ./test/.tmp/${project}`)
   })
 
   describe('create', async () => {
