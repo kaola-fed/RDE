@@ -71,7 +71,7 @@ export default abstract class DocsBase extends Command {
     return scripts
   }
 
-  public get option() {
+  public get options() {
     return {
       overwrite: true,
 
@@ -231,6 +231,6 @@ export default abstract class DocsBase extends Command {
   public async render(): Promise<any> {
     const {docsDir, docsPagesDir} = conf
 
-    await copy(docsDir, docsPagesDir, this.option)
+    await copy(docsDir, docsPagesDir, this.options)
   }
 }

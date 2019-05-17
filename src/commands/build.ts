@@ -18,6 +18,7 @@ export default class Build extends Base {
 
     const list = _.restoreFlags(flags)
 
+    await _.asyncExec('rm -rf .rde')
     await Run.run(['build', ...list])
   }
 

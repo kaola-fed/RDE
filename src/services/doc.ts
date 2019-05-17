@@ -14,7 +14,7 @@ export default {
 
   async getPkgData() {
     return new Promise(resolve => {
-      readPkgJson(`${conf.cwd}/template/package.json`, console.log, false, (err, data) => resolve(err ? {} : data))
+      readPkgJson(`${conf.cwd}/template/package.json`, () => {}, false, (err, data) => resolve(err ? {} : data))
     })
   },
 
@@ -69,10 +69,7 @@ export default {
       // template: 'ss.hjs',
       // issueUrlFormat: '{{issues}}/{{id}}'
     }).then(() => {
-      console.log(`generate successfully: ${outputPath}`)
-    }).catch(err => {
-      console.log(`generate changelog file failed with message: ${err.message}`)
-    })
+    }).catch(_err => {})
   },
 
   async generateCheatSheet() {
@@ -137,9 +134,7 @@ export default {
       favicon: 'favicon.png'
     })
 
-    fs.writeFile(outputPath, html, function (err) {
-      if (err) console.log(err)
-    })
+    fs.writeFile(outputPath, html, function (_err) {})
 
   }
 

@@ -33,7 +33,7 @@ export default class DocsServe extends BaseDocs {
       {
         from: conf.docsDir,
         to: join('..', conf.docsPagesDir),
-        option: this.option,
+        options: this.options,
       },
     ]
 

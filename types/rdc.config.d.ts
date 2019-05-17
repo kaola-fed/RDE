@@ -20,7 +20,7 @@ interface Render {
 interface Mapping {
   from: string
   to: string
-  option?: any
+  options?: any
   merge?: string
 }
 

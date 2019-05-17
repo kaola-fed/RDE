@@ -5,6 +5,7 @@ export const MCOMMON = {
   WRONG_DOCKER_CONFIG_TAG: 'Missing docker tag in your config file',
   WRONG_MAPPING_CONFIG_MAPPING: 'Missing mappings in your config file',
   WRONG_DOCS_CONFIG: 'Incorrect docs url in your config file',
+  INVALID_COMMIT_MSG_FORMAT: 'invalid commit msg format',
 }
 
 export const MRDA = {}

@@ -59,20 +59,20 @@ export default {
   },
 
   async copy(src, dest, mapping) {
-    let option = {
+    let options = {
       overwrite: true,
       dot: true,
-      ...mapping.option,
+      ...mapping.options,
       rename(filePath) {
         // fix rename problem if src type is file
-        if (fs.lstatSync(src).isFile() && mapping.option && mapping.option.rename) {
-          const name = mapping.option.rename(path.basename(src))
+        if (fs.lstatSync(src).isFile() && mapping.options && mapping.options.rename) {
+          const name = mapping.options.rename(path.basename(src))
           return `../${name}`
         }
         return filePath
       },
     }
 
-    await copy(src, dest, option)
+    await copy(src, dest, options)
   },
 }

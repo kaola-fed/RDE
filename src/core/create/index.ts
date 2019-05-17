@@ -64,6 +64,13 @@ export default class CreateCore {
 #!/bin/sh
 rde lint -s
       `, {encoding: 'UTF-8', mode: '755'})
+
+    fs.writeFileSync(join('.git', 'hooks', 'commit-msg'),
+      `
+#!/bin/sh
+commitMsg=$(cat $1)
+rde lint -m "$commitMsg"
+      `, {encoding: 'UTF-8', mode: '755'})
   }
 
   protected async prepare() {}

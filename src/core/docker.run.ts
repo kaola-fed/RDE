@@ -103,11 +103,13 @@ export default class DockerRun {
   public async createRuntime(config: Config) {
     const {cwd, runtimeDir, rdType, RdTypes} = conf
 
-    for (let {from, to, option} of config.mappings) {
+    debug(`merged mappings: ${JSON.stringify(config.mappings)}`)
+
+    for (let {from, to, options} of config.mappings) {
       const appDir = resolve(cwd, from)
       const destDir = resolve(runtimeDir, to)
 
-      await _.copy(appDir, destDir, {option})
+      await _.copy(appDir, destDir, {options})
     }
 
     if (this.watch) {
