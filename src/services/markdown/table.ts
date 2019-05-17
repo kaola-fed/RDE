@@ -80,6 +80,7 @@ export default (mdIt, opt) => {
         }
         token = state.push('tr_close', 'tr', -1)
         token = state.push('table_close', 'table', -1)
+        renderType = null
         return false
       }
 

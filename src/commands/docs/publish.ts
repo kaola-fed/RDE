@@ -4,6 +4,7 @@ import * as path from 'path'
 import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
 import Watcher from '../../services/watcher'
+import doc from '../../services/doc'
 
 const {join} = path
 export default class DocsPublish extends BaseDocs {
@@ -12,6 +13,8 @@ export default class DocsPublish extends BaseDocs {
   ]
 
   public async run() {
+    await doc.generateChangelog()
+    await doc.generateCheatSheet()
     this.watchFiles()
 
     browserSync({

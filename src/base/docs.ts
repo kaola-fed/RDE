@@ -32,11 +32,11 @@ export default abstract class DocsBase extends Command {
     const navs = [
       {title: '文档', main: true},
       {title: 'FAQ', url: '/FAQ.html'},
-      {title: '日志', url: '/rde/changelog.html'},
+      {title: '日志', url: '/changelog.html'},
     ]
 
     if (conf.rdType === RdTypes.Container) {
-      const nav = {title: '速查', url: '/rde/cheat.sheet.html'}
+      const nav = {title: '速查', url: '/cheatSheet.html'}
       navs.splice(1, 0, nav)
       return navs
     }
