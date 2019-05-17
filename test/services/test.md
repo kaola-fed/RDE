@@ -22,6 +22,19 @@ $ npm run dev
 ```
 
 
+```table
+name
+sex
+birthday
+|- lmy
+| male |-是大是大非
+| 1993
+|- mmm
+| female
+| 1994
+```
+
+
 
 ```api
 drop(array, [n=1])
