@@ -2,16 +2,20 @@ import * as browserSync from 'browser-sync'
 import * as path from 'path'
 
 import BaseDocs from '../../base/docs'
+import doc from '../../services/doc'
+// import Watcher from '../../services/watcher'
 import conf from '../../services/conf'
-import Watcher from '../../services/watcher'
 
 const {join} = path
 export default class DocsPublish extends BaseDocs {
-  public static examples = [
-    '$ rde docs:serve',
-  ]
+  // public static examples = [
+  //   '$ rde docs:serve',
+  // ]
 
   public async run() {
+    await doc.generateChangelog()
+    await doc.generateCheatSheet()
+
     this.watchFiles()
 
     browserSync({

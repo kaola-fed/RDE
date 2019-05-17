@@ -66,7 +66,6 @@ export default (mdIt, opt) => {
     token = state.push('line_break')
     // token.map = [startLine, 0]
 
-
     for (nextLine = startLine + 1; nextLine <= ruleEndLine; nextLine++) {
       lineText = getLine(state, nextLine).trim()
       // renderType: 0: th，1: 换行td(|- ), 2: 普通td(| )
@@ -81,6 +80,7 @@ export default (mdIt, opt) => {
         }
         token = state.push('tr_close', 'tr', -1)
         token = state.push('table_close', 'table', -1)
+        renderType = null
         return false
       }
 
