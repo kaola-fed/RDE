@@ -17,21 +17,17 @@ export default class ApplicationCreate extends CreateCore {
 
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
 
-    const eslintrcPath = join(conf.cwd, conf.localCacheDir, '.eslintrc.js')
-
     await docker.copy(
       this.rdc,
       [{
         from: join(conf.dockerWorkDirRoot, name, 'app'),
         to: join(conf.cwd, 'app'),
-      }, {
-        from: join(conf.dockerWorkDirRoot, name, 'template', '.eslintrc.js'),
-        to: eslintrcPath
       }],
     )
 
     await this.getRdcConf()
-    await eslint.installEslintExtends(eslintrcPath)
+
+    await eslint.prepare(this.rdc)
   }
 
   public async genConfFile() {

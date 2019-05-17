@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="js.linters.configure.manually.selectedeslint" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.selected.package.eslint" value="{{{eslintLibPath}}}" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.eslint" />
+  </component>
+
+  <component name="NamedScopeManager">
+    <scope name="RDE" pattern="file[rda]:app/**||file:rda.config.js||file:README.md||file:rdc.config.js||file[rda]:template/**||file[rda]:.rde/**" />
+  </component>
+
+  <component name="ProjectView">
+    <navigator currentView="Scope" currentSubView="Scope 'RDE'; set:file[rda]:app/**||file:rda.config.js||file:README.md||file:rdc.config.js||file[rda]:template/**||file[rda]:.rde/**; class com.intellij.psi.search.scope.packageSet.NamedScope" proportions="" version="1">
+      <sortByType ProjectPane="false" />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+
+    <panes>
+      <pane id="Scope">
+        <subPane subId="Scope 'RDE'; set:file[rda]:app/**||file:rda.config.js||file:README.md||file:rdc.config.js||file[rda]:template/**||file[rda]:.rde/**; class com.intellij.psi.search.scope.packageSet.NamedScope">
+          <expand>
+            <path>
+              <item name="$PROJECT_DIR$" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="$PROJECT_DIR$" type="442cc68d:ScopeViewTreeModel$RootNode" />
+            </path>
+            <path>
+              <item name="$PROJECT_DIR$" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="$PROJECT_DIR$" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="app" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+</project>

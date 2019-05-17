@@ -3,13 +3,41 @@ import * as path from 'path'
 
 import _ from '../util'
 
+import cache from './cache'
 import conf from './conf'
+import docker from './docker'
+import {debug} from './logger'
 import npm from './npm'
 import render from './render'
 
+const {resolve} = path
 export default {
-  async installEslintExtends(eslintrcPath) {
-    const eslintrc = _.ensureRequire(eslintrcPath)
+  get localEslintrcPath() {
+    return path.resolve(conf.cwd, conf.localCacheDir, '.eslintrc.js')
+  },
+
+  async prepare(rdc) {
+    if (rdc === cache.get('rda.container')) {
+      return
+    }
+    const rdcName = rdc.split(':')[0]
+    await docker.copy(
+      rdc, [
+        {
+          from: this.getDockerEslintrcPath(rdcName),
+          to: this.localEslintrcPath
+        }
+      ]
+    )
+    await this.installEslintExtends()
+  },
+
+  getDockerEslintrcPath(rdcName) {
+    return path.resolve(conf.dockerWorkDirRoot, rdcName, 'template', '.eslintrc.js')
+  },
+
+  async installEslintExtends() {
+    const eslintrc = _.ensureRequire(this.localEslintrcPath)
     let eslintDevs = ['eslint', 'babel-eslint']
     if (eslintrc.plugins) {
       typeof eslintrc.plugins === 'string' ?
@@ -39,11 +67,15 @@ export default {
 
     const eslintLibPath = eslintBinPath.replace(join('bin', 'eslint'), join('lib', 'node_modules', 'eslint'))
     const eslintrcPath = isRda ? '.cache/.eslintrc.js' : 'template/.eslintrc.js'
-    await render.renderDir(path.resolve(__dirname, '..' , 'mustaches', 'eslint'), {
+
+    debug(`global eslint path: ${eslintLibPath}`)
+    debug(`eslintrc path: ${eslintrcPath}`)
+
+    await render.renderDir(resolve(__dirname, '..' , 'mustaches', 'ide'), {
       eslintLibPath,
       eslintrcPath
     }, ['.xml', '.json'], conf.cwd, {
-      overwrite: true
+      overwrite: true,
     })
   },
 

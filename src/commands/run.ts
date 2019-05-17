@@ -6,6 +6,7 @@ import * as readline from 'readline'
 import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
+import eslint from '../services/eslint'
 import {debug} from '../services/logger'
 import {validateRda, validateRdc} from '../services/validate'
 
@@ -128,6 +129,10 @@ export default class Run extends RunBase {
       conf.rdType === RdTypes.Application,
       this.cmd === 'build'
     )
+
+    if (conf.rdType === RdTypes.Application) {
+      await eslint.prepare(this.from)
+    }
 
     await docker.genPkgJson()
   }
