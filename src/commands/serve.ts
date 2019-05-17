@@ -18,6 +18,6 @@ export default class Serve extends Base {
 
     const list = _.restoreFlags(flags)
 
-    await Run.run(['serve', '-v', '--watch', ...list])
+    await Run.run(['serve', '--watch', ...list])
   }
 }
