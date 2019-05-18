@@ -4,6 +4,7 @@ import * as util from 'util'
 import * as validateMessage from 'validate-commit-msg'
 
 import Base from '../base'
+import eslint from '../services/eslint'
 import {MCOMMON} from '../services/message'
 import _ from '../util'
 
@@ -46,6 +47,7 @@ export default class Lint extends Base {
         filenames = files.map(file => file.filename)
           .filter(file => /(app\/)|(template\/)/.test(file))
       })
+      filenames = eslint.getLintFiles(filenames)
 
       list.push(`--extras=${filenames.join(' ')}`)
     }

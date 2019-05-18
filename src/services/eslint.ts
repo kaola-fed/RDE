@@ -1,3 +1,4 @@
+import * as microMatch from 'micromatch'
 import * as npmWhich from 'npm-which'
 import * as path from 'path'
 
@@ -98,5 +99,13 @@ export default {
       return this.getValidPluginName(plugin)
     }
     return `eslint-config-${name.split('/')[0]}`
+  },
+
+  getLintFiles(filenames) {
+    const rdaConf = conf.getAppConf()
+    const lintFiles = rdaConf.container.render.lintFiles || []
+    return microMatch(filenames, lintFiles, {
+      basename: true
+    })
   }
 }
