@@ -1,5 +1,4 @@
 import * as path from 'path'
-import * as stringifyObject from 'stringify-object'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
@@ -45,7 +44,7 @@ export default class ApplicationCreate extends CreateCore {
     await render.renderTo(join('rda', appConfName.slice(0, -3)), {
       container: this.rdc,
       docs: docs ? docs.url : '',
-      ports: stringifyObject(docker.ports),
+      ports: docker.ports,
     }, appConfName)
   }
 

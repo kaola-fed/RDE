@@ -150,7 +150,7 @@ class Docker {
    * 3. any package.json under template dir has changed if rdType is container
    * 4. extends attr in rdc.config.js has changed if rdType is container
    */
-  @log('Generating package.json from rdc chain...')
+  @log('Generating package.json from rdc...')
   public async genPkgJson() {
     const {
       rdType,
@@ -180,9 +180,10 @@ class Docker {
       extendsName = rdcConf.extends
     }
 
+    const localPkgJson = resolve(localCacheDir, 'package.json')
     if (
       !cache.exist ||
-      (isApplication && rdcName !== cache.get('rda.container')) ||
+      (isApplication && (rdcName !== cache.get('rda.container') || !fs.existsSync(localPkgJson))) ||
       (isContainer && pkgJsonLMTs !== cache.get('rdc.pkg.lmts')) ||
       (isContainer && extendsName && extendsName !== cache.get('rdc.extends'))
     ) {

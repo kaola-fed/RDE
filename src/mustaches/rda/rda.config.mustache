@@ -5,7 +5,11 @@ module.exports = {
     render: {},
   },
   docker: {
-    ports: {{{ports}}}
+    ports: [
+      {{#ports}}
+      '{{{.}}}',
+      {{/ports}}
+    ],
   },
   suites: [],
-}
+};
