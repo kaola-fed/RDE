@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as stringifyObject from 'stringify-object'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
@@ -8,25 +9,33 @@ import _ from '../../util'
 
 import CreateCore from './index'
 
-const {join} = path
+const {join, resolve} = path
 export default class ApplicationCreate extends CreateCore {
+  public rdcConf: RdcConf = null
+
   public async prepare() {
     await docker.pull(this.rdc)
-
-    const name = this.rdc.split(':')[0]
-
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
 
+    const name = this.rdc.split(':')[0]
+    const {dockerWorkDirRoot} = conf
+    const rdcPathInDock = resolve(dockerWorkDirRoot, name)
+    const confPath = resolve(conf.localCacheDir, conf.rdcConfName)
     await docker.copy(
       this.rdc,
       [{
-        from: join(conf.dockerWorkDirRoot, name, 'app'),
+        from: join(rdcPathInDock, 'app'),
         to: join(conf.cwd, 'app'),
+      }, {
+        from: join(rdcPathInDock, conf.rdcConfName),
+        to: confPath
+      }, {
+        from: resolve(rdcPathInDock, 'template/.eslintrc.js'),
+        to: resolve(conf.localCacheDir, '.eslintrc.js')
       }],
     )
 
-    await this.getRdcConf()
-
+    this.rdcConf = require(confPath)
     await eslint.prepare(this.rdc)
   }
 
@@ -36,7 +45,7 @@ export default class ApplicationCreate extends CreateCore {
     await render.renderTo(join('rda', appConfName.slice(0, -3)), {
       container: this.rdc,
       docs: docs ? docs.url : '',
-      ports: JSON.stringify(docker.ports),
+      ports: stringifyObject(docker.ports),
     }, appConfName)
   }
 

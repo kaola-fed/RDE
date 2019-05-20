@@ -34,7 +34,6 @@ class Docker {
     await _.asyncExec('docker rm -fv rde-dummy')
   }
 
-  @log('Checking image existance...')
   public async imageExist(name) {
     try {
       await _.asyncExec(`docker inspect --type=image ${name}`)
@@ -45,7 +44,6 @@ class Docker {
     }
   }
 
-  @log('Checking container existance...')
   public async containerExist(name) {
     try {
       await _.asyncExec(`docker ps -a | grep ${name}`)

@@ -109,6 +109,6 @@ export default class Publish extends Base {
       obj: this.rdcConf,
     }, conf.rdcConfName, {overwrite: true})
 
-    logger.star(`Published ${this.tag} successfully`)
+    logger.log(`Published ${this.tag} successfully`)
   }
 }

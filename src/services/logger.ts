@@ -1,18 +1,9 @@
+import * as chalk from 'chalk'
 import * as debugLib from 'debug'
-import * as signale from 'signale'
-
-signale.config({
-  displayBadge: true,
-  displayTimestamp: true,
-})
-
-const {Signale} = signale
-export const logger = signale.scope('RDE')
-
-export const debug = debugLib('rde')
+import * as readline from 'readline'
 
 class Spinner {
-  public readonly interval = 80
+  public readonly interval = 150
 
   public readonly frames = [
     ['🌑 ', '🌒 ', '🌓 ', '🌔 ', '🌕 ', '🌖 ', '🌗 ', '🌘 '],
@@ -30,37 +21,53 @@ class Spinner {
 
   public counter = 0
 
-  constructor() {}
+  public firstTime = true
 
-  public start(info) {
-    if (!this.logger) {
-      this.logger = new Signale({interactive: true, scope: 'RDE'})
-      this.logger.config({
-        displayBadge: true,
-        displayTimestamp: true,
-      })
-    }
+  constructor() {
+    this.logger = null
+    this.timerId = null
+    this.counter = 0
+    this.firstTime = true
+  }
 
-    if (this.timerId) {
-      clearInterval(this.timerId)
-    }
-
+  public start(message) {
     const index = Math.floor(Math.random() * this.frames.length)
     const frames = this.frames[index]
+
     this.timerId = setInterval(() => {
       this.counter = this.counter % (frames.length)
-      this.logger.await(`%s: ${info}`, frames[this.counter])
+
+      readline.moveCursor(process.stdout, 0, this.firstTime ? 0 : -1)
+      readline.clearLine(process.stdout, 0)
+      readline.cursorTo(process.stdout, 0)
+      process.stdout.write(`[RDE] › ${(chalk as any).blue('awaiting')} ${message} ${frames[this.counter]} \n`)
+
+      this.firstTime = false
       this.counter++
     }, this.interval)
   }
 
   public stop() {
     clearInterval(this.timerId)
-    this.logger = null
   }
 }
 
-export const spinner = new Spinner()
+export const debug = debugLib('rde')
+
+export const logger = {
+  info(message) {
+    process.stdout.write(`[RDE] › ${(chalk as any).blue('info')} ${message} \n`)
+  },
+  log(message) {
+    process.stdout.write(`[RDE] › ${(chalk as any).blue('info')} ${message} \n`)
+  },
+  error(message) {
+    process.stdout.write(`[RDE] › ${(chalk as any).red('error')} ${message} \n`)
+  },
+  warn(message) {
+    process.stdout.write(`[RDE] › ${(chalk as any).yellow('warn')} ${message} \n`)
+  }
+}
 
 // only for async function
 export default function log(message) {
@@ -71,10 +78,10 @@ export default function log(message) {
     }
 
     descriptor.value = async function (...args) {
-      let now = +new Date()
+      const spinner = new Spinner()
+      spinner.start(message)
       const result = await origin.apply(this, args)
-
-      logger.info(message, '| cost：', +new Date() - now, 'ms')
+      spinner.stop()
       return result
     }
 

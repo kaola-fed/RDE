@@ -34,15 +34,15 @@ export default class ContainerCreate extends CreateCore {
         }],
       )
     }
-
-    await this.getRdcConf()
   }
 
   public async genConfFile() {
     const {rdcConfName, rdcConfPath} = conf
-    const {docs, framework}: RdcConf = this.rdcConf
 
     if (this.extendRdc) {
+      const rdcConf = require(conf.rdcConfName)
+      const {docs, framework}: RdcConf = rdcConf
+
       await render.renderTo(join('rdc', rdcConfName.slice(0, -3)), {
         extends: this.rdc,
         framework,

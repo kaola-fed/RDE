@@ -7,7 +7,6 @@ import _ from '../util'
 
 import cache from './cache'
 import conf from './conf'
-import docker from './docker'
 import {debug} from './logger'
 import npm from './npm'
 import render from './render'
@@ -25,26 +24,6 @@ export default {
     if (rdc === cache.get('rda.container')) {
       return
     }
-    const rdcName = rdc.split(':')[0]
-    const {
-      dockerWorkDirRoot,
-      rdcConfName,
-    } = conf
-    const rdcPathInDock = resolve(dockerWorkDirRoot, rdcName)
-
-    await docker.copy(
-      rdc, [
-        {
-          from: resolve(rdcPathInDock, 'template/.eslintrc.js'),
-          to: this.localEslintrcPath
-        },
-        {
-          from: resolve(rdcPathInDock, rdcConfName),
-          to: this.localRdcConfPath
-        }
-      ]
-    )
-
     await this.installEslintExtends()
   },
 
@@ -58,7 +37,8 @@ export default {
     } = eslintrc
 
     const {parser} = parserOptions
-    let lintPkgs = ['eslint', 'babel-eslint', 'typescript'].concat(rdcConf.lintDependencies || [])
+    const {lint = {}} = rdcConf
+    let lintPkgs = ['eslint', 'babel-eslint', 'typescript'].concat(lint.dependencies || [])
 
     if (plugins) {
       typeof plugins === 'string' ?

@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import conf from '../../services/conf'
-import docker from '../../services/docker'
 import _ from '../../util'
 
 const {join} = path
@@ -15,8 +14,6 @@ export default class CreateCore {
   public rdc = ''
 
   public extendRdc = false
-
-  public rdcConf: RdcConf = null
 
   public rdcRepo = ''
 
@@ -39,21 +36,6 @@ export default class CreateCore {
     await this.genExtraFiles()
 
     await this.registerHooks()
-  }
-
-  public async getRdcConf() {
-    const name = this.rdc.split(':')[0]
-    const confPath = join(conf.tmpDir, conf.rdcConfName)
-
-    await docker.copy(
-      this.rdc,
-      [{
-        from: join(conf.dockerWorkDirRoot, name, conf.rdcConfName),
-        to: confPath,
-      }]
-    )
-
-    this.rdcConf = require(confPath)
   }
 
   public async registerHooks() {
