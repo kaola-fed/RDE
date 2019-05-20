@@ -30,7 +30,7 @@ export default class ApplicationCreate extends CreateCore {
         from: join(rdcPathInDock, conf.rdcConfName),
         to: confPath
       }, {
-        from: resolve(rdcPathInDock, 'template/.eslintrc.js'),
+        from: resolve(rdcPathInDock, 'template', '.eslintrc.js'),
         to: resolve(conf.localCacheDir, '.eslintrc.js')
       }],
     )

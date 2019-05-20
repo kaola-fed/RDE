@@ -4,13 +4,14 @@ import * as util from 'util'
 import * as validateMessage from 'validate-commit-msg'
 
 import Base from '../base'
+import RunBase from '../base/run'
 import eslint from '../services/eslint'
 import {MCOMMON} from '../services/message'
 import _ from '../util'
 
 import Run from './run'
 
-export default class Lint extends Base {
+export default class Lint extends RunBase {
   public static strict = false
 
   public static examples = [
