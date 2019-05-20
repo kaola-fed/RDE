@@ -4,13 +4,14 @@ import * as util from 'util'
 import * as validateMessage from 'validate-commit-msg'
 
 import Base from '../base'
+import RunBase from '../base/run'
 import eslint from '../services/eslint'
 import {MCOMMON} from '../services/message'
 import _ from '../util'
 
 import Run from './run'
 
-export default class Lint extends Base {
+export default class Lint extends RunBase {
   public static strict = false
 
   public static examples = [
@@ -40,7 +41,6 @@ export default class Lint extends Base {
       return
     }
 
-    const list = _.restoreFlags(flags)
     if (flags.staged) {
       let filenames = []
       await util.promisify(sgf)('ACM').then(files => {
@@ -49,8 +49,11 @@ export default class Lint extends Base {
       })
       filenames = eslint.getLintFiles(filenames)
 
-      list.push(`--extras=${filenames.join(' ')}`)
+      flags.extras = filenames.join(' ')
+      delete flags.staged
     }
+
+    const list = _.restoreFlags(flags)
 
     await Run.run(['lint', ...list])
   }

@@ -1,4 +1,3 @@
-import * as extend from 'deep-extend'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as writePackage from 'write-pkg'
@@ -232,21 +231,17 @@ class Docker {
     }, {
       from: join(srcDir, rdcConfName),
       to: destRdcConfPath,
+    }, {
+      from: join(srcDir, 'template', '.eslintrc.js'),
+      to: resolve(localCacheDir, '.eslintrc.js')
     }])
 
-    const rdcConf = require(resolve(cwd, destRdcConfPath))
     let pkgJson: any = {}
     if (fs.existsSync(destPkgPath)) {
       pkgJson = require(resolve(cwd, destPkgPath))
     }
-    pkgJson = extend(pkgJson, result)
 
-    await _.asyncExec(`rm ${destPkgPath} ${destRdcConfPath}`)
-
-    if (!rdcConf.extends) {
-      return pkgJson
-    }
-    await this.getPkgJson(rdcConf.extends, pkgJson)
+    return pkgJson
   }
 }
 

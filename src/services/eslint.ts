@@ -135,8 +135,10 @@ export default {
   },
 
   getLintFiles(filenames) {
-    const rdcConf = ensureRequire(this.localRdcConfPath)
-    const lintFiles = rdcConf.lint.files || []
+    const rdcPath = conf.isApp ? this.localRdcConfPath : conf.rdcConfPath
+
+    const rdcConf = ensureRequire(rdcPath)
+    const lintFiles = rdcConf.lint && rdcConf.lint.files || []
     return microMatch(filenames, lintFiles, {
       basename: true
     })
