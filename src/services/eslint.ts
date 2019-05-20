@@ -16,19 +16,31 @@ const {resolve} = path
 const {ensureRequire} = _
 export default {
   get localEslintrcPath() {
-    return path.resolve(conf.cwd, conf.localCacheDir, '.eslintrc.js')
+    return resolve(conf.localCacheDir, '.eslintrc.js')
   },
-
+  get localRdcConfPath() {
+    return resolve(conf.localCacheDir, conf.rdcConfName)
+  },
   async prepare(rdc) {
     if (rdc === cache.get('rda.container')) {
       return
     }
     const rdcName = rdc.split(':')[0]
+    const {
+      dockerWorkDirRoot,
+      rdcConfName,
+    } = conf
+    const rdcPathInDock = resolve(dockerWorkDirRoot, rdcName)
+
     await docker.copy(
       rdc, [
         {
-          from: this.getDockerEslintrcPath(rdcName),
+          from: resolve(rdcPathInDock, 'template/.eslintrc.js'),
           to: this.localEslintrcPath
+        },
+        {
+          from: resolve(rdcPathInDock, rdcConfName),
+          to: this.localRdcConfPath
         }
       ]
     )
@@ -36,11 +48,8 @@ export default {
     await this.installEslintExtends()
   },
 
-  getDockerEslintrcPath(rdcName) {
-    return path.resolve(conf.dockerWorkDirRoot, rdcName, 'template', '.eslintrc.js')
-  },
-
   async installEslintExtends() {
+    const rdcConf = ensureRequire(this.localRdcConfPath)
     const eslintrc = ensureRequire(this.localEslintrcPath)
     const {
       plugins,
@@ -49,7 +58,7 @@ export default {
     } = eslintrc
 
     const {parser} = parserOptions
-    let lintPkgs = ['eslint', 'babel-eslint', 'typescript']
+    let lintPkgs = ['eslint', 'babel-eslint', 'typescript'].concat(rdcConf.lintDependencies || [])
 
     if (plugins) {
       typeof plugins === 'string' ?
