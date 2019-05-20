@@ -4,7 +4,6 @@ import * as enquirer from 'enquirer'
 import Base from '../base'
 import ApplicationCreate from '../core/create/application'
 import ContainerCreate from '../core/create/container'
-import SuiteCreate from '../core/create/suite'
 import conf from '../services/conf'
 import {logger} from '../services/logger'
 import _ from '../util'
@@ -30,6 +29,12 @@ export default class Create extends Base {
     }),
   }
 
+  public static args = [{
+    name: 'name',
+    required: false,
+    description: 'project name to create',
+  }]
+
   public name = ''
 
   public framework = 'vue'
@@ -43,10 +48,12 @@ export default class Create extends Base {
   public async preInit() {
     await this.config.runHook('checkUpdate', {})
 
-    const {flags} = this.parse(Create)
+    const {flags, args} = this.parse(Create)
     const {from} = flags
+    const {name} = args
 
     this.from = from
+    this.name = name
 
     return flags
   }
@@ -81,7 +88,7 @@ export default class Create extends Base {
       core = new ContainerCreate(opts)
       break
     case RdTypes.Suite:
-      core = new SuiteCreate(opts)
+      core = new ApplicationCreate(opts)
     }
 
     await core.start()
@@ -98,16 +105,18 @@ export default class Create extends Base {
   public async ask() {
     const {RdTypes, frameworks} = conf
 
-    const {name} = await enquirer.prompt({
-      type: 'input',
-      name: 'name',
-      message: 'What is the name of project?',
-      required: true,
-    })
-    this.name = name
+    if (!this.name) {
+      const {name} = await enquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: 'What is the name of project?',
+        required: true,
+      })
+      this.name = name
+    }
 
     if (this.from) {
-      conf.rdType = 'container'
+      conf.rdType = RdTypes.Container
       this.rdc = this.from
       return
     }
@@ -129,8 +138,12 @@ export default class Create extends Base {
       },
     ])
 
-    if (type === RdTypes.Application) {
-      const defaultStarter = conf.frameworks[framework].rdcStarter
+    const isApp = type === RdTypes.Application || type === RdTypes.Suite
+    if (isApp) {
+      const frameworkConf = conf.frameworks[framework]
+      const {rdaStarter, rdsStarter} = frameworkConf
+      const defaultStarter = type === RdTypes.Application ? rdaStarter : rdsStarter
+
       const {rdcName} = await enquirer.prompt({
         type: 'input',
         name: 'rdcName',

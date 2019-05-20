@@ -36,7 +36,7 @@ export default class Run extends RunBase {
   public rebuild = false
 
   public get from() {
-    if (conf.rdType === RdTypes.Application) {
+    if (conf.isApp) {
       const {container} = conf.getAppConf()
       return container.name
     }
@@ -52,7 +52,7 @@ export default class Run extends RunBase {
   public get workDir() {
     const {dockerWorkDirRoot} = conf
     let name
-    if (conf.rdType === RdTypes.Application) {
+    if (conf.isApp) {
       const {container} = conf.getAppConf()
       name = container.name.split(':')[0]
     }
@@ -73,14 +73,14 @@ export default class Run extends RunBase {
       return rdcConf.docker.tag || null
     }
 
-    if (conf.rdType === RdTypes.Application) {
+    if (conf.isApp) {
       // name app image with project dir name
       return path.basename(cwd)
     }
   }
 
   public get ports() {
-    if (conf.rdType === RdTypes.Application) {
+    if (conf.isApp) {
       const {docker} = conf.getAppConf()
       return docker.ports || []
     }
@@ -103,7 +103,7 @@ export default class Run extends RunBase {
       await validateRdc()
     }
 
-    if (conf.rdType === RdTypes.Application) {
+    if (conf.isApp) {
       await validateRda()
     }
   }
@@ -112,7 +112,7 @@ export default class Run extends RunBase {
     await docker.genDockerFile(
       this.workDir, this.from,
       conf.localCacheDir,
-      conf.rdType === RdTypes.Application,
+      conf.isApp,
     )
 
     await docker.genDockerCompose(
@@ -122,11 +122,11 @@ export default class Run extends RunBase {
       this.watch,
       `dev-${this.tag}`,
       conf.localCacheDir,
-      conf.rdType === RdTypes.Application,
+      conf.isApp,
       this.cmd === 'build'
     )
 
-    if (conf.rdType === RdTypes.Application) {
+    if (conf.isApp) {
       await eslint.prepare(this.from)
     }
 

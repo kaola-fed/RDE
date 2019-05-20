@@ -126,9 +126,9 @@ export default abstract class DocsBase extends Command {
     const {flags} = this.parse(this.constructor)
     this.verbose = flags.verbose
 
-    const {rdsConfPath, rdcConfPath, RdTypes} = conf
-    if (fs.existsSync(rdsConfPath)) {
-      conf.rdType = RdTypes.Suite
+    const {appConfPath, rdcConfPath, RdTypes} = conf
+    if (fs.existsSync(appConfPath)) {
+      conf.rdType = RdTypes.Application
     } else if (fs.existsSync(rdcConfPath)) {
       conf.rdType = RdTypes.Container
     }
@@ -151,7 +151,7 @@ export default abstract class DocsBase extends Command {
     if (conf.rdType === RdTypes.Container) {
       this.localConfig = require(rdcConfPath)
     } else {
-      this.localConfig = require(rdsConfPath)
+      this.localConfig = require(appConfPath)
     }
 
     this.pages = this.getPages()

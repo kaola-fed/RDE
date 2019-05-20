@@ -80,9 +80,9 @@ export default class DockerRun {
   public async renderDir(dir: string, config: Config) {
     const srcDir = resolve(dir, 'template')
     // @ts-ignore
-    const {render: rdtRender, container, suites} = config
+    const {render: rdtRender = {} as any, container, suites} = config
 
-    const {includes} = rdtRender
+    const {includes = []} = rdtRender
 
     if (suites && suites.length) {
       container.render.suites = suites

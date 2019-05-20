@@ -1,20 +1,42 @@
 import _ from '../util'
 
-import {logger, spinner} from './logger'
+import {debug, logger, spinner} from './logger'
 
 export default {
-  async install(pkg?: string, isDevDep = true, dir = process.cwd()) {
+  async install({
+    pkgs = [],
+    isGlobal = false,
+    isDevDep = true,
+    dir = process.cwd(),
+  }) {
     spinner.start('Installing packages. This might take a while...')
 
     try {
-      if (pkg) {
-        await _.asyncExec(`cd ${dir} && npm i ${isDevDep ? '-D' : ''} ${pkg}`)
+      if (pkgs && pkgs.length) {
+        const args = ['i', ...pkgs]
+        if (isGlobal) {
+          args.push('-g')
+        }
+
+        if (isDevDep) {
+          args.push('-D')
+        }
+
+        debug(`cwd: ${dir}`)
+        debug(
+          `npm ${args.join(' ')}`
+        )
+
+        await _.asyncSpawn('npm', args, {
+          cwd: dir
+        })
       } else {
-        await _.asyncExec(`cd ${dir} && npm i`)
+        await _.asyncSpawn('npm', ['i'], {
+          cwd: dir
+        })
       }
-      logger.info(`Installed package ${pkg}`)
     } catch (e) {
-      logger.error(`Failed to install package ${pkg}: ${e}`)
+      logger.error(`Failed to install package: ${e}`)
     } finally {
       spinner.stop()
     }

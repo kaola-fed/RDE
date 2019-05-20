@@ -79,8 +79,9 @@ class Docker {
   }
 
   @log('Pushing image to docker hub...')
-  public async push(name) {
-    await _.asyncSpawn('docker', ['push', name])
+  public async push(name, version) {
+    await _.asyncSpawn('docker', ['push', `${name}:${version}`])
+    await _.asyncSpawn('docker', ['push', `${name}:latest`])
   }
 
   @log('Generating docker files...')

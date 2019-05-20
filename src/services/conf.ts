@@ -12,8 +12,6 @@ const appConfName = 'rda.config.js'
 
 const rdcConfName = 'rdc.config.js'
 
-const rdsConfName = 'rds.config.js'
-
 let rdType = ''
 
 let rdcConfMap: any = {}
@@ -37,10 +35,6 @@ const conf = {
 
   get rdcConfPath() {
     return resolve(conf.cwd, rdcConfName)
-  },
-
-  get rdsConfPath() {
-    return resolve(conf.cwd, rdsConfName)
   },
 
   get dockerWorkDirRoot() {
@@ -67,23 +61,24 @@ const conf = {
 
   get rdcConfName() { return rdcConfName },
 
-  get rdsConfName() { return rdsConfName },
-
   get frameworks() {
     return {
       vue: {
-        rdcStarter: 'rdebase/rdc-vue-starter',
+        rdaStarter: 'rdebase/rdc-vue-starter',
+        rdsStarter: 'rdebase/rdc-suite-basic',
         cdn: [],
       },
       react: {
-        rdcStarter: 'rdc-react-starter',
+        rdaStarter: 'rdc-react-starter',
+        rdsStarter: 'rdebase/rdc-suite-basic',
         cdn: [
           'https://unpkg.com/react/umd/react.production.min.js',
           'https://unpkg.com/react-dom/umd/react-dom.production.min.js',
         ],
       },
       angular: {
-        rdcStarter: 'rdc-angular-starter',
+        rdaStarter: 'rdc-angular-starter',
+        rdsStarter: 'rdebase/rdc-suite-basic',
         cdn: ['https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js'],
       },
     }
@@ -95,6 +90,10 @@ const conf = {
       Container: 'Container',
       Suite: 'Suite',
     }
+  },
+
+  get isApp() {
+    return this.rdType === this.RdTypes.Application || this.rdType === this.RdTypes.Suite
   },
 
   get rdType() {

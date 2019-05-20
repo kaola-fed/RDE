@@ -1,6 +1,7 @@
+import * as fs from 'fs'
 import * as microMatch from 'micromatch'
-import * as npmWhich from 'npm-which'
 import * as path from 'path'
+import * as writePackage from 'write-pkg'
 
 import _ from '../util'
 
@@ -12,6 +13,7 @@ import npm from './npm'
 import render from './render'
 
 const {resolve} = path
+const {ensureRequire} = _
 export default {
   get localEslintrcPath() {
     return path.resolve(conf.cwd, conf.localCacheDir, '.eslintrc.js')
@@ -30,6 +32,7 @@ export default {
         }
       ]
     )
+
     await this.installEslintExtends()
   },
 
@@ -38,28 +41,54 @@ export default {
   },
 
   async installEslintExtends() {
-    const eslintrc = _.ensureRequire(this.localEslintrcPath)
-    let eslintDevs = ['eslint', 'babel-eslint']
-    if (eslintrc.plugins) {
-      typeof eslintrc.plugins === 'string' ?
-        eslintDevs.push(this.getValidPluginName(eslintrc.plugins)) :
-        eslintrc.plugins.forEach(item => eslintDevs.push(this.getValidPluginName(item)))
-    }
-    if (eslintrc.extends) {
-      typeof eslintrc.extends === 'string' ?
-        eslintDevs.push(this.getValidConfigName(eslintrc.extends)) :
-        eslintrc.extends.forEach(item => eslintDevs.push(this.getValidConfigName(item)))
-    }
-    eslintDevs = [...new Set(eslintDevs)]
+    const eslintrc = ensureRequire(this.localEslintrcPath)
+    const {
+      plugins,
+      extends: pluginExtends,
+      parserOptions = {}
+    } = eslintrc
 
-    await npm.install(`${eslintDevs.join(' ')} -g`)
+    const {parser} = parserOptions
+    let lintPkgs = ['eslint', 'babel-eslint', 'typescript']
+
+    if (plugins) {
+      typeof plugins === 'string' ?
+        lintPkgs.push(this.getValidPluginName(plugins)) :
+        plugins.forEach(item => lintPkgs.push(this.getValidPluginName(item)))
+    }
+    if (pluginExtends) {
+      typeof pluginExtends === 'string' ?
+        lintPkgs.push(this.getValidConfigName(pluginExtends)) :
+        pluginExtends.forEach(item => lintPkgs.push(this.getValidConfigName(item)))
+    }
+
+    if (parser) {
+      lintPkgs.push(parser)
+    }
+
+    // use parent dir of cwd as workspace
+    const workspacePath = resolve(conf.cwd, '..')
+    const pkgJson = resolve(workspacePath, 'package.json')
+    if (!fs.existsSync(pkgJson)) {
+      await writePackage(workspacePath, {
+        name: '@rde/workspace'
+      })
+    }
+
+    // reason of .. is create use process.chdir at preRun
+    await npm.install({
+      pkgs: [...new Set(lintPkgs)],
+      dir: workspacePath
+    })
   },
 
   async renderDir(isRda) {
     const join = path.join
     let eslintBinPath = ''
     try {
-      eslintBinPath = npmWhich(conf.cwd).sync('eslint')
+      // use parent dir of cwd as workspace
+      const workspacePath = resolve(conf.cwd, '..')
+      eslintBinPath = resolve(workspacePath, 'node_modules', 'eslint')
     } catch (err) {
       if (err) {
         eslintBinPath = ''
@@ -84,7 +113,15 @@ export default {
     if (plugin.includes('eslint-plugin-')) {
       return plugin
     }
-    return `eslint-plugin-${plugin}`
+
+    if (plugin[0] === '@') {
+      const arr = plugin.split('/')
+      const scope = arr[0]
+      const name = arr[1]
+      return `${scope}/eslint-plugin-${name.split('/')[0]}`
+    }
+
+    return `eslint-plugin-${plugin.split('/')[0]}`
   },
 
   getValidConfigName(name) {
@@ -95,9 +132,16 @@ export default {
       return ''
     }
     if (name.includes('plugin:')) {
-      const plugin = name.split(':')[1].split('/')[0]
+      const plugin = name.split(':')[1]
       return this.getValidPluginName(plugin)
     }
+    if (name[0] === '@') {
+      const arr = name.split('/')
+      const scope = arr[0]
+      const plugin = arr[1]
+      return `${scope}/eslint-config-${plugin.split('/')[0]}`
+    }
+
     return `eslint-config-${name.split('/')[0]}`
   },
 
