@@ -97,9 +97,12 @@ export default class Create extends Base {
   public async postRun() {
     logger.star('Run successfully')
     logger.star('Hello from RDE, explore with:')
+
+    logger.info('==============================')
     logger.star(`$ cd ${this.name}`)
     logger.star('$ git remote add origin <https://repo.git>')
     logger.star('$ rde serve')
+    logger.info('==============================')
   }
 
   public async ask() {
