@@ -40,7 +40,6 @@ export default class Lint extends Base {
       return
     }
 
-    const list = _.restoreFlags(flags)
     if (flags.staged) {
       let filenames = []
       await util.promisify(sgf)('ACM').then(files => {
@@ -49,8 +48,11 @@ export default class Lint extends Base {
       })
       filenames = eslint.getLintFiles(filenames)
 
-      list.push(`--extras=${filenames.join(' ')}`)
+      flags.extras = filenames.join(' ')
+      delete flags.staged
     }
+
+    const list = _.restoreFlags(flags)
 
     await Run.run(['lint', ...list])
   }
