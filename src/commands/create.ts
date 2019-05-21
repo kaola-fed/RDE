@@ -1,4 +1,3 @@
-import {flags} from '@oclif/command'
 import * as enquirer from 'enquirer'
 
 import Base from '../base'
@@ -17,16 +16,6 @@ export default class Create extends Base {
 
   public static flags = {
     ...Base.flags,
-    from: flags.string({
-      char: 'f',
-      description: 'create container from another one',
-      parse: input => {
-        if (!input.includes(':')) {
-          return `${input}:latest`
-        }
-        return input
-      },
-    }),
   }
 
   public static args = [{
@@ -43,18 +32,13 @@ export default class Create extends Base {
 
   public rdcRepo = ''
 
-  public from = ''
-
   public async preInit() {
     await this.config.runHook('checkUpdate', {})
 
     const {flags, args} = this.parse(Create)
-    const {from} = flags
     const {name} = args
 
-    this.from = from
     this.name = name
-
     return flags
   }
 
@@ -73,7 +57,6 @@ export default class Create extends Base {
       type: conf.rdType,
       framework: this.framework,
       rdc: this.rdc,
-      extendRdc: !!this.from,
       rdcRepo: this.rdcRepo,
     }
 
@@ -118,12 +101,6 @@ export default class Create extends Base {
       this.name = name
     }
 
-    if (this.from) {
-      conf.rdType = RdTypes.Container
-      this.rdc = this.from
-      return
-    }
-
     const {type, framework} = await enquirer.prompt([
       {
         name: 'type',
@@ -144,8 +121,8 @@ export default class Create extends Base {
     const isApp = type === RdTypes.Application || type === RdTypes.Suite
     if (isApp) {
       const frameworkConf = conf.frameworks[framework]
-      const {rdaStarter, rdsStarter} = frameworkConf
-      const defaultStarter = type === RdTypes.Application ? rdaStarter : rdsStarter
+      const {rdcStarter, rdsStarter} = frameworkConf
+      const defaultStarter = type === RdTypes.Application ? rdcStarter : rdsStarter
 
       const {rdcName} = await enquirer.prompt({
         type: 'input',

@@ -45,7 +45,7 @@ export default class Lint extends RunBase {
       let filenames = []
       await util.promisify(sgf)('ACM').then(files => {
         filenames = files.map(file => file.filename)
-          .filter(file => /(app\/)|(template\/)/.test(file))
+          .filter(file => /(app\/)|(runtime\/)/.test(file))
       })
       filenames = eslint.getLintFiles(filenames)
 

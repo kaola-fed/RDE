@@ -6,7 +6,7 @@ import * as readline from 'readline'
 import RunBase from '../base/run'
 import conf from '../services/conf'
 import docker from '../services/docker'
-import eslint from '../services/eslint'
+import install from '../services/install'
 import {debug} from '../services/logger'
 import {validateRda, validateRdc} from '../services/validate'
 
@@ -25,6 +25,10 @@ export default class Run extends RunBase {
       char: 'r',
       description: 'rebuild image before run',
     }),
+    install: flags.boolean({
+      char: 'i',
+      description: 'generate local node_modules',
+    }),
   }
 
   public static args = [{
@@ -34,6 +38,8 @@ export default class Run extends RunBase {
   }]
 
   public rebuild = false
+
+  public install = false
 
   public get from() {
     if (conf.isApp) {
@@ -45,7 +51,19 @@ export default class Run extends RunBase {
       const rdcConfPath = resolve(cwd, rdcConfName)
       const rdcConf = require(rdcConfPath)
 
-      return rdcConf.extends || rdcConf.nodeVersion || 'node:latest'
+      return rdcConf.nodeVersion || 'node:latest'
+    }
+  }
+
+  public get tag() {
+    if (conf.rdType === RdTypes.Container) {
+      const rdcConf = require(join(conf.cwd, rdcConfName))
+      return rdcConf.docker.tag.split(':')[0]
+    }
+
+    if (conf.isApp) {
+      // name app image with project dir name
+      return path.basename(conf.cwd)
     }
   }
 
@@ -64,19 +82,6 @@ export default class Run extends RunBase {
       name = tag.split(':')[0]
     }
     return `${dockerWorkDirRoot}/${name}`
-  }
-
-  public get tag() {
-    if (conf.rdType === RdTypes.Container) {
-      const rdcConf = require(join(conf.cwd, conf.rdcConfName))
-
-      return rdcConf.docker.tag || null
-    }
-
-    if (conf.isApp) {
-      // name app image with project dir name
-      return path.basename(cwd)
-    }
   }
 
   public get ports() {
@@ -98,6 +103,7 @@ export default class Run extends RunBase {
 
     const {flags} = this.parse(Run)
     this.rebuild = flags.rebuild
+    this.install = flags.install
 
     if (conf.rdType === RdTypes.Container) {
       await validateRdc()
@@ -127,10 +133,10 @@ export default class Run extends RunBase {
     )
 
     if (conf.isApp) {
-      await eslint.prepare(this.from)
+      await install.app({
+        skipInstall: true,
+      })
     }
-
-    await docker.genPkgJson()
   }
 
   public async run() {
@@ -142,22 +148,12 @@ export default class Run extends RunBase {
 
     debug(`docker build dev-${this.tag}`)
 
-    if (this.watch) {
-      args.push('--watch')
-    }
-
-    if (this.verbose) {
-      args.push('-v')
-    }
-
-    if (this.extras) {
-      args = args.concat(['-e', this.extras])
-    }
+    if (this.watch) { args.push('--watch') }
+    if (this.verbose) { args.push('-v') }
+    if (this.extras) { args = args.concat(['-e', this.extras]) }
 
     let child = null
-    process.on('SIGINT', () => {
-      child.kill()
-    })
+    process.on('SIGINT', () => child.kill())
 
     if (this.watch) {
       const rl = readline.createInterface({

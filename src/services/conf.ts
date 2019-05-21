@@ -1,10 +1,9 @@
-import * as extend from 'deep-extend'
 import * as os from 'os'
 import * as path from 'path'
 
 import _ from '../util'
 
-const {resolve, join} = path
+const {resolve} = path
 
 const appConfName = 'rda.config.js'
 
@@ -20,7 +19,7 @@ const conf = {
   },
 
   get docsDir() {
-    return '_docs'
+    return 'docs'
   },
 
   get docsPagesDir() {
@@ -43,12 +42,16 @@ const conf = {
     return path.join(os.tmpdir(), 'rde_rdc_tmp')
   },
 
-  get runtimeDir() {
-    return resolve(conf.cwd, `.${conf.cliName}`)
-  },
-
   get localCacheDir() {
     return '.cache'
+  },
+
+  get runtimeDir() {
+    return 'runtime'
+  },
+
+  get rdeDir() {
+    return resolve(conf.cwd, '.rde')
   },
 
   get cliName() { return 'rde' },
@@ -62,21 +65,21 @@ const conf = {
   get frameworks() {
     return {
       vue: {
-        rdaStarter: 'rdebase/rdc-vue-starter',
-        rdsStarter: 'rdebase/rdc-suite-basic',
+        rdcStarter: 'rdebase/rdc-vue-starter',
+        rdsStarter: 'rdebase/rdc-vue-suite',
         cdn: [],
       },
       react: {
-        rdaStarter: 'rdc-react-starter',
-        rdsStarter: 'rdebase/rdc-suite-basic',
+        rdcStarter: 'rdebase/rdc-react-starter',
+        rdsStarter: 'rdebase/rdc-vue-suite',
         cdn: [
           'https://unpkg.com/react/umd/react.production.min.js',
           'https://unpkg.com/react-dom/umd/react-dom.production.min.js',
         ],
       },
       angular: {
-        rdaStarter: 'rdc-angular-starter',
-        rdsStarter: 'rdebase/rdc-suite-basic',
+        rdcStarter: 'rdebase/rdc-angular-starter',
+        rdsStarter: 'rdebase/rdc-vue-suite',
         cdn: ['https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js'],
       },
     }
@@ -106,52 +109,13 @@ const conf = {
     return _.ensureRequire(conf.appConfPath)
   },
 
-  getRdcDir(rdc: string): string {
-    // rdcName is the dir contain the rdc codes
-    // rdcName docker-hub format: 'scope/abc-c'
-    const rdcName = rdc.split(':')[0]
-
-    return join('../../', rdcName)
-  },
-
-  getRdcChain(nodeDir, chain = []): string[] {
-    chain.push(nodeDir)
-
-    const rdcConfPath = resolve(nodeDir, conf.rdcConfName)
-    const {extend} = require(rdcConfPath)
-
-    if (!extend) {
-      return chain.reverse()
-    }
-
-    return conf.getRdcChain(`${conf.getRdcDir(extend)}`, chain)
-  },
-
   getRdcConf(nodeDir): RdcConf {
     if (rdcConfMap[nodeDir]) {
       return rdcConfMap[nodeDir]
     }
 
-    const chain = conf.getRdcChain(nodeDir)
-    rdcConfMap[nodeDir] = conf.getRdcConfFromChain(chain)
+    rdcConfMap[nodeDir] = require(resolve(conf.cwd, nodeDir, conf.rdcConfName))
     return rdcConfMap[nodeDir]
-  },
-
-  getRdcConfFromChain(chain): RdcConf {
-    let merged: RdcConf
-
-    for (let node of chain) {
-      // node is an array like ['.' '../../scopeA/rdc1', '../../rdcScope/rdc2']
-      const nodeConf = require(resolve(conf.cwd, node, conf.rdcConfName))
-
-      merged = extend(
-        {},
-        nodeConf,
-        merged || {},
-      )
-    }
-
-    return merged
   },
 }
 

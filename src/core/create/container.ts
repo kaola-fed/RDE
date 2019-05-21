@@ -2,9 +2,9 @@ import * as path from 'path'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
-import eslint from '../../services/eslint'
+import ide from '../../services/ide'
+import install from '../../services/install'
 import render from '../../services/render'
-import _ from '../../util'
 
 import CreateCore from './index'
 
@@ -14,53 +14,27 @@ export default class ContainerCreate extends CreateCore {
     await docker.pull(this.rdc)
 
     const name = this.rdc.split(':')[0]
-    if (this.extendRdc) {
-      await docker.copy(
-        this.rdc,
-        [{
-          from: join(conf.dockerWorkDirRoot, name, 'app'),
-          to: join(conf.cwd, 'app'),
-        }],
-      )
-
-      await _.asyncExec('mkdir template')
-    } else {
-      await docker.copy(
-        this.rdc,
-        [{
-          // does not need to join, cuz it's docker path
-          from: `${conf.dockerWorkDirRoot}/${name}/.`,
-          to: `${conf.cwd}`,
-        }],
-      )
-    }
+    await docker.copy(
+      this.rdc,
+      [{
+        // does not need to join, cuz it's docker path
+        from: `${conf.dockerWorkDirRoot}/${name}/.`,
+        to: `${conf.cwd}`,
+      }],
+    )
   }
 
   public async genConfFile() {
     const {rdcConfName, rdcConfPath} = conf
 
-    if (this.extendRdc) {
-      const rdcConf = require(conf.rdcConfName)
-      const {docs, framework}: RdcConf = rdcConf
+    const rdcConf = require(rdcConfPath)
+    rdcConf.docker.tag = this.rdcRepo
 
-      await render.renderTo(join('rdc', rdcConfName.slice(0, -3)), {
-        extends: this.rdc,
-        framework,
-        docs: docs ? docs.url : '',
-        rdcRepo: this.rdcRepo,
-      }, rdcConfName, {
-        overwrite: true,
-      })
-    } else {
-      const rdcConf = require(rdcConfPath)
-      rdcConf.docker.tag = this.rdcRepo
-
-      await render.renderTo('module', {
-        obj: rdcConf,
-      }, rdcConfName, {
-        overwrite: true,
-      })
-    }
+    await render.renderTo('module', {
+      obj: rdcConf,
+    }, rdcConfName, {
+      overwrite: true,
+    })
   }
 
   public async genExtraFiles() {
@@ -75,6 +49,8 @@ export default class ContainerCreate extends CreateCore {
       overwrite: true,
     })
 
-    await eslint.renderDir(false)
+    await ide.initSettings(false)
+
+    await install.pkg(conf.RdTypes.Container)
   }
 }

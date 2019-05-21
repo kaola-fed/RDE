@@ -4,14 +4,12 @@ WORKDIR {{{workDir}}}
 
 RUN npm i -g rde
 
-COPY .cache/package.json {{{dockerWorkDirRoot}}}/package.json
+{{#isApp}}
+COPY .cache/package.json {{{workDir}}}/package.json
+{{/isApp}}
+{{^isApp}}
+COPY runtime/package.json {{{workDir}}}/package.json
+{{/isApp}}
 
 {{!cache node-modules}}
 RUN npm i
-
-{{!cache .runtime dir}}
-{{#isApp}}
-COPY . .
-
-RUN rde docker:run
-{{/isApp}}

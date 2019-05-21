@@ -8,9 +8,13 @@ export const MCOMMON = {
   INVALID_COMMIT_MSG_FORMAT: 'invalid commit msg format',
   UNRECOGNIZED_VERSION_FLAG: 'Unrecognized version flag for publish',
   WRONG_PUBLISH_TAG: 'Use semver-like tag instead of latest',
+  WRONG_PROJECT_STRUCTURE: 'Unsupported project structure, please use `$rde create` to create one'
 }
 
-export const MRDA = {}
+export const MRDA = {
+  UNRECOGNIZED: 'Unrecognized application project, please use `$ rde create` to create one',
+  NO_PKG_IN_CACHE_DIR: 'Cannot find package.json in .cache dir, please run `$rde lint` first'
+}
 
 export const MRDC = {
   UNRECOGNIZED: 'Unrecognized container project, please use `$ rde create` to create one',

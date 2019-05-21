@@ -5,6 +5,7 @@ import * as path from 'path'
 import Base from '../base'
 import conf from '../services/conf'
 import {debug} from '../services/logger'
+import {MCOMMON} from '../services/message'
 import _ from '../util'
 
 const {resolve} = path
@@ -59,14 +60,13 @@ export default class RunBase extends Base {
       throw Error('no rde config file found, please read docs first')
     }
 
-    const appDir = resolve(`${cwd}/app`)
-    const templateDir = resolve(`${cwd}/template`)
-    if (conf.rdType === 'container' && !fs.existsSync(templateDir)) {
-      throw Error('template dir cannot be found in cwd, please provide')
-    }
-
-    if (!fs.existsSync(appDir)) {
-      throw Error('app dir cannot be found in cwd, please provide')
+    const appDir = resolve(cwd, 'app')
+    const runtimeDir = resolve(cwd, conf.runtimeDir)
+    if (
+      (conf.rdType === 'container' && !fs.existsSync(runtimeDir)) ||
+      !fs.existsSync(appDir)
+    ) {
+      throw Error(MCOMMON.WRONG_PROJECT_STRUCTURE)
     }
   }
 

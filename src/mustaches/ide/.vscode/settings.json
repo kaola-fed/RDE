@@ -17,6 +17,13 @@
   "files.exclude": {
     "**/.cache": true,
     "**/.idea": true,
-    "**/.vscode": true
+    "**/.vscode": true,
+    {{#isApp}}
+    "**/runtime": true,
+    "**/node_modules": true
+    {{/isApp}}
+    {{^isApp}}
+    "**/node_modules": true
+    {{/isApp}}
   }
 }

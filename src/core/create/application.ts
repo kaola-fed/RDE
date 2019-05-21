@@ -2,7 +2,8 @@ import * as path from 'path'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
-import eslint from '../../services/eslint'
+import ide from '../../services/ide'
+import install from '../../services/install'
 import render from '../../services/render'
 import _ from '../../util'
 
@@ -17,25 +18,26 @@ export default class ApplicationCreate extends CreateCore {
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
 
     const name = this.rdc.split(':')[0]
-    const {dockerWorkDirRoot} = conf
+    const {
+      cwd,
+      rdcConfName,
+      dockerWorkDirRoot,
+    } = conf
     const rdcPathInDock = resolve(dockerWorkDirRoot, name)
-    const confPath = resolve(conf.localCacheDir, conf.rdcConfName)
+    const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
     await docker.copy(
       this.rdc,
       [{
-        from: join(rdcPathInDock, 'app'),
-        to: join(conf.cwd, 'app'),
-      }, {
-        from: join(rdcPathInDock, conf.rdcConfName),
-        to: confPath
-      }, {
-        from: resolve(rdcPathInDock, 'template', '.eslintrc.js'),
-        to: resolve(conf.localCacheDir, '.eslintrc.js')
+        from: resolve(rdcPathInDock, 'app'),
+        to: resolve(cwd, 'app'),
       }],
     )
 
-    this.rdcConf = require(confPath)
-    await eslint.prepare(this.rdc)
+    await install.app({
+      rdc: this.rdc,
+    })
+
+    this.rdcConf = require(rdcConfPath)
   }
 
   public async genConfFile() {
@@ -58,6 +60,6 @@ export default class ApplicationCreate extends CreateCore {
       overwrite: true,
     })
 
-    await eslint.renderDir(true)
+    await ide.initSettings(true)
   }
 }

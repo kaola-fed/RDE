@@ -1,16 +1,10 @@
-import * as fs from 'fs'
 import * as path from 'path'
-import * as writePackage from 'write-pkg'
 
 import _ from '../util'
 
-import cache from './cache'
 import conf from './conf'
 import log, {debug} from './logger'
 import render from './render'
-
-const {resolve, join} = path
-const {RdTypes} = conf
 
 class Docker {
   @log('Pulling image from docker hub...')
@@ -53,7 +47,6 @@ class Docker {
     }
   }
 
-  @log('Building docker image...')
   public async build(tag, cwd, noCache = false, dockerFile = 'Dockerfile', context = '.') {
     let args = ['build', '-t', tag, '-f', dockerFile, context]
     if (noCache) {
@@ -140,108 +133,6 @@ class Docker {
     }, `${dir}/docker-compose.yml`, {
       overwrite: true,
     })
-  }
-
-  /**
-   * rde will regenerate package.json under such condition:
-   * 1. no cache info found
-   * 2. rdc version changed if rdType is application
-   * 3. any package.json under template dir has changed if rdType is container
-   * 4. extends attr in rdc.config.js has changed if rdType is container
-   */
-  @log('Generating package.json from rdc...')
-  public async genPkgJson() {
-    const {
-      rdType,
-      cwd,
-      localCacheDir,
-      rdcConfName,
-    } = conf
-    const isApplication = rdType === RdTypes.Application
-    let rdcName
-    if (isApplication) {
-      const rdaConf = conf.getAppConf()
-      rdcName = rdaConf.container.name || ''
-    }
-
-    const isContainer = rdType === RdTypes.Container
-    let pkgJsonLMTs
-    let extendsName
-    let pkgJson = null
-    if (isContainer) {
-      // last-modified-time
-      const pkgPath = resolve(cwd, 'template/package.json')
-      pkgJsonLMTs = fs.statSync(pkgPath).mtimeMs
-      pkgJson = require(pkgPath)
-
-      const rdcConfPath = resolve(cwd, rdcConfName)
-      const rdcConf = require(rdcConfPath)
-      extendsName = rdcConf.extends
-    }
-
-    const localPkgJson = resolve(localCacheDir, 'package.json')
-    if (
-      !cache.exist ||
-      (isApplication && (rdcName !== cache.get('rda.container') || !fs.existsSync(localPkgJson))) ||
-      (isContainer && pkgJsonLMTs !== cache.get('rdc.pkg.lmts')) ||
-      (isContainer && extendsName && extendsName !== cache.get('rdc.extends'))
-    ) {
-      const image = isApplication ? rdcName : extendsName
-      const resultPkgJson = await this.getPkgJson(image, pkgJson)
-
-      if (isApplication) {
-        const rdaConf = conf.getAppConf()
-        rdaConf.suites.forEach(item => {
-          resultPkgJson.dependencies[item.name] = item.version
-        })
-      }
-
-      await writePackage(`${localCacheDir}`, resultPkgJson)
-
-      if (isApplication) {
-        cache.set('rda.container', rdcName)
-      }
-
-      if (isContainer) {
-        cache.set('rdc.pkg.lmts', pkgJsonLMTs)
-        extendsName && cache.set('rdc.extends', extendsName)
-      }
-    }
-  }
-
-  public async getPkgJson(image, result = {}) {
-    if (!image) {
-      return result
-    }
-
-    const {
-      dockerWorkDirRoot,
-      localCacheDir,
-      rdcConfName,
-      cwd,
-    } = conf
-    const name = image.split(':')[0]
-    const srcDir = join(dockerWorkDirRoot, name)
-    const destPkgPath = join(localCacheDir, 'package.json')
-    const destRdcConfPath = join(localCacheDir, rdcConfName)
-
-    await this.copy(image, [{
-      from: join(srcDir, 'template/package.json'),
-      to: destPkgPath,
-    }, {
-      from: join(srcDir, rdcConfName),
-      to: destRdcConfPath,
-    }, {
-      from: join(srcDir, 'template', '.eslintrc.js'),
-      to: resolve(localCacheDir, '.eslintrc.js')
-    }])
-
-    let pkgJson: any = {}
-    if (fs.existsSync(destPkgPath)) {
-      pkgJson = require(resolve(cwd, destPkgPath))
-    }
-
-    return pkgJson
   }
 }
 

@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import conf from '../../services/conf'
 import _ from '../../util'
 
 const {join} = path
@@ -13,21 +12,16 @@ export default class CreateCore {
   // format: name:version
   public rdc = ''
 
-  public extendRdc = false
-
   public rdcRepo = ''
 
-  constructor({name, framework, rdc, extendRdc, rdcRepo}) {
+  constructor({name, framework, rdc, rdcRepo}) {
     this.name = name
     this.framework = framework
     this.rdc = rdc
-    this.extendRdc = extendRdc
     this.rdcRepo = rdcRepo
   }
 
   public async start() {
-    await _.asyncExec(`rm -rf ${conf.tmpDir} && mkdir ${conf.tmpDir}`)
-
     // pull resources
     await this.prepare()
 

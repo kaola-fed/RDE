@@ -21,56 +21,50 @@ export default class DockerRun {
 
   public async start() {
     let config
-    if (conf.rdType === conf.RdTypes.Container ||
-      (conf.rdType === conf.RdTypes.Application && !fs.existsSync(conf.runtimeDir))) {
-      // generate rdt template from rdt chain
-      config = await this.composeRdcChain()
+    // generate rdt template from rdt chain
+    config = await this.copyToTmp()
 
-      // template render to .rde
-      await this.renderDir(conf.tmpDir, config)
-    } else {
-      config = require(resolve(conf.runtimeDir, conf.rdcConfName))
-    }
+    // template render to .rde
+    await this.renderDir(conf.tmpDir, config)
 
     // start watcher
-    await this.createRuntime(config)
+    await this.composeRde(config)
   }
 
-  public async composeRdcChain(): Promise<Config> {
-    await _.asyncExec(`rm -rf ${conf.tmpDir} && mkdir ${conf.tmpDir}`)
-
+  public async copyToTmp(): Promise<Config> {
     const {
-      getRdcChain,
-      getRdcConfFromChain,
+      cwd,
+      tmpDir,
+      appConfName,
+      rdcConfName,
+      runtimeDir,
+      rdeDir,
     } = conf
 
-    const chain = getRdcChain('.')
-    const rdcConf = getRdcConfFromChain(chain)
-    let config = rdcConf
+    await _.asyncExec(`rm -rf ${tmpDir} && mkdir ${tmpDir}`)
 
-    const rdaConfPath = resolve(conf.cwd, conf.appConfName)
+    let config = require(resolve(cwd, rdcConfName))
+
+    const rdaConfPath = resolve(cwd, appConfName)
     if (fs.existsSync(rdaConfPath)) {
-      config = extend(rdcConf, require(rdaConfPath))
+      config = extend(config, require(rdaConfPath))
     }
 
-    for (let node of chain) {
-      let srcDir = resolve(node, 'template')
+    let srcDir = resolve(cwd, runtimeDir)
 
-      debug(`copying files from ${srcDir} to ${resolve(conf.tmpDir, 'template')}`)
+    debug(`copying files from ${srcDir} to ${resolve(tmpDir, runtimeDir)}`)
 
-      // @TODO: copy chain with merge , not overriding
-      await copy(srcDir, resolve(conf.tmpDir, 'template'), {
-        overwrite: true,
-        dot: true,
-        filter(filePath) {
-          return !filePath.includes('node_modules')
-        },
-      })
-    }
+    await copy(srcDir, resolve(tmpDir, runtimeDir), {
+      overwrite: true,
+      dot: true,
+      filter(filePath) {
+        return !filePath.includes('node_modules')
+      },
+    })
 
     await render.renderTo('module', {
       obj: config
-    }, resolve(conf.runtimeDir, conf.rdcConfName), {
+    }, resolve(rdeDir, rdcConfName), {
       overwrite: true
     })
 
@@ -78,7 +72,7 @@ export default class DockerRun {
   }
 
   public async renderDir(dir: string, config: Config) {
-    const srcDir = resolve(dir, 'template')
+    const srcDir = resolve(dir, conf.runtimeDir)
     // @ts-ignore
     const {render: rdtRender = {} as any, container, suites} = config
 
@@ -92,7 +86,7 @@ export default class DockerRun {
 
     await render.renderDir(srcDir, {
       ...dataView
-    }, includes, conf.runtimeDir, {
+    }, includes, conf.rdeDir, {
       overwrite: true,
       dot: true
     })
@@ -100,14 +94,14 @@ export default class DockerRun {
     await _.asyncExec(`rm -rf ${dir}`)
   }
 
-  public async createRuntime(config: Config) {
-    const {cwd, runtimeDir, rdType, RdTypes} = conf
+  public async composeRde(config: Config) {
+    const {cwd, rdeDir, rdType, RdTypes} = conf
 
     debug(`merged mappings: ${JSON.stringify(config.mappings)}`)
 
     for (let {from, to, options} of config.mappings) {
       const appDir = resolve(cwd, from)
-      const destDir = resolve(runtimeDir, to)
+      const destDir = resolve(rdeDir, to)
 
       await _.copy(appDir, destDir, {options})
     }
@@ -116,7 +110,7 @@ export default class DockerRun {
       let {mappings} = config
       if (rdType === RdTypes.Container) {
         mappings = mappings.concat([{
-          from: 'template',
+          from: conf.runtimeDir,
           to: '.'
         }])
       }

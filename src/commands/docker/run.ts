@@ -37,7 +37,7 @@ export default class DockerRun extends RunBase {
       return
     }
 
-    process.env.PATH = `${process.env.PATH}:${conf.dockerWorkDirRoot}/node_modules/.bin`
+    process.env.PATH = `${process.env.PATH}:${conf.cwd}/node_modules/.bin`
 
     let args = ['run', `${this.cmd}`]
     if (this.extras) {
@@ -50,8 +50,8 @@ export default class DockerRun extends RunBase {
             return mapping.from2Dest(item)
           }
 
-          if (/^template\/.*/.test(item)) {
-            return item.replace(/^template\//, '')
+          if (/^runtime\/.*/.test(item)) {
+            return item.replace(/^runtime\//, '')
           }
           return item
         })
@@ -62,7 +62,7 @@ export default class DockerRun extends RunBase {
     }
 
     await _.asyncSpawn('npm', args, {
-      cwd: conf.runtimeDir,
+      cwd: conf.rdeDir,
       env: process.env
     })
   }
