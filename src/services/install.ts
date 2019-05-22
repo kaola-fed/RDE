@@ -17,7 +17,7 @@ class Install {
 
   public async app({
     rdc = null,
-    skipInstall = false
+    skipInstall = false,
   }) {
     /**
      * copy:

@@ -25,5 +25,6 @@
     {{^isApp}}
     "**/node_modules": true
     {{/isApp}}
-  }
+  },
+  "javascript.implicitProjectConfig.experimentalDecorators": true
 }

@@ -1,9 +1,11 @@
 import {flags} from '@oclif/command'
 import {spawn} from 'child_process'
+import * as Table from 'cli-table2'
 import * as path from 'path'
 import * as readline from 'readline'
 
 import RunBase from '../base/run'
+import cache from '../services/cache'
 import conf from '../services/conf'
 import docker from '../services/docker'
 import install from '../services/install'
@@ -133,6 +135,32 @@ export default class Run extends RunBase {
     )
 
     if (conf.isApp) {
+      const cacheContainer = cache.get('container')
+      const {container} = conf.getAppConf()
+
+      if (cacheContainer && cacheContainer !== container.name) {
+        const table = new Table({
+          style: {
+            'padding-left': 0,
+            'padding-right': 0,
+            border: ['yellow']
+          },
+          colWidths: [50],
+          rowHeights: [2],
+        })
+
+        table.push(
+          [{
+            hAlign: 'center',
+            content: `Container updated: ${container.name}\nPlease run: $rde install`
+          }],
+        )
+
+        // tslint:disable:no-console
+        console.log(table.toString())
+      }
+      cache.set('container', container.name)
+
       await install.app({
         skipInstall: true,
       })

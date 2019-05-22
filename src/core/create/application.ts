@@ -1,5 +1,6 @@
 import * as path from 'path'
 
+import cache from '../../services/cache'
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import ide from '../../services/ide'
@@ -16,6 +17,7 @@ export default class ApplicationCreate extends CreateCore {
   public async prepare() {
     await docker.pull(this.rdc)
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
+    cache.set('container', this.rdc)
 
     const name = this.rdc.split(':')[0]
     const {
