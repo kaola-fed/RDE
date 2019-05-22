@@ -58,7 +58,9 @@ export default class ApplicationCreate extends CreateCore {
       homepage: conf.homepage,
     }, 'README.md')
 
-    await render.renderTo('.gitignore', {}, '.gitignore', {
+    await render.renderTo('.gitignore', {
+      isApp: conf.isApp
+    }, '.gitignore', {
       overwrite: true,
     })
 

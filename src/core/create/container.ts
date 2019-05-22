@@ -45,7 +45,9 @@ export default class ContainerCreate extends CreateCore {
       overwrite: true,
     })
 
-    await render.renderTo('.gitignore', {}, '.gitignore', {
+    await render.renderTo('.gitignore', {
+      isApp: conf.isApp
+    }, '.gitignore', {
       overwrite: true,
     })
 
