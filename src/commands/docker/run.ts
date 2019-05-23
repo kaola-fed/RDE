@@ -1,7 +1,8 @@
+import * as path from 'path'
+
 import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
 import conf from '../../services/conf'
-import mapping from '../../services/mapping'
 import _ from '../../util'
 
 export default class DockerRun extends RunBase {
@@ -45,13 +46,9 @@ export default class DockerRun extends RunBase {
       let extras = []
       if (this.cmd === 'lint') {
         extras = this.extras.split(' ').map(item => {
-          // map app path to dest path
-          if (/^app\/.*/.test(item)) {
-            return mapping.from2Dest(item)
-          }
-
-          if (/^runtime\/.*/.test(item)) {
-            return item.replace(/^runtime\//, '')
+          // fix path to relative to .rde path
+          if (/^(app|runtime)\/.*/.test(item)) {
+            return path.join('..', item)
           }
           return item
         })

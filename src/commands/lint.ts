@@ -51,6 +51,8 @@ export default class Lint extends RunBase {
 
       flags.extras = filenames.join(' ')
       delete flags.staged
+    } else {
+      flags.extras = eslint.getLintFiles().join(' ')
     }
 
     const list = _.restoreFlags(flags)
