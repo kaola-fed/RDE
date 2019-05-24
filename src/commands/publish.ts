@@ -67,10 +67,9 @@ export default class Publish extends Base {
   public async initialize() {
     const {docker: dockerConf} = this.rdcConf
     this.rdc = dockerConf.tag
-    const name = this.rdc.split(':')[0]
 
     await docker.genDockerFile4Publish(
-      `${conf.dockerWorkDirRoot}/${name}`,
+      `${conf.dockerRdcDir}`,
       this.rdcConf.extends || 'node:latest',
       conf.localCacheDir,
     )
