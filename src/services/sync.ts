@@ -7,7 +7,7 @@ import docker from '../services/docker'
 import render from './render'
 
 const {resolve, join} = path
-const {RdTypes, cwd, rdcConfName} = conf
+const {RdTypes, rdcConfName} = conf
 
 class Sync {
   public get appConf(): AppConf {
@@ -21,7 +21,7 @@ class Sync {
     }
 
     if (conf.rdType === RdTypes.Container) {
-      const rdcConfPath = resolve(cwd, rdcConfName)
+      const rdcConfPath = resolve(conf.cwd, rdcConfName)
       const rdcConf = require(rdcConfPath)
 
       return rdcConf.nodeVersion || 'node:latest'
@@ -63,28 +63,27 @@ class Sync {
 
     if (conf.isApp) {
       await this.create()
-
-      await this.genDevcontainer()
     }
   }
 
-  public async genDevcontainer() {
-    const localCacheRdcConf = require(resolve(cwd, conf.localCacheDir, conf.rdcConfName))
+  public async genDevcontainer(rdc) {
+    const localCacheRdcConf = require(resolve(conf.cwd, conf.localCacheDir, conf.rdcConfName))
 
     const devcontainerMap = {
       devcontainer: 'devcontainer.json',
       'docker-compose': 'docker-compose.yml',
       Dockerfile: 'Dockerfile',
     }
+
     for (let [key, value] of Object.entries(devcontainerMap)) {
       await render.renderTo(`devcontainer/${key}`, {
         tag: conf.tag,
         workDir: conf.dockerWorkDirRoot,
-        extensions: localCacheRdcConf.extensions || [],
-        from: this.from,
-        ports: this.ports,
+        extensions: localCacheRdcConf.extensions || '[]',
+        from: rdc || this.from,
+        ports: rdc ? localCacheRdcConf.docker.ports || [] : this.ports,
         mappings: localCacheRdcConf.mappings
-      }, value, {
+      }, resolve(conf.cwd, '.devcontainer', value), {
         overwrite: true,
       })
     }
@@ -98,33 +97,31 @@ class Sync {
      */
     const {
       cwd,
-      runtimeDir,
       rdcConfName,
-      dockerWorkDirRoot,
+      dockerRdcDir,
       localCacheDir,
     } = conf
 
     // only create application will pass rdc param
-    if (!rdc) {
-      rdc = this.appConf.container.name
-    }
-    const name = rdc.split(':')[0]
-    const rdcPathInDock = resolve(dockerWorkDirRoot, name)
-    await docker.copy(rdc, [{
-      from: resolve(rdcPathInDock, runtimeDir, 'package.json'),
+    await docker.copy(rdc || this.appConf.container.name, [{
+      from: resolve(dockerRdcDir, 'package.json'),
       to: localCacheDir,
     }, {
-      from: resolve(rdcPathInDock, rdcConfName),
+      from: resolve(dockerRdcDir, rdcConfName),
       to: localCacheDir,
     }])
 
     const runtimePkgJson = require(resolve(cwd, localCacheDir, 'package.json'))
 
-    this.appConf.suites.map(item => {
-      runtimePkgJson.dependencies = runtimePkgJson.dependencies || {}
-      runtimePkgJson.dependencies[item.name] = item.version
-    })
+    if (!rdc) {
+      this.appConf.suites.map(item => {
+        runtimePkgJson.dependencies = runtimePkgJson.dependencies || {}
+        runtimePkgJson.dependencies[item.name] = item.version
+      })
+    }
     await writePkg(resolve(localCacheDir), runtimePkgJson)
+
+    await this.genDevcontainer(rdc)
   }
 }
 export default new Sync()

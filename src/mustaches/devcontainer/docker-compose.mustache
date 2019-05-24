@@ -1,24 +1,23 @@
 version: '3'
 services:
-  {{{tag}}}ervice:
-  build:
-    context: .
-    dockerfile: Dockerfile
+  {{{tag}}}-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
 
-  ports:
-    {{#ports}}
-    - "{{.}}"
-    {{/ports}}
+    ports:
+      {{#ports}}
+      - "{{.}}"
+      {{/ports}}
 
-  volumes:
-    {{#mappings}}
-    - ..{{from}}:{{workDir}}/{{to}}
-    {{/mappings}}
-    - ../app:/usr/rde/rdebase/rdc-nut/app
-    - ../rda.config.js:/usr/rde/rdebase/rdc-nut/rda.config.js
-    - /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
-    - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
+    volumes:
+      {{#mappings}}
+      - ../{{{from}}}:{{{workDir}}}/{{{to}}}
+      {{/mappings}}
+      - ../rda.config.js:/rde/rda.config.js
+      - /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
+      - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
 
-    - ~/.gitconfig:/root/.gitconfig
+      - ~/.gitconfig:/root/.gitconfig
 
-  command: sleep infinity
+    command: sleep infinity

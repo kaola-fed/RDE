@@ -3,7 +3,6 @@ import * as path from 'path'
 import cache from '../../services/cache'
 import conf from '../../services/conf'
 import docker from '../../services/docker'
-import ide from '../../services/ide'
 import render from '../../services/render'
 import sync from '../../services/sync'
 import _ from '../../util'
@@ -22,7 +21,7 @@ export default class ApplicationCreate extends CreateCore {
     const {
       cwd,
       rdcConfName,
-      dockerWorkDirRoot,
+      dockerRdcDir,
     } = conf
     const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
 
@@ -34,7 +33,7 @@ export default class ApplicationCreate extends CreateCore {
       await docker.copy(
         this.rdc,
         mappings.map(item => ({
-          from: resolve(dockerWorkDirRoot, item.to),
+          from: resolve(dockerRdcDir, item.to),
           to: resolve(cwd, item.from),
         })),
       )
@@ -62,7 +61,5 @@ export default class ApplicationCreate extends CreateCore {
     }, '.gitignore', {
       overwrite: true,
     })
-
-    await ide.initSettings(true)
   }
 }
