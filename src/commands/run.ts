@@ -8,7 +8,6 @@ import RunBase from '../base/run'
 import cache from '../services/cache'
 import conf from '../services/conf'
 import docker from '../services/docker'
-import install from '../services/install'
 import {debug} from '../services/logger'
 import {validateRda, validateRdc} from '../services/validate'
 
@@ -161,9 +160,9 @@ export default class Run extends RunBase {
       }
       cache.set('container', container.name)
 
-      await install.app({
-        skipInstall: true,
-      })
+      // await install.app({
+      //   skipInstall: true,
+      // })
     }
   }
 

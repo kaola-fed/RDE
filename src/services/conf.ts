@@ -35,7 +35,11 @@ const conf = {
   },
 
   get dockerWorkDirRoot() {
-    return '/usr/rde'
+    return '/rde'
+  },
+
+  get dockerRdcDir() {
+    return '/rde/rdc'
   },
 
   get tmpDir() {
@@ -66,12 +70,10 @@ const conf = {
     return {
       vue: {
         rdcStarter: 'rdebase/rdc-vue-starter',
-        rdsStarter: 'rdebase/rdc-vue-suite',
         cdn: [],
       },
       react: {
         rdcStarter: 'rdebase/rdc-react-starter',
-        rdsStarter: 'rdebase/rdc-vue-suite',
         cdn: [
           'https://unpkg.com/react/umd/react.production.min.js',
           'https://unpkg.com/react-dom/umd/react-dom.production.min.js',
@@ -79,7 +81,6 @@ const conf = {
       },
       angular: {
         rdcStarter: 'rdebase/rdc-angular-starter',
-        rdsStarter: 'rdebase/rdc-vue-suite',
         cdn: ['https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js'],
       },
     }
@@ -89,12 +90,11 @@ const conf = {
     return {
       Application: 'Application',
       Container: 'Container',
-      Suite: 'Suite',
     }
   },
 
   get isApp() {
-    return this.rdType === this.RdTypes.Application || this.rdType === this.RdTypes.Suite
+    return this.rdType === this.RdTypes.Application
   },
 
   get rdType() {

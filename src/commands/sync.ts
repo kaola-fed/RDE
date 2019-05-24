@@ -1,9 +1,7 @@
 import Base from '../base'
 import RunBase from '../base/run'
-import conf from '../services/conf'
-import install from '../services/install'
 
-export default class Install extends RunBase {
+export default class Sync extends RunBase {
   public static strict = false
 
   public static examples = [
@@ -16,6 +14,6 @@ export default class Install extends RunBase {
   }
 
   public async run() {
-    await install.pkg(conf.rdType)
+    // await install.pkg(conf.rdType)
   }
 }

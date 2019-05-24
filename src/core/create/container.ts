@@ -2,9 +2,8 @@ import * as path from 'path'
 
 import conf from '../../services/conf'
 import docker from '../../services/docker'
-import ide from '../../services/ide'
-import install from '../../services/install'
 import render from '../../services/render'
+import _ from '../../util'
 
 import CreateCore from './index'
 
@@ -13,12 +12,11 @@ export default class ContainerCreate extends CreateCore {
   public async prepare() {
     await docker.pull(this.rdc)
 
-    const name = this.rdc.split(':')[0]
     await docker.copy(
       this.rdc,
       [{
         // does not need to join, cuz it's docker path
-        from: `${conf.dockerWorkDirRoot}/${name}/.`,
+        from: `${conf.dockerRdcDir}/.`,
         to: `${conf.cwd}`,
       }],
     )
@@ -51,8 +49,8 @@ export default class ContainerCreate extends CreateCore {
       overwrite: true,
     })
 
-    await ide.initSettings(false)
-
-    await install.pkg(conf.RdTypes.Container)
+    await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {
+      cwd: conf.cwd,
+    })
   }
 }

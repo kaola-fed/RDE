@@ -4,8 +4,8 @@ import cache from '../../services/cache'
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import ide from '../../services/ide'
-import install from '../../services/install'
 import render from '../../services/render'
+import sync from '../../services/sync'
 import _ from '../../util'
 
 import CreateCore from './index'
@@ -19,27 +19,26 @@ export default class ApplicationCreate extends CreateCore {
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
     cache.set('container', this.rdc)
 
-    const name = this.rdc.split(':')[0]
     const {
       cwd,
       rdcConfName,
       dockerWorkDirRoot,
     } = conf
-    const rdcPathInDock = resolve(dockerWorkDirRoot, name)
     const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
-    await docker.copy(
-      this.rdc,
-      [{
-        from: resolve(rdcPathInDock, 'app'),
-        to: resolve(cwd, 'app'),
-      }],
-    )
 
-    await install.app({
-      rdc: this.rdc,
-    })
+    await sync.start()
 
     this.rdcConf = require(rdcConfPath)
+    const {mappings = []} = this.rdcConf
+    if (mappings.length) {
+      await docker.copy(
+        this.rdc,
+        mappings.map(item => ({
+          from: resolve(dockerWorkDirRoot, item.to),
+          to: resolve(cwd, item.from),
+        })),
+      )
+    }
   }
 
   public async genConfFile() {
