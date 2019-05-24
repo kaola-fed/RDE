@@ -12,6 +12,7 @@ import {logger} from '../services/logger'
 import mdIt from '../services/markdown'
 import {MCOMMON, MDOCS} from '../services/message'
 import render from '../services/render'
+import { TError, TStart } from '../services/track'
 
 const {resolve, join} = path
 const {RdTypes} = conf
@@ -121,6 +122,8 @@ export default abstract class DocsBase extends Command {
     }
   }
 
+  @TError({ conf })
+  @TStart
   public async init() {
     // @ts-ignore
     const {flags} = this.parse(this.constructor)
