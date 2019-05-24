@@ -26,7 +26,7 @@ export default class ApplicationCreate extends CreateCore {
     } = conf
     const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
 
-    await sync.start()
+    await sync.create(this.rdc)
 
     this.rdcConf = require(rdcConfPath)
     const {mappings = []} = this.rdcConf

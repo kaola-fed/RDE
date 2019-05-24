@@ -65,7 +65,7 @@ const PromptStub = question => {
 describe('container', async () => {
   before(async () => {
     sandbox.stub(enquirer, 'prompt').get(() => PromptStub)
-    CmdCreate = _.ensureRequire(resolve(cmdDir, 'create.ts')).default
+    CmdCreate = _.ensureRequire(resolve(cmdDir, 'update.ts.ts')).default
 
     await asyncExec('mkdir -p ./test/.tmp')
     process.chdir('test/.tmp')
@@ -80,7 +80,7 @@ describe('container', async () => {
     await asyncExec(`rm -rf ./test/.tmp/${project}`)
   })
 
-  describe('create', async () => {
+  describe('update.ts', async () => {
     it('should create app/template dir, and a rdc.config.js file', async () => {
       const appPath = resolve(projectDir, 'app')
       const tplPath = resolve(projectDir, 'template')

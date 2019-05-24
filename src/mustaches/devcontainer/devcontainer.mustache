@@ -1,0 +1,12 @@
+{
+  "name": "{{{tag}}}",
+  "service": "{{{tag}}}-service",
+  "dockerComposeFile": "./docker-compose.yml",
+  "workspaceFolder": "{{{workDir}}}",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "yarn",
+  "extensions": {{{extensions}}},
+  "settings": {
+    "javascript.implicitProjectConfig.experimentalDecorators": true
+  }
+}

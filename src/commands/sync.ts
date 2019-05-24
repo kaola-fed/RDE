@@ -1,5 +1,6 @@
 import Base from '../base'
 import RunBase from '../base/run'
+import sync from '../services/sync'
 
 export default class Sync extends RunBase {
   public static strict = false
@@ -14,6 +15,9 @@ export default class Sync extends RunBase {
   }
 
   public async run() {
-    // await install.pkg(conf.rdType)
+    await sync.all({
+      watch: false,
+      cmd: 'sync'
+    })
   }
 }

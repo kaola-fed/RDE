@@ -66,6 +66,18 @@ const conf = {
 
   get rdcConfName() { return rdcConfName },
 
+  get tag() {
+    if (this.rdType === this.RdTypes.Container) {
+      const rdcConf = require(path.join(conf.cwd, rdcConfName))
+      return rdcConf.docker.tag.split(':')[0]
+    }
+
+    if (this.isApp) {
+      // name app image with project dir name
+      return path.basename(conf.cwd)
+    }
+  },
+
   get frameworks() {
     return {
       vue: {

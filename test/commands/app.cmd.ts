@@ -62,7 +62,7 @@ const PromptStub = question => {
 describe('app', async () => {
   before(async () => {
     sandbox.stub(enquirer, 'prompt').get(() => PromptStub)
-    CmdCreate = _.ensureRequire(resolve(cmdDir, 'create.ts')).default
+    CmdCreate = _.ensureRequire(resolve(cmdDir, 'update.ts.ts')).default
 
     await asyncExec('mkdir -p ./test/.tmp')
     process.chdir('test/.tmp')
@@ -77,7 +77,7 @@ describe('app', async () => {
     await asyncExec(`rm -rf ./test/.tmp/${project}`)
   })
 
-  describe('create', async () => {
+  describe('update.ts', async () => {
     it('should create a dir called app', async () => {
       const appPath = resolve(projectDir, 'app')
       expect(fs.existsSync(appPath)).to.be.true
