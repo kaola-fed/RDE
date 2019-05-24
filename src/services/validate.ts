@@ -1,10 +1,7 @@
 import * as fs from 'fs'
-import * as path from 'path'
 
 import conf from './conf'
 import {MCOMMON, MRDC} from './message'
-
-const {resolve} = path
 
 export const validateRda = (useStrict = false) => {
   return useStrict
@@ -12,24 +9,12 @@ export const validateRda = (useStrict = false) => {
 
 export const validateRdc = (useStrict = false) => {
   const {
-    cwd,
     rdcConfPath,
     frameworks,
   } = conf
 
   if (!fs.existsSync(rdcConfPath)) {
     throw Error(MRDC.UNRECOGNIZED)
-  }
-
-  const appDir = resolve(cwd, 'app')
-  const runtimeDir = resolve(cwd, 'runtime')
-
-  if (!fs.existsSync(appDir)) {
-    throw Error(MRDC.WRONG_DIR_STRUCTURE_APP)
-  }
-
-  if (!fs.existsSync(runtimeDir)) {
-    throw Error(MRDC.WRONG_DIR_STRUCTURE_TPL)
   }
 
   const rdcConf: RdcConf = require(rdcConfPath)
