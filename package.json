@@ -1,8 +1,7 @@
 {
   "name": "rde",
   "description": "Recommanded Development Environment",
-  "version": "0.0.1-alpha.26",
-  "author": "kaolafed",
+  "version": "0.0.1-alpha.28",
   "bin": {
     "rde": "./bin/run"
   },
