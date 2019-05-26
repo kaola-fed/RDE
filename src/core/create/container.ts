@@ -43,11 +43,13 @@ export default class ContainerCreate extends CreateCore {
       overwrite: true,
     })
 
-    await render.renderTo('.gitignore', {
-      isApp: conf.isApp
-    }, '.gitignore', {
-      overwrite: true,
-    })
+    await render.renderTo('rdc.gitignore',
+      {},
+      '.gitignore',
+      {
+        overwrite: true,
+      }
+    )
 
     await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {
       cwd: conf.cwd,

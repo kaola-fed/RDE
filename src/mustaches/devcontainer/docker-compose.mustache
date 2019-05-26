@@ -11,13 +11,16 @@ services:
       {{/ports}}
 
     volumes:
-      {{#mappings}}
-      - ../{{{from}}}:{{{workDir}}}/{{{to}}}
-      {{/mappings}}
+      {{#exportFiles}}
+      - ../{{{.}}}:{{{workDir}}}/{{{.}}}
+      {{/exportFiles}}
       - ../rda.config.js:/rde/rda.config.js
-      - /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
-      - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
-
+      - ../package.json:/rde/rda/package.json
+      - ../README.md:/rde/README.md
+      - ../.gitignore:/rde/.gitignore
+      - ../.git:/rde/.git
+      - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+      - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
       - ~/.gitconfig:/root/.gitconfig
 
     command: sleep infinity

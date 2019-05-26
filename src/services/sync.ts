@@ -1,3 +1,5 @@
+import * as deepExtend from 'deep-extend'
+import * as fs from 'fs'
 import * as path from 'path'
 import * as writePkg from 'write-pkg'
 
@@ -7,7 +9,11 @@ import docker from '../services/docker'
 import render from './render'
 
 const {resolve, join} = path
-const {RdTypes, rdcConfName} = conf
+const {
+  RdTypes,
+  rdcConfName,
+  dockerWorkDirRoot,
+} = conf
 
 class Sync {
   public get appConf(): AppConf {
@@ -41,7 +47,16 @@ class Sync {
     }
   }
 
-  public async all({watch, cmd}) {
+  /**
+   * sync all
+   * used for local dev env, resync is needed when container updates
+   * 1. generate Dockerfile to local .cache
+   * 2. generate docker-compose to local .cache
+   *
+   * if rdType is app
+   * need to gen extra staged files
+   */
+  public async start({watch, cmd}) {
     await docker.genDockerFile(
       conf.dockerWorkDirRoot,
       this.from,
@@ -49,7 +64,8 @@ class Sync {
       conf.isApp,
     )
 
-    // TODO: docker-compose.yml 支持 默认 与 rdc 提供的 合并
+    // @TODO: docker-compose merge
+    // needed in order to let container developer write multiple services like mongo
     await docker.genDockerCompose(
       conf.dockerWorkDirRoot,
       cmd,
@@ -62,39 +78,17 @@ class Sync {
     )
 
     if (conf.isApp) {
-      await this.create()
+      await this.genAppStagedFiles()
     }
   }
 
-  public async genDevcontainer(rdc) {
-    const localCacheRdcConf = require(resolve(conf.cwd, conf.localCacheDir, conf.rdcConfName))
-
-    const devcontainerMap = {
-      devcontainer: 'devcontainer.json',
-      'docker-compose': 'docker-compose.yml',
-      Dockerfile: 'Dockerfile',
-    }
-
-    for (let [key, value] of Object.entries(devcontainerMap)) {
-      await render.renderTo(`devcontainer/${key}`, {
-        tag: conf.tag,
-        workDir: conf.dockerWorkDirRoot,
-        extensions: localCacheRdcConf.extensions || '[]',
-        from: rdc || this.from,
-        ports: rdc ? localCacheRdcConf.docker.ports || [] : this.ports,
-        mappings: localCacheRdcConf.mappings
-      }, resolve(conf.cwd, '.devcontainer', value), {
-        overwrite: true,
-      })
-    }
-  }
-
-  public async create(rdc = null) {
-    /**
-     * 1. copy rdc/package.json to .cache/package.json
-     * 2. copy rdc/rdc.config.js to .cache/rdc.config.js
-     * 3. add suite to pkg.json
-     */
+  /**
+   * 1. copy rdc/package.json to .cache/package.json
+   * 2. copy rdc/rdc.config.js to .cache/rdc.config.js
+   * 3. add suite to package.json
+   * 4. merge app optional pkg.json & rdc package.json
+   */
+  public async genAppStagedFiles(createRdc = null) {
     const {
       cwd,
       rdcConfName,
@@ -103,7 +97,8 @@ class Sync {
     } = conf
 
     // only create application will pass rdc param
-    await docker.copy(rdc || this.appConf.container.name, [{
+    const image = createRdc || this.appConf.container.name
+    await docker.copy(image, [{
       from: resolve(dockerRdcDir, 'package.json'),
       to: localCacheDir,
     }, {
@@ -111,17 +106,64 @@ class Sync {
       to: localCacheDir,
     }])
 
-    const runtimePkgJson = require(resolve(cwd, localCacheDir, 'package.json'))
+    if (!createRdc) {
+      await this.mergePkgJson(
+        resolve(cwd, 'package.json'),
+        resolve(cwd, localCacheDir, 'package.json'),
+        resolve(localCacheDir),
+      )
+    }
 
-    if (!rdc) {
-      this.appConf.suites.map(item => {
-        runtimePkgJson.dependencies = runtimePkgJson.dependencies || {}
-        runtimePkgJson.dependencies[item.name] = item.version
+    await this.genDevcontainer(createRdc)
+  }
+
+  public async genDevcontainer(createRdc) {
+    const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
+    const rdcConf: RdcConf = require(rdcConfPath)
+
+    const map = {
+      devcontainer: 'devcontainer.json',
+      'docker-compose': 'docker-compose.yml',
+      Dockerfile: 'Dockerfile',
+    }
+
+    const from = createRdc || this.from
+    rdcConf.docker = rdcConf.docker || {}
+    const ports = createRdc ? rdcConf.docker.ports || [] : this.ports
+    const exportFiles = rdcConf.exportFiles || []
+    const extensions = rdcConf.extensions || []
+
+    for (let [key, value] of Object.entries(map)) {
+      await render.renderTo(`devcontainer/${key}`, {
+        tag: conf.tag,
+        workDir: dockerWorkDirRoot,
+        extensions: JSON.stringify(extensions),
+        from,
+        ports,
+        exportFiles,
+      }, resolve(conf.cwd, '.devcontainer', value), {
+        overwrite: true,
       })
     }
-    await writePkg(resolve(localCacheDir), runtimePkgJson)
+  }
 
-    await this.genDevcontainer(rdc)
+  public async mergePkgJson(appPkgPath, rdcPkgPath, destPath) {
+    let pkgJson = require(rdcPkgPath)
+    this.appConf.suites.map(item => {
+      pkgJson.dependencies = pkgJson.dependencies || {}
+      pkgJson.dependencies[item.name] = item.version
+    })
+
+    if (
+      fs.existsSync(appPkgPath) &&
+      fs.statSync(appPkgPath).isFile()
+    ) {
+      const appPkgJson = require(appPkgPath)
+
+      deepExtend(pkgJson, appPkgJson)
+    }
+
+    await writePkg(destPath, pkgJson)
   }
 }
 export default new Sync()

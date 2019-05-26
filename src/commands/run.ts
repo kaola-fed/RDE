@@ -25,10 +25,6 @@ export default class Run extends RunBase {
       char: 'r',
       description: 'rebuild image before run',
     }),
-    install: flags.boolean({
-      char: 'i',
-      description: 'generate local node_modules',
-    }),
   }
 
   public static args = [{
@@ -47,7 +43,6 @@ export default class Run extends RunBase {
 
     const {flags} = this.parse(Run)
     this.rebuild = flags.rebuild
-    this.install = flags.install
 
     if (conf.rdType === RdTypes.Container) {
       await validateRdc()
@@ -77,7 +72,7 @@ export default class Run extends RunBase {
         table.push(
           [{
             hAlign: 'center',
-            content: `Container updated: ${container.name}\nPlease run: $rde install`
+            content: `Container updated: ${container.name}\nPlease run: $rde sync`
           }],
         )
 
@@ -86,7 +81,7 @@ export default class Run extends RunBase {
       }
       cache.set('container', container.name)
 
-      await sync.all({
+      await sync.start({
         watch: this.watch,
         cmd: this.cmd
       })

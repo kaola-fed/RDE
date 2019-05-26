@@ -1,121 +1,126 @@
-import * as extend from 'deep-extend'
-import * as fs from 'fs'
 import * as path from 'path'
-import * as copy from 'recursive-copy'
 
 import conf from '../services/conf'
+import ide from '../services/ide'
 import {debug} from '../services/logger'
 import render from '../services/render'
+import sync from '../services/sync'
 import Watcher from '../services/watcher'
 import _ from '../util'
 
-type Config = (RdcConf & AppConf) | (RdcConf)
 const {resolve} = path
 
+const {
+  RdTypes,
+  dockerRdcDir,
+  dockerRdaDir,
+  dockerWorkDirRoot,
+  appConfName,
+  rdcConfName,
+} = conf
 export default class DockerRun {
   private readonly watch: boolean
+
+  public get dataView() {
+    if (conf.rdType === RdTypes.Application) {
+      const appConf = require(resolve(dockerWorkDirRoot, appConfName))
+      const {container = {}, suites = {}} = appConf
+
+      if (suites && suites.length) {
+        container.render = container.render || {}
+        container.render.suites = suites
+      }
+
+      debug('docker:run dataView: ', container.render)
+      return container.render || {}
+    }
+
+    if (conf.rdType === RdTypes.Container) {
+      const rdcConf: RdcConf = require(resolve(dockerRdcDir, rdcConfName))
+      rdcConf.render = rdcConf.render || {}
+
+      debug('docker:run dataView: ', rdcConf.render.mock)
+      return rdcConf.render.mock || {}
+    }
+  }
+
+  public get includes() {
+    const rdcConf: RdcConf = require(resolve(dockerRdcDir, rdcConfName))
+    rdcConf.render = rdcConf.render || {}
+
+    debug('docker:run includes: ', rdcConf.render.includes)
+    return rdcConf.render.includes || []
+  }
+
+  public get exportFiles() {
+    const rdcConf: RdcConf = require(resolve(dockerRdcDir, rdcConfName))
+    rdcConf.exportFiles = rdcConf.exportFiles || []
+
+    debug('docker:run export Files: ', rdcConf.exportFiles)
+    return rdcConf.exportFiles
+  }
+
+  public get ignoredFiles() {
+    if (conf.isApp) {
+      return [
+        ...this.exportFiles,
+        ...conf.appBasicFiles,
+        'node_modules',
+      ]
+    }
+
+    return []
+  }
 
   constructor({watch}) {
     this.watch = watch
   }
 
   public async start() {
-    let config
-    // generate rdt template from rdt chain
-    config = await this.copyToTmp()
+    // render /rde/rdc dir to /rde
+    await this.renderDir()
 
-    // template render to .rde
-    await this.renderDir(conf.tmpDir, config)
+    if (conf.isApp) {
+      // add vscode settings to local .vscode/settings.json
+      // filter everything except exportFiles and appBasicFiles
+      await _.asyncExec('mkdir -p .vscode')
+      const ignore = this.ignoredFiles.concat(['rdc', 'rda'])
+      await ide.initAppExcludeSettings(ignore)
 
-    // start watcher
-    await this.composeRde(config)
+      // merge appPkgJson & rdcPkgJson to /rde
+      await sync.mergePkgJson(
+        resolve(dockerRdaDir, 'package.json'),
+        resolve(dockerRdcDir, 'package.json'),
+        resolve(dockerWorkDirRoot),
+      )
+    }
   }
 
-  public async copyToTmp(): Promise<Config> {
-    const {
-      cwd,
-      tmpDir,
-      appConfName,
-      rdcConfName,
-      runtimeDir,
-      rdeDir,
-    } = conf
+  public async renderDir() {
+    const ignore = this.ignoredFiles.concat(['package.json'])
 
-    await _.asyncExec(`rm -rf ${tmpDir} && mkdir ${tmpDir}`)
-
-    let config = require(resolve(cwd, rdcConfName))
-
-    const rdaConfPath = resolve(cwd, appConfName)
-    if (fs.existsSync(rdaConfPath)) {
-      config = extend(config, require(rdaConfPath))
-    }
-
-    let srcDir = resolve(cwd, runtimeDir)
-
-    debug(`copying files from ${srcDir} to ${resolve(tmpDir, runtimeDir)}`)
-
-    await copy(srcDir, resolve(tmpDir, runtimeDir), {
+    await render.renderDir(dockerRdcDir, {
+      ...this.dataView
+    }, this.includes, dockerWorkDirRoot, {
       overwrite: true,
       dot: true,
-      filter(filePath) {
-        return !filePath.includes('node_modules')
+      filter(src) {
+        return !ignore.some(item => {
+          const escaped = item.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+          const regexp = new RegExp(`^${escaped}`)
+          return regexp.test(src)
+        })
       },
     })
 
-    await render.renderTo('module', {
-      obj: config
-    }, resolve(rdeDir, rdcConfName), {
-      overwrite: true
-    })
-
-    return config
-  }
-
-  public async renderDir(dir: string, config: Config) {
-    const srcDir = resolve(dir, conf.runtimeDir)
-    // @ts-ignore
-    const {render: rdtRender = {} as any, container, suites} = config
-
-    const {includes = []} = rdtRender
-
-    if (suites && suites.length) {
-      container.render.suites = suites
-    }
-
-    const dataView = container ? container.render : rdtRender.dev ? rdtRender.dev.render : {}
-
-    await render.renderDir(srcDir, {
-      ...dataView
-    }, includes, conf.rdeDir, {
-      overwrite: true,
-      dot: true
-    })
-
-    await _.asyncExec(`rm -rf ${dir}`)
-  }
-
-  public async composeRde(config: Config) {
-    const {cwd, rdeDir, rdType, RdTypes} = conf
-
-    debug(`merged mappings: ${JSON.stringify(config.mappings)}`)
-
-    for (let {from, to, options} of config.mappings) {
-      const appDir = resolve(cwd, from)
-      const destDir = resolve(rdeDir, to)
-
-      await _.copy(appDir, destDir, {options})
-    }
-
-    if (this.watch) {
-      let {mappings} = config
-      if (rdType === RdTypes.Container) {
-        mappings = mappings.concat([{
-          from: conf.runtimeDir,
-          to: '.'
-        }])
-      }
-
-      new Watcher(mappings).start()
+    if (
+      this.watch &&
+      conf.rdType === RdTypes.Container
+    ) {
+      new Watcher([{
+        from: dockerRdcDir,
+        to: dockerWorkDirRoot,
+      }]).start()
     }
   }
 }

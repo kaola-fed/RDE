@@ -4,18 +4,14 @@ services:
     image: {{{tag}}}
     volumes:
     {{#isApp}}
-    - ../app:{{{workDir}}}/app
-    - ../rda.config.js:{{{workDir}}}/rda.config.js
-    - /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
-    - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
+    - ../:{{{workDir}}}
+    - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
     {{/isApp}}
     {{^isApp}}
-    - ../app:{{{workDir}}}/app
-    - ../runtime:{{{workDir}}}/runtime
-    - ../rdc.config.js:{{{workDir}}}/rdc.config.js
-    - ../.rde:{{{workDir}}}/.rde
-    - /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
-    - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
+    - ../:{{{workDir}}}/rdc
+    - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
     {{/isApp}}
     {{#isBuild}}
     - ../.rde:{{{workDir}}}/.rde

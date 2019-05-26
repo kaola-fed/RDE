@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Recommanded Development Environment",
-  "version": "0.0.1-alpha.28",
+  "version": "0.0.1-alpha.29",
   "bin": {
     "rde": "./bin/run"
   },
@@ -82,8 +82,7 @@
     "commands": "./lib/commands",
     "bin": "rde",
     "hooks": {
-      "checkUpdate": "./lib/hooks/check.update",
-      "checkApplication": "./lib/hooks/check.application"
+      "checkUpdate": "./lib/hooks/check.update"
     },
     "plugins": [
       "@oclif/plugin-help"

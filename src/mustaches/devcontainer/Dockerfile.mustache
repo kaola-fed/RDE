@@ -19,7 +19,7 @@ RUN rm -rf /opt/yarn-* \
   && apt-get update \
   && apt-get -y install --no-install-recommends yarn
 
-RUN npm i -g rde
+RUN yarn global add rde
 
 # Clean up
 RUN apt-get autoremove -y \
@@ -29,4 +29,4 @@ ENV DEBIAN_FRONTEND=dialog
 
 # Set the default shell to bash rather than sh
 ENV SHELL /bin/bash
-
+ENV DOCKER_ENV true

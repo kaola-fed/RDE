@@ -6,7 +6,7 @@ export default class Sync extends RunBase {
   public static strict = false
 
   public static examples = [
-    '$ rde install',
+    '$ rde sync',
   ]
 
   public static flags = {
@@ -15,7 +15,7 @@ export default class Sync extends RunBase {
   }
 
   public async run() {
-    await sync.all({
+    await sync.start({
       watch: false,
       cmd: 'sync'
     })

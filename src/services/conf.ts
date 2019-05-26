@@ -1,4 +1,3 @@
-import * as os from 'os'
 import * as path from 'path'
 
 import _ from '../util'
@@ -42,20 +41,21 @@ const conf = {
     return '/rde/rdc'
   },
 
-  get tmpDir() {
-    return path.join(os.tmpdir(), 'rde_rdc_tmp')
+  get dockerRdaDir() {
+    return '/rde/rda'
   },
 
   get localCacheDir() {
     return '.cache'
   },
 
-  get runtimeDir() {
-    return 'runtime'
-  },
-
-  get rdeDir() {
-    return resolve(conf.cwd, '.rde')
+  get appBasicFiles() {
+    return [
+      'README.md',
+      '_docs',
+      '.gitignore',
+      'rda.config.js',
+    ]
   },
 
   get cliName() { return 'rde' },

@@ -4,9 +4,10 @@
   "dockerComposeFile": "./docker-compose.yml",
   "workspaceFolder": "{{{workDir}}}",
   "shutdownAction": "stopCompose",
-  "postCreateCommand": "yarn",
+  "postCreateCommand": "rde docker:run && yarn",
   "extensions": {{{extensions}}},
   "settings": {
-    "javascript.implicitProjectConfig.experimentalDecorators": true
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "files.exclude": {}
   }
 }

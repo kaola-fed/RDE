@@ -81,7 +81,7 @@ export default {
     }
     let result = ''
     // 描述文件映射
-    const mappingData = data.mapping.reduce((obj, val) => ({...obj, [val.from]: val.to}), {})
+    const mappingData = data.mapping.reduce((obj, val) => ({...obj, [val]: val}), {})
     result += this.renderTable(mappingData, '文件映射')
     // 描述package.json内容
     const {name, version, description, dependencies} = data.pkg

@@ -3,7 +3,7 @@ import conf from './conf'
 export default {
   getMappings() {
     const rdcConf: RdcConf = conf.getRdcConf('.')
-    return rdcConf.mappings
+    return rdcConf.exportFiles
   },
 
   from2Dest(filePath) {

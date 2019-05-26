@@ -1,5 +1,3 @@
-import * as path from 'path'
-
 import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
 import conf from '../../services/conf'
@@ -43,23 +41,11 @@ export default class DockerRun extends RunBase {
     let args = ['run', `${this.cmd}`]
     if (this.extras) {
       args.push('--')
-      let extras = []
-      if (this.cmd === 'lint') {
-        extras = this.extras.split(' ').map(item => {
-          // fix path to relative to .rde path
-          if (/^(app|runtime)\/.*/.test(item)) {
-            return path.join('..', item)
-          }
-          return item
-        })
-      } else {
-        extras = this.extras.split(' ')
-      }
-      args = args.concat(extras)
+      args = args.concat(this.extras.split(' '))
     }
 
     await _.asyncSpawn('npm', args, {
-      cwd: conf.rdeDir,
+      cwd: conf.dockerWorkDirRoot,
       env: process.env
     })
   }

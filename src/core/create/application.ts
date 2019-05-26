@@ -25,16 +25,16 @@ export default class ApplicationCreate extends CreateCore {
     } = conf
     const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
 
-    await sync.create(this.rdc)
+    await sync.genAppStagedFiles(this.rdc)
 
     this.rdcConf = require(rdcConfPath)
-    const {mappings = []} = this.rdcConf
-    if (mappings.length) {
+    const {exportFiles = []} = this.rdcConf
+    if (exportFiles.length) {
       await docker.copy(
         this.rdc,
-        mappings.map(item => ({
-          from: resolve(dockerRdcDir, item.to),
-          to: resolve(cwd, item.from),
+        exportFiles.map(filePath => ({
+          from: resolve(dockerRdcDir, filePath),
+          to: resolve(cwd, filePath, '../'),
         })),
       )
     }
@@ -51,13 +51,16 @@ export default class ApplicationCreate extends CreateCore {
   }
 
   public async genExtraFiles() {
+    const {exportFiles = []} = this.rdcConf
+
     await render.renderTo(join('rda', 'README'), {
       name: this.name,
       homepage: conf.homepage,
     }, 'README.md')
 
-    await render.renderTo('.gitignore', {
-      isApp: conf.isApp
+    await render.renderTo('app.gitignore', {
+      exportFiles,
+      appBasicFiles: conf.appBasicFiles,
     }, '.gitignore', {
       overwrite: true,
     })

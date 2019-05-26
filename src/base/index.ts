@@ -28,7 +28,7 @@ export default abstract class Index extends Command {
       debugLib.enable('rde')
     }
 
-    debug(`cwd ${conf.cwd}`)
+    debug(`current working dir: ${conf.cwd}`)
 
     // check user input args here
     const args = await this.preInit()

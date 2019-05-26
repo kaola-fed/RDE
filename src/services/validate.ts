@@ -25,7 +25,7 @@ export const validateRdc = (useStrict = false) => {
     throw Error(MCOMMON.WRONG_FRAMEWORK_CONFIG)
   }
 
-  const {docker, mappings, docs} = rdcConf
+  const {docker, exportFiles, docs} = rdcConf
   if (!docker || !docker.ports || !docker.ports.length) {
     throw Error(MCOMMON.WRONG_DOCKER_CONFIG_PORTS)
   }
@@ -34,7 +34,7 @@ export const validateRdc = (useStrict = false) => {
     throw Error(MCOMMON.WRONG_DOCKER_CONFIG_TAG)
   }
 
-  if (!mappings || !mappings.length) {
+  if (!exportFiles || !exportFiles.length) {
     throw Error(MCOMMON.WRONG_MAPPING_CONFIG_MAPPING)
   }
 

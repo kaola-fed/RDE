@@ -134,7 +134,7 @@ export default abstract class DocsBase extends Command {
     }
 
     if (!conf.rdType) {
-      throw Error(MDOCS.UNRECOGNIZED)
+      throw Error(MCOMMON.UNRECOGNIZED)
     }
 
     if (!fs.existsSync(conf.docsDir)) {
