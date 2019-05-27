@@ -64,6 +64,9 @@ class Sync {
       const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
       const rdcConf: RdcConf = require(rdcConfPath)
       volumns = rdcConf.exportFiles
+    } else {
+      const cwdFiles = fs.readdirSync(conf.cwd)
+      volumns = cwdFiles.filter(file => !(/node_modules/.test(file)))
     }
 
     await docker.genDockerFile(
