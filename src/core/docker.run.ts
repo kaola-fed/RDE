@@ -78,7 +78,17 @@ export default class DockerRun {
 
   public async start() {
     // render /rdc dir to /rde
-    await this.renderDir()
+    await this.renderDir(dockerRdcDir, dockerWorkDirRoot)
+
+    if (
+      this.watch &&
+      conf.rdType === RdTypes.Container
+    ) {
+      new Watcher([{
+        from: dockerRdcDir,
+        to: dockerWorkDirRoot,
+      }], this.renderDir.bind(this)).start()
+    }
 
     if (conf.isApp) {
       // add vscode settings to local .vscode/settings.json
@@ -96,15 +106,15 @@ export default class DockerRun {
     }
   }
 
-  public async renderDir() {
+  public async renderDir(from, to) {
     let ignore = this.ignoredFiles
     if (conf.isApp) {
       ignore = ignore.concat(['package.json'])
     }
 
-    await render.renderDir(dockerRdcDir, {
+    await render.renderDir(from, {
       ...this.dataView
-    }, this.includes, dockerWorkDirRoot, {
+    }, this.includes, to, {
       overwrite: true,
       dot: true,
       filter(src) {
@@ -115,15 +125,5 @@ export default class DockerRun {
         })
       },
     })
-
-    if (
-      this.watch &&
-      conf.rdType === RdTypes.Container
-    ) {
-      new Watcher([{
-        from: dockerRdcDir,
-        to: dockerWorkDirRoot,
-      }]).start()
-    }
   }
 }

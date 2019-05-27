@@ -10,10 +10,12 @@ import {logger} from './logger'
 
 export default class Watcher extends Events {
   private readonly mappings: Mapping[] = []
+  private readonly copy
 
-  constructor(mappings: Mapping[] = []) {
+  constructor(mappings: Mapping[] = [], copy?) {
     super()
     this.mappings = mappings
+    this.copy = copy || _.copy
   }
 
   public start() {
@@ -48,7 +50,7 @@ export default class Watcher extends Events {
     const destPath = resolve(conf.dockerWorkDirRoot, mapping.to, relativeToFromPath)
 
     if (['add', 'change', 'addDir'].includes(type)) {
-      await _.copy(filePath, destPath, mapping)
+      await this.copy(filePath, destPath, mapping)
     }
 
     if (type === 'unlink') {
