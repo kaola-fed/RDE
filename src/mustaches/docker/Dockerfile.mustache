@@ -25,13 +25,11 @@ RUN yarn global add rde
 
 {{#isApp}}
 COPY .cache/package.json {{{workDir}}}/package.json
-
-{{!cache node-modules}}
-RUN yarn
 {{/isApp}}
 {{^isApp}}
 COPY package.json {{{workDir}}}/package.json
- RUN yarn
 {{/isApp}}
+
+RUN yarn
 
 ENV DOCKER_ENV true
