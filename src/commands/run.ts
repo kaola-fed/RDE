@@ -80,12 +80,12 @@ export default class Run extends RunBase {
         console.log(table.toString())
       }
       cache.set('container', container.name)
-
-      await sync.start({
-        watch: this.watch,
-        cmd: this.cmd
-      })
     }
+
+    await sync.start({
+      watch: this.watch,
+      cmd: this.cmd
+    })
   }
 
   public async run() {

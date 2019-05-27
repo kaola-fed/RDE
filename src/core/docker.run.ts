@@ -77,7 +77,7 @@ export default class DockerRun {
   }
 
   public async start() {
-    // render /rde/rdc dir to /rde
+    // render /rdc dir to /rde
     await this.renderDir()
 
     if (conf.isApp) {
@@ -97,7 +97,10 @@ export default class DockerRun {
   }
 
   public async renderDir() {
-    const ignore = this.ignoredFiles.concat(['package.json'])
+    let ignore = this.ignoredFiles
+    if (conf.isApp) {
+      ignore = ignore.concat(['package.json'])
+    }
 
     await render.renderDir(dockerRdcDir, {
       ...this.dataView

@@ -60,7 +60,7 @@ class Docker {
       cwd,
     })
 
-    await _.asyncExec('rm .dockerignore')
+    await _.asyncExec('rm -f .dockerignore')
     await _.asyncExec('docker image prune -f')
   }
 
@@ -116,6 +116,7 @@ class Docker {
     dir,
     isApp = false,
     isBuild = false,
+    volumns = [],
   ) {
     if (!tag) {
       const name = path.basename(conf.cwd)
@@ -130,6 +131,7 @@ class Docker {
       tag,
       isApp,
       isBuild,
+      volumns,
     }, `${dir}/docker-compose.yml`, {
       overwrite: true,
     })

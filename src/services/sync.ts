@@ -57,6 +57,15 @@ class Sync {
    * need to gen extra staged files
    */
   public async start({watch, cmd}) {
+    let volumns = []
+    if (conf.isApp) {
+      await this.genAppStagedFiles()
+
+      const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
+      const rdcConf: RdcConf = require(rdcConfPath)
+      volumns = rdcConf.exportFiles
+    }
+
     await docker.genDockerFile(
       conf.dockerWorkDirRoot,
       this.from,
@@ -74,12 +83,9 @@ class Sync {
       `dev-${conf.tag}`,
       conf.localCacheDir,
       conf.isApp,
-      cmd === 'build'
+      cmd === 'build',
+      volumns,
     )
-
-    if (conf.isApp) {
-      await this.genAppStagedFiles()
-    }
   }
 
   /**

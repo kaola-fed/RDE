@@ -38,11 +38,11 @@ const conf = {
   },
 
   get dockerRdcDir() {
-    return '/rde/rdc'
+    return '/rdc'
   },
 
   get dockerRdaDir() {
-    return '/rde/rda'
+    return '/rda'
   },
 
   get localCacheDir() {
