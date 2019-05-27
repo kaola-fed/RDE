@@ -8,13 +8,13 @@ services:
     - ../{{{.}}}:{{{workDir}}}/{{{.}}}
     {{/volumns}}
     - ../rda.config.js:/rde/rda.config.js
-    - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
-    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
+    {{!- /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules!}}
     {{/isApp}}
     {{^isApp}}
     - ../:/rdc
-    - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
-    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
+    {{!- /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules!}}
     {{/isApp}}
     {{#isBuild}}
     - ../.rde:{{{workDir}}}/.rde
