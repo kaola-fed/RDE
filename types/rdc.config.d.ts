@@ -1,4 +1,5 @@
 type Framework = 'vue' | 'regular' | 'react' | 'angular'
+type Mode = 'integrate' | 'origin'
 
 interface Docs {
   logo: string
@@ -29,7 +30,7 @@ interface Docker {
 
 interface RdcConf {
   extends: string
-  mode: string
+  mode: Mode
   framework: Framework
   docs: Docs
   render: Render
@@ -38,7 +39,6 @@ interface RdcConf {
   nodeVersion: string,
   extensions: string[],
   lint: {
-    dependencies: string[],
     files: string[]
   }
 }
