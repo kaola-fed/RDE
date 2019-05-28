@@ -62,7 +62,11 @@ class Sync {
     if (conf.isApp) {
       await this.genAppStagedFiles()
     } else {
-      await _.copy(resolve(conf.templateDir, 'package.json'), conf.localCacheDir, {})
+      await _.copy(
+        resolve(conf.templateDir, 'package.json'),
+        resolve(conf.localCacheDir, 'package.json'),
+        {}
+      )
     }
 
     await this.genDevPkgJson()
