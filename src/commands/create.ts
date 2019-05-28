@@ -69,9 +69,6 @@ export default class Create extends Base {
       break
     case RdTypes.Container:
       core = new ContainerCreate(opts)
-      break
-    case RdTypes.Suite:
-      core = new ApplicationCreate(opts)
     }
 
     await core.start()
@@ -118,18 +115,17 @@ export default class Create extends Base {
       },
     ])
 
-    const isApp = type === RdTypes.Application || type === RdTypes.Suite
+    const isApp = type === RdTypes.Application
     if (isApp) {
       const frameworkConf = conf.frameworks[framework]
-      const {rdcStarter, rdsStarter} = frameworkConf
-      const defaultStarter = type === RdTypes.Application ? rdcStarter : rdsStarter
+      const {rdcStarter} = frameworkConf
 
       const {rdcName} = await enquirer.prompt({
         type: 'input',
         name: 'rdcName',
         message: 'What is the name of container on docker hub?',
         required: true,
-        initial: defaultStarter,
+        initial: rdcStarter,
       })
 
       const {version} = await enquirer.prompt({
