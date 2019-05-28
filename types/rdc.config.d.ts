@@ -25,8 +25,8 @@ interface Mapping {
 }
 
 interface Docker {
-  tag: string
-  ports: string[]
+  tag?: string
+  ports?: string[]
 }
 
 interface RdcConf {
@@ -38,6 +38,7 @@ interface RdcConf {
   mappings: Mapping[]
   docker: Docker,
   nodeVersion: string,
+  extensions: string[],
   lint: {
     dependencies: string[],
     files: string[]

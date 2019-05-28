@@ -3,8 +3,8 @@ import * as path from 'path'
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import ide from '../../services/ide'
-import install from '../../services/install'
 import render from '../../services/render'
+import sync from '../../services/sync'
 
 import CreateCore from './index'
 
@@ -52,6 +52,6 @@ export default class ContainerCreate extends CreateCore {
 
     await ide.initSettings(false)
 
-    await install.pkg(conf.RdTypes.Container)
+    await sync.install()
   }
 }

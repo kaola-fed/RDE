@@ -62,5 +62,6 @@ export default class DockerRun extends RunBase {
       cwd: conf.isIntegrate ? conf.rdeDir : conf.runtimeDir,
       env: process.env
     })
+    process.exit(0)
   }
 }

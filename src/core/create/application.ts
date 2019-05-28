@@ -4,8 +4,8 @@ import cache from '../../services/cache'
 import conf from '../../services/conf'
 import docker from '../../services/docker'
 import ide from '../../services/ide'
-import install from '../../services/install'
 import render from '../../services/render'
+import sync from '../../services/sync'
 import _ from '../../util'
 
 import CreateCore from './index'
@@ -33,9 +33,8 @@ export default class ApplicationCreate extends CreateCore {
       }],
     )
 
-    await install.app({
-      rdc: this.rdc,
-    })
+    await sync.genAppStagedFiles(this.rdc)
+    await sync.install()
 
     this.rdcConf = require(rdcConfPath)
   }

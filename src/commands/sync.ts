@@ -1,13 +1,12 @@
 import Base from '../base'
 import RunBase from '../base/run'
-import conf from '../services/conf'
-import install from '../services/install'
+import sync from '../services/sync'
 
-export default class Install extends RunBase {
+export default class Sync extends RunBase {
   public static strict = false
 
   public static examples = [
-    '$ rde install',
+    '$ rde sync',
   ]
 
   public static flags = {
@@ -16,6 +15,10 @@ export default class Install extends RunBase {
   }
 
   public async run() {
-    await install.pkg(conf.rdType)
+    await sync.start({
+      watch: false,
+      cmd: 'sync',
+      skipInstall: false
+    })
   }
 }

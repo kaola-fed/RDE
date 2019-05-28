@@ -18,12 +18,10 @@
     "**/.cache": true,
     "**/.idea": true,
     "**/.vscode": true,
+    "**/.devcontainer": true,
+    "**/node_modules": true,
     {{#isApp}}
     "**/template": true,
-    "**/node_modules": true
-    {{/isApp}}
-    {{^isApp}}
-    "**/node_modules": true
     {{/isApp}}
   },
   "javascript.implicitProjectConfig.experimentalDecorators": true
