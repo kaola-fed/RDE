@@ -80,7 +80,7 @@ export default class DockerRun {
       container.render.suites = suites
     }
 
-    const dataView = container ? container.render : rdtRender.dev ? rdtRender.dev.render : {}
+    const dataView = container ? container.render : rdtRender.mock || {}
 
     await render.renderDir(from, {
       ...dataView
