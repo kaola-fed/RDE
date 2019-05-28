@@ -11,6 +11,8 @@ const rdcConfName = 'rdc.config.js'
 
 let rdType = ''
 
+let rdMode = ''
+
 let rdcConfMap: any = {}
 
 const conf = {
@@ -35,7 +37,7 @@ const conf = {
   },
 
   get dockerWorkDirRoot() {
-    return '/usr/rde'
+    return '/rde'
   },
 
   get tmpDir() {
@@ -46,12 +48,16 @@ const conf = {
     return '.cache'
   },
 
+  get templateDir() {
+    return 'template'
+  },
+
   get runtimeDir() {
     return 'runtime'
   },
 
   get rdeDir() {
-    return resolve(conf.cwd, '.rde')
+    return resolve(conf.cwd, '.integrate')
   },
 
   get cliName() { return 'rde' },
@@ -101,8 +107,27 @@ const conf = {
     return rdType
   },
 
+  get RdModes() {
+    return {
+      Integrate: 'integrate',
+      Origin: 'origin'
+    }
+  },
+
+  get isIntegrate() {
+    return this.rdMode === this.RdModes.Integrate
+  },
+
   set rdType(type) {
     rdType = type
+  },
+
+  get rdMode() {
+    return rdMode
+  },
+
+  set rdMode(mode) {
+    rdMode = mode
   },
 
   getAppConf(): AppConf {

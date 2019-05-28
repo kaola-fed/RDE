@@ -8,7 +8,7 @@ RUN npm i -g rde
 COPY .cache/package.json {{{workDir}}}/package.json
 {{/isApp}}
 {{^isApp}}
-COPY runtime/package.json {{{workDir}}}/package.json
+COPY template/package.json {{{workDir}}}/package.json
 {{/isApp}}
 
 {{!cache node-modules}}

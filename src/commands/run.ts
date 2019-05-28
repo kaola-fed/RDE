@@ -69,23 +69,6 @@ export default class Run extends RunBase {
     }
   }
 
-  public get workDir() {
-    const {dockerWorkDirRoot} = conf
-    let name
-    if (conf.isApp) {
-      const {container} = conf.getAppConf()
-      name = container.name.split(':')[0]
-    }
-
-    if (conf.rdType === RdTypes.Container) {
-      const rdcConfPath = resolve(cwd, rdcConfName)
-      const rdcConf = require(rdcConfPath)
-      const {tag} = rdcConf.docker
-      name = tag.split(':')[0]
-    }
-    return `${dockerWorkDirRoot}/${name}`
-  }
-
   public get ports() {
     if (conf.isApp) {
       const {docker} = conf.getAppConf()
@@ -118,13 +101,14 @@ export default class Run extends RunBase {
 
   public async preRun() {
     await docker.genDockerFile(
-      this.workDir, this.from,
+      conf.dockerWorkDirRoot,
+      this.from,
       conf.localCacheDir,
       conf.isApp,
     )
 
     await docker.genDockerCompose(
-      this.workDir,
+      conf.dockerWorkDirRoot,
       this.cmd,
       this.ports,
       this.watch,

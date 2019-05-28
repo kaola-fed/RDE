@@ -29,7 +29,7 @@ class Install {
      */
     const {
       cwd,
-      runtimeDir,
+      templateDir,
       rdcConfName,
       dockerWorkDirRoot,
       localCacheDir,
@@ -39,17 +39,15 @@ class Install {
     if (!rdc) {
       rdc = this.appConf.container.name
     }
-    const name = rdc.split(':')[0]
-    const rdcPathInDock = resolve(dockerWorkDirRoot, name)
     await docker.copy(rdc, [{
-      from: resolve(rdcPathInDock, runtimeDir),
+      from: resolve(dockerWorkDirRoot, templateDir),
       to: cwd,
     }, {
-      from: resolve(rdcPathInDock, rdcConfName),
+      from: resolve(dockerWorkDirRoot, rdcConfName),
       to: localCacheDir,
     }])
 
-    const runtimePkgJson = require(resolve(cwd, runtimeDir, 'package.json'))
+    const runtimePkgJson = require(resolve(cwd, templateDir, 'package.json'))
     const cachePkgJsonPath = resolve(localCacheDir, 'package.json')
     const symPkgJsonPath = resolve(cwd, 'package.json')
 
@@ -77,7 +75,7 @@ class Install {
     const {
       cwd,
       RdTypes,
-      runtimeDir,
+      templateDir,
       localCacheDir,
     } = conf
 
@@ -96,7 +94,7 @@ class Install {
     }
 
     if (type === RdTypes.Container) {
-      const runtimePkgJsonPath = resolve(runtimeDir, 'package.json')
+      const runtimePkgJsonPath = resolve(templateDir, 'package.json')
       const symPkgJsonPath = resolve(cwd, 'package.json')
       fs.symlinkSync(runtimePkgJsonPath, symPkgJsonPath)
       await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {

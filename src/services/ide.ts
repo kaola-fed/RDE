@@ -16,7 +16,7 @@ class IDE {
   }
 
   public get eslintrcPath() {
-    return resolve(conf.runtimeDir, '.eslintrc.js')
+    return resolve(conf.templateDir, '.eslintrc.js')
   }
 
   public async initSettings(isApp) {

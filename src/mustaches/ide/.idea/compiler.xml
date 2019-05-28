@@ -2,6 +2,6 @@
 <project version="4">
   <component name="TypeScriptCompiler">
     <option name="showAllErrors" value="true" />
-    <option name="typeScriptCompilerParams" value="-p ./runtime/tsconfig.json" />
+    <option name="typeScriptCompilerParams" value="-p ./template/tsconfig.json" />
   </component>
 </project>

@@ -47,7 +47,7 @@ export default class DockerRun extends RunBase {
       if (this.cmd === 'lint') {
         extras = this.extras.split(' ').map(item => {
           // fix path to relative to .rde path
-          if (/^(app|runtime)\/.*/.test(item)) {
+          if (/^(app|template)\/.*/.test(item)) {
             return path.join('..', item)
           }
           return item
@@ -59,7 +59,7 @@ export default class DockerRun extends RunBase {
     }
 
     await _.asyncSpawn('npm', args, {
-      cwd: conf.rdeDir,
+      cwd: conf.isIntegrate ? conf.rdeDir : conf.runtimeDir,
       env: process.env
     })
   }

@@ -19,7 +19,7 @@
     "**/.idea": true,
     "**/.vscode": true,
     {{#isApp}}
-    "**/runtime": true,
+    "**/template": true,
     "**/node_modules": true
     {{/isApp}}
     {{^isApp}}

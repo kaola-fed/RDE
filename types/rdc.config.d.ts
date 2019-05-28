@@ -31,6 +31,7 @@ interface Docker {
 
 interface RdcConf {
   extends: string
+  mode: string
   framework: Framework
   docs: Docs
   render: Render

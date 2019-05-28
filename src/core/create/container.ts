@@ -13,12 +13,11 @@ export default class ContainerCreate extends CreateCore {
   public async prepare() {
     await docker.pull(this.rdc)
 
-    const name = this.rdc.split(':')[0]
     await docker.copy(
       this.rdc,
       [{
         // does not need to join, cuz it's docker path
-        from: `${conf.dockerWorkDirRoot}/${name}/.`,
+        from: `${conf.dockerWorkDirRoot}/.`,
         to: `${conf.cwd}`,
       }],
     )

@@ -22,13 +22,13 @@ export const validateRdc = (useStrict = false) => {
   }
 
   const appDir = resolve(cwd, 'app')
-  const runtimeDir = resolve(cwd, 'runtime')
+  const templateDir = resolve(cwd, 'template')
 
   if (!fs.existsSync(appDir)) {
     throw Error(MRDC.WRONG_DIR_STRUCTURE_APP)
   }
 
-  if (!fs.existsSync(runtimeDir)) {
+  if (!fs.existsSync(templateDir)) {
     throw Error(MRDC.WRONG_DIR_STRUCTURE_TPL)
   }
 

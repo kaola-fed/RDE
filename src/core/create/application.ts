@@ -19,18 +19,16 @@ export default class ApplicationCreate extends CreateCore {
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
     cache.set('container', this.rdc)
 
-    const name = this.rdc.split(':')[0]
     const {
       cwd,
       rdcConfName,
       dockerWorkDirRoot,
     } = conf
-    const rdcPathInDock = resolve(dockerWorkDirRoot, name)
     const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
     await docker.copy(
       this.rdc,
       [{
-        from: resolve(rdcPathInDock, 'app'),
+        from: resolve(dockerWorkDirRoot, 'app'),
         to: resolve(cwd, 'app'),
       }],
     )
