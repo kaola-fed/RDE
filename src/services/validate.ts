@@ -5,7 +5,7 @@ import conf from './conf'
 import {MCOMMON, MRDC} from './message'
 
 const {resolve} = path
-
+const {RdModes} = conf
 export const validateRda = (useStrict = false) => {
   return useStrict
 }
@@ -40,7 +40,7 @@ export const validateRdc = (useStrict = false) => {
     throw Error(MCOMMON.WRONG_FRAMEWORK_CONFIG)
   }
 
-  const {docker, mappings, docs} = rdcConf
+  const {docker, mappings, docs, mode = RdModes.Integrate} = rdcConf
   if (!docker || !docker.ports || !docker.ports.length) {
     throw Error(MCOMMON.WRONG_DOCKER_CONFIG_PORTS)
   }
@@ -49,7 +49,10 @@ export const validateRdc = (useStrict = false) => {
     throw Error(MCOMMON.WRONG_DOCKER_CONFIG_TAG)
   }
 
-  if (!mappings || !mappings.length) {
+  if (
+    mode === conf.RdModes.Integrate &&
+    (!mappings || !mappings.length)
+  ) {
     throw Error(MCOMMON.WRONG_MAPPING_CONFIG_MAPPING)
   }
 
