@@ -39,7 +39,7 @@ export default class DockerRun {
       await this.renderDir(templateDir, runtimeDir)
     }
 
-    if (conf.rdType === conf.RdTypes.Container) {
+    if (this.watch && conf.rdType === conf.RdTypes.Container) {
       await this.watchTemplate(conf.isIntegrate ? rdeDir : runtimeDir)
     }
   }
