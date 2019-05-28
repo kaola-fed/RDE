@@ -20,7 +20,7 @@ services:
       - ../.gitignore:/rde/.gitignore
       - ../.git:/rde/.git
       - ~/.gitconfig:/root/.gitconfig
-    {{!- /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
-    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules!}}
+      - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+      - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
 
     command: sleep infinity

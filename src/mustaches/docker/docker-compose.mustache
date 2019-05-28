@@ -13,8 +13,8 @@ services:
     - ../app:{{{workDir}}}/app
     - ../template:{{{workDir}}}/template
     - ../rdc.config.js:{{{workDir}}}/rdc.config.js
-    - /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
-    - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
+    - /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules
     {{/isApp}}
     {{#isBuild}}
     - ../.rde:{{{workDir}}}/.rde
