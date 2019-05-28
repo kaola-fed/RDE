@@ -7,7 +7,6 @@ import conf from '../services/conf'
 import docker from '../services/docker'
 import _ from '../util'
 
-import ide from './ide'
 import {MRDA} from './message'
 import render from './render'
 
@@ -83,16 +82,14 @@ class Sync {
       cmd === 'build',
     )
 
-    await ide.initSettings(conf.isApp)
-
     if (!skipInstall) {
       await this.install()
     }
   }
 
   /**
-   * 1. copy rdc/package.json to .cache/package.json
-   * 2. copy rdc/rdc.config.js to .cache/rdc.config.js
+   * 1. copy template/package.json to .cache/package.json
+   * 2. copy rde/rdc.config.js to .cache/rdc.config.js
    * 3. add suite to package.json
    * 4. merge app optional pkg.json & rdc package.json
    */
@@ -120,7 +117,7 @@ class Sync {
 
     if (!createRdc) {
       await this.mergePkgJson(
-        resolve(cwd, 'package.json'),
+        resolve(cwd, 'app', 'package.json'),
         resolve(cwd, localCacheDir, 'package.json'),
         resolve(localCacheDir),
       )
@@ -142,7 +139,6 @@ class Sync {
     const from = createRdc || this.from
     rdcConf.docker = rdcConf.docker || {}
     const ports = createRdc ? rdcConf.docker.ports || [] : this.ports
-    const exportFiles = rdcConf.mappings.map(item => item.from) || []
     const extensions = rdcConf.extensions || []
 
     for (let [key, value] of Object.entries(map)) {
@@ -152,7 +148,6 @@ class Sync {
         extensions: JSON.stringify(extensions),
         from,
         ports,
-        exportFiles,
       }, resolve(conf.cwd, '.devcontainer', value), {
         overwrite: true,
       })
@@ -161,7 +156,9 @@ class Sync {
 
   public async mergePkgJson(appPkgPath, rdcPkgPath, destPath) {
     let pkgJson = require(rdcPkgPath)
-    this.appConf.suites.map(item => {
+    const suites = this.appConf.suites || []
+
+    suites.forEach(item => {
       pkgJson.dependencies = pkgJson.dependencies || {}
       pkgJson.dependencies[item.name] = item.version
     })

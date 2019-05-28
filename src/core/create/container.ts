@@ -51,7 +51,6 @@ export default class ContainerCreate extends CreateCore {
     })
 
     await ide.initSettings(false)
-
     await sync.install()
   }
 }

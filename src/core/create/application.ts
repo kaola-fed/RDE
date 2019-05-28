@@ -35,6 +35,7 @@ export default class ApplicationCreate extends CreateCore {
 
     await sync.genAppStagedFiles(this.rdc)
     await sync.install()
+    await ide.initSettings(true)
 
     this.rdcConf = require(rdcConfPath)
   }

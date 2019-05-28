@@ -60,7 +60,7 @@ class Docker {
       cwd,
     })
 
-    await _.asyncExec('rm .dockerignore')
+    await _.asyncExec('rm -f .dockerignore')
     await _.asyncExec('docker image prune -f')
   }
 

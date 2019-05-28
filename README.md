@@ -34,11 +34,11 @@ USAGE
 * [`rde docs:publish`](#rde-docspublish)
 * [`rde docs:serve`](#rde-docsserve)
 * [`rde help [COMMAND]`](#rde-help-command)
-* [`rde install [CMD]`](#rde-install-cmd)
 * [`rde lint [CMD]`](#rde-lint-cmd)
 * [`rde publish`](#rde-publish)
 * [`rde run [CMD]`](#rde-run-cmd)
 * [`rde serve`](#rde-serve)
+* [`rde sync [CMD]`](#rde-sync-cmd)
 
 ## `rde build`
 
@@ -148,26 +148,6 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `rde install [CMD]`
-
-```
-USAGE
-  $ rde install [CMD]
-
-ARGUMENTS
-  CMD  scripts provided by container
-
-OPTIONS
-  -e, --extras=extras  arguments need to pass to npm run cmd
-  -v, --verbose        show verbose logs
-  -w, --watch
-
-EXAMPLE
-  $ rde install
-```
-
-_See code: [lib/commands/install.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.28/lib/commands/install.js)_
-
 ## `rde lint [CMD]`
 
 ```
@@ -261,4 +241,24 @@ EXAMPLE
 ```
 
 _See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.28/lib/commands/serve.js)_
+
+## `rde sync [CMD]`
+
+```
+USAGE
+  $ rde sync [CMD]
+
+ARGUMENTS
+  CMD  scripts provided by container
+
+OPTIONS
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -v, --verbose        show verbose logs
+  -w, --watch
+
+EXAMPLE
+  $ rde sync
+```
+
+_See code: [lib/commands/sync.js](https://github.com/kaolafed/rde/blob/v0.0.1-alpha.28/lib/commands/sync.js)_
 <!-- commandsstop -->
