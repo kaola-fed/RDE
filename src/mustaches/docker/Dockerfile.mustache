@@ -20,12 +20,8 @@ RUN rm -rf /opt/yarn-* \
 
 RUN yarn global add rde
 
-{{#isApp}}
-COPY .cache/package.json {{{workDir}}}/package.json
-{{/isApp}}
-{{^isApp}}
-COPY template/package.json {{{workDir}}}/package.json
-{{/isApp}}
+COPY .cache/package-cache.json {{{workDir}}}/package.json
+
 
 {{!cache node-modules}}
 RUN yarn

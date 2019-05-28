@@ -1,6 +1,7 @@
 import * as deepExtend from 'deep-extend'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as writeJson from 'write-json-file'
 import * as writePkg from 'write-pkg'
 
 import conf from '../services/conf'
@@ -60,7 +61,11 @@ class Sync {
   public async start({watch, cmd, skipInstall = false}) {
     if (conf.isApp) {
       await this.genAppStagedFiles()
+    } else {
+      await _.copy(resolve(conf.templateDir, 'package.json'), conf.localCacheDir, {})
     }
+
+    await this.genDevPkgJson()
 
     await docker.genDockerFile(
       conf.dockerWorkDirRoot,
@@ -173,6 +178,29 @@ class Sync {
     }
 
     await writePkg(destPath, pkgJson)
+    return pkgJson
+  }
+
+  public async genDevPkgJson() {
+    const dependenciesAttr = [
+      'os',
+      'engines',
+      'engineStrict',
+      'dependencies',
+      'devDependencies',
+      'peerDependencies',
+      'bundledDependencies',
+      'optionalDependencies']
+    const devPkgJson = {}
+    const pkgJson = require(resolve(conf.localCacheDir, 'package.json'))
+
+    dependenciesAttr.forEach(item => {
+      if (pkgJson[item]) {
+        devPkgJson[item] = pkgJson[item]
+      }
+    })
+
+    await writeJson(join(conf.localCacheDir, 'package-cache.json'), devPkgJson)
   }
 
   public async install() {
