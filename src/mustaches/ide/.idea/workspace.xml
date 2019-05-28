@@ -15,18 +15,18 @@
 
   {{#isApp}}
   <component name="NamedScopeManager">
-    <scope name="RDE" pattern="file[rde]:app//*||file:rda.config.js||file:.gitignore||file:README.md||file:dist//*" />
+    <scope name="RDE" pattern="file[rde]:app//*||file:rda.config.js||file:.gitignore||file:README.md||file[rde]:_docs//*" />
   </component>
 
   <component name="ProjectView">
-    <navigator currentView="Scope" currentSubView="Scope 'RDE'; set:file[rde]:app//*||file:rda.config.js||file:.gitignore||file:README.md||file:dist//*; class com.intellij.psi.search.scope.packageSet.NamedScope" proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'RDE'; set:file[rde]:app//*||file:rda.config.js||file:.gitignore||file:README.md||file[rde]:_docs//*; class com.intellij.psi.search.scope.packageSet.NamedScope" proportions="" version="1">
       <sortByType ProjectPane="false" />
       <foldersAlwaysOnTop value="true" />
     </navigator>
 
     <panes>
       <pane id="Scope">
-        <subPane subId="Scope 'RDE'; set:file[rde]:app//*||file:rda.config.js||file:.gitignore||file:README.md||file:dist//*; class com.intellij.psi.search.scope.packageSet.NamedScope">
+        <subPane subId="Scope 'RDE'; set:file[rde]:app//*||file:rda.config.js||file:.gitignore||file:README.md||file[rde]:_docs//*; class com.intellij.psi.search.scope.packageSet.NamedScope">
           <expand>
             <path>
               <item name="$PROJECT_DIR$" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
@@ -46,18 +46,18 @@
   {{/isApp}}
   {{^isApp}}
   <component name="NamedScopeManager">
-    <scope name="RDE" pattern="file[rde]:app//*||file:.gitignore||file:README.md||file[rde]:template//*||file:rdc.config.js||file[rde]:dist//*||file[rde]:docs//*" />
+    <scope name="RDE" pattern="file[rde]:app//*||file:.gitignore||file:README.md||file[rde]:template//*||file:rdc.config.js||file[rde]:_docs//*" />
   </component>
 
   <component name="ProjectView">
-    <navigator currentView="Scope" currentSubView="Scope 'RDE'; set:file[rde]:app//*||file:.gitignore||file:README.md||file[rde]:template//*||file:rdc.config.js||file[rde]:dist//*||file[rde]:docs//*; class com.intellij.psi.search.scope.packageSet.NamedScope" proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'RDE'; set:file[rde]:app//*||file:.gitignore||file:README.md||file[rde]:template//*||file:rdc.config.js||file[rde]:dist//*||file[rde]:_docs//*; class com.intellij.psi.search.scope.packageSet.NamedScope" proportions="" version="1">
       <sortByType ProjectPane="false" />
       <foldersAlwaysOnTop value="true" />
     </navigator>
 
     <panes>
       <pane id="Scope">
-        <subPane subId="Scope 'RDE'; set:file[rde]:app//*||file:.gitignore||file:README.md||file[rde]:template//*||file:rdc.config.js||file[rde]:dist//*||file[rde]:docs//*; class com.intellij.psi.search.scope.packageSet.NamedScope">
+        <subPane subId="Scope 'RDE'; set:file[rde]:app//*||file:.gitignore||file:README.md||file[rde]:template//*||file:rdc.config.js||file[rde]:dist//*||file[rde]:_docs//*; class com.intellij.psi.search.scope.packageSet.NamedScope">
           <expand>
             <path>
               <item name="$PROJECT_DIR$" type="3d21c010:ScopeViewTreeModel$ProjectNode" />

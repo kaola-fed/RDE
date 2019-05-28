@@ -61,9 +61,9 @@ export default class RunBase extends Base {
     }
 
     const appDir = resolve(cwd, 'app')
-    const runtimeDir = resolve(cwd, conf.runtimeDir)
+    const templateDir = resolve(cwd, conf.templateDir)
     if (
-      (conf.rdType === 'container' && !fs.existsSync(runtimeDir)) ||
+      (conf.rdType === RdTypes.Container && !fs.existsSync(templateDir)) ||
       !fs.existsSync(appDir)
     ) {
       throw Error(MCOMMON.WRONG_PROJECT_STRUCTURE)

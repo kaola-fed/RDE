@@ -21,7 +21,7 @@ const conf = {
   },
 
   get docsDir() {
-    return 'docs'
+    return '_docs'
   },
 
   get docsPagesDir() {

@@ -13,7 +13,7 @@ export const MCOMMON = {
 
 export const MRDA = {
   UNRECOGNIZED: 'Unrecognized application project, please use `$ rde create` to create one',
-  NO_PKG_IN_CACHE_DIR: 'Cannot find package.json in .cache dir, please run `$rde lint` first'
+  NO_PKG_IN_CACHE_DIR: 'Cannot find package.json in .cache dir, please run `$rde sync` first'
 }
 
 export const MRDC = {
