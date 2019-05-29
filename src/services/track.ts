@@ -1,7 +1,10 @@
 import axios from 'axios'
 import * as cleanStack from 'clean-stack'
 import * as ip from 'ip'
+import * as path from 'path'
 import * as rax from 'retry-axios'
+
+import conf from './conf'
 // init request
 const request = axios.create() as any
 request.defaults.raxConfig = {instance: request}
@@ -18,14 +21,16 @@ const logTrack = msg => {
 }
 
 const uploadHubble = async (info = {}) => {
+  const name = path.basename(conf.cwd)
+  const {docker: {tag = 'Unknown'} = {}} = conf.getRdcConf('.')
   const params = {
-    userId: 'test-docs',
+    userId: name || tag.split(':')[0],
     dataType: 'ie',
     sdkType: 'server',
     eventId: 'RdeTrack',
     time: (new Date as any).getTime(), // tslint:disable-line
     appKey,
-    attributes: {...info, ...{version: 'alpha2'}}
+    attributes: {...info, ...{version: tag}}
   }
   const data = Buffer.from(JSON.stringify(params)).toString('base64')
   await request({
