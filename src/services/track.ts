@@ -1,5 +1,6 @@
 import axios from 'axios'
 import * as cleanStack from 'clean-stack'
+import * as fs from 'fs'
 import * as ip from 'ip'
 import * as path from 'path'
 import * as rax from 'retry-axios'
@@ -22,7 +23,13 @@ const logTrack = msg => {
 
 const uploadHubble = async (info = {}) => {
   const name = path.basename(conf.cwd)
-  const {docker: {tag = 'Unknown'} = {}} = conf.getRdcConf('.')
+  const {appConfPath} = conf
+  let tag = 'RDC'
+  if (fs.existsSync(appConfPath)) {
+    const appConf = conf.getAppConf()
+    tag = appConf.container.name
+  }
+
   const params = {
     userId: name || tag.split(':')[0],
     dataType: 'ie',
@@ -30,7 +37,7 @@ const uploadHubble = async (info = {}) => {
     eventId: 'RdeTrack',
     time: (new Date as any).getTime(), // tslint:disable-line
     appKey,
-    attributes: {...info, ...{version: tag}}
+    attributes: {...info, ...{version: tag, project: name}}
   }
   const data = Buffer.from(JSON.stringify(params)).toString('base64')
   await request({
