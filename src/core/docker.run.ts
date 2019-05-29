@@ -86,12 +86,18 @@ export default class DockerRun {
 
     const dataView = container ? container.render : rdtRender.mock || {}
 
+    const options: any = {
+      overwrite: true,
+      dot: true,
+    }
+
+    if (conf.isIntegrate) {
+      options.filter = /.*(?<!\.d\.ts)$/
+    }
+
     await render.renderDir(from, {
       ...dataView
-    }, includes, to, {
-      overwrite: true,
-      dot: true
-    })
+    }, includes, to, options)
   }
 
   public async composeRde() {
@@ -100,6 +106,11 @@ export default class DockerRun {
     for (let {from, to, options} of this.config.mappings) {
       const appDir = resolve(conf.cwd, from)
       const destDir = resolve(integrateDir, to)
+
+      if (!options || options.filter) {
+        options = options || {}
+        options.filter = /.*(?<!\.d\.ts)$/
+      }
 
       await _.copy(appDir, destDir, {options})
     }
