@@ -6,6 +6,7 @@ import Base from '../base'
 import conf from '../services/conf'
 import {debug} from '../services/logger'
 import {MCOMMON} from '../services/message'
+import {TError, TStart} from '../services/track'
 import _ from '../util'
 
 const {resolve} = path
@@ -42,6 +43,8 @@ export default class RunBase extends Base {
     return flags
   }
 
+  @TError({conf})
+  @TStart
   public async initialize() {
     await _.asyncExec(`rm -rf ${conf.tmpDir} && mkdir ${conf.tmpDir}`)
 
