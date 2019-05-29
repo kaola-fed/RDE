@@ -23,11 +23,14 @@ const logTrack = msg => {
 
 const uploadHubble = async (info = {}) => {
   const name = path.basename(conf.cwd)
-  const {appConfPath} = conf
+  const {appConfPath, rdcConfPath} = conf
   let tag = 'RDC'
   if (fs.existsSync(appConfPath)) {
     const appConf = conf.getAppConf()
     tag = appConf.container.name
+  } else if (fs.existsSync(rdcConfPath)) {
+    const rdcConf = conf.getRdcConf('.')
+    tag = rdcConf.docker.tag
   }
 
   const params = {
