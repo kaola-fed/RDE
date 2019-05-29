@@ -5,6 +5,7 @@ import * as path from 'path'
 import conf from '../services/conf'
 import {debug} from '../services/logger'
 import render from '../services/render'
+import sync from '../services/sync'
 import Watcher from '../services/watcher'
 import _ from '../util'
 
@@ -13,7 +14,9 @@ const {resolve} = path
 const {
   templateDir,
   rdeDir,
-  runtimeDir
+  runtimeDir,
+  dockerWorkDirRoot,
+  RdTypes,
 } = conf
 
 export default class DockerRun {
@@ -39,7 +42,15 @@ export default class DockerRun {
       await this.renderDir(templateDir, runtimeDir)
     }
 
-    if (this.watch && conf.rdType === conf.RdTypes.Container) {
+    if (conf.rdType === RdTypes.Application) {
+      await sync.mergePkgJson(
+        resolve(dockerWorkDirRoot, 'app', 'package.json'),
+        resolve(dockerWorkDirRoot, templateDir, 'package.json'),
+        resolve(dockerWorkDirRoot, runtimeDir)
+      )
+    }
+
+    if (this.watch && conf.rdType === RdTypes.Container) {
       await this.watchTemplate(conf.isIntegrate ? rdeDir : runtimeDir)
     }
   }
