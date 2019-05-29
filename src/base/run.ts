@@ -48,9 +48,7 @@ export default class RunBase extends Base {
     const {appConfPath, rdcConfPath, cwd, RdTypes} = conf
     if (fs.existsSync(appConfPath)) {
       conf.rdType = RdTypes.Application
-    }
-
-    if (fs.existsSync(rdcConfPath)) {
+    } else if (fs.existsSync(rdcConfPath)) {
       conf.rdType = RdTypes.Container
     }
 
