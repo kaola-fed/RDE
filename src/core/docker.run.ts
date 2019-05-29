@@ -13,7 +13,7 @@ type Config = (RdcConf & AppConf) | (RdcConf)
 const {resolve} = path
 const {
   templateDir,
-  rdeDir,
+  integrateDir,
   runtimeDir,
   dockerWorkDirRoot,
   RdTypes,
@@ -33,7 +33,7 @@ export default class DockerRun {
 
     if (conf.isIntegrate) {
       // template render to .integrated
-      await this.renderDir(templateDir, rdeDir)
+      await this.renderDir(templateDir, integrateDir)
       // compose rde and watch app
       await this.composeRde()
 
@@ -46,12 +46,12 @@ export default class DockerRun {
       await sync.mergePkgJson(
         resolve(dockerWorkDirRoot, 'app', 'package.json'),
         resolve(dockerWorkDirRoot, templateDir, 'package.json'),
-        resolve(dockerWorkDirRoot, runtimeDir)
+        resolve(dockerWorkDirRoot, conf.rdeDir)
       )
     }
 
     if (this.watch && conf.rdType === RdTypes.Container) {
-      await this.watchTemplate(conf.isIntegrate ? rdeDir : runtimeDir)
+      await this.watchTemplate(conf.rdeDir)
     }
   }
 
@@ -60,7 +60,6 @@ export default class DockerRun {
       cwd,
       appConfName,
       rdcConfName,
-      rdeDir,
     } = conf
 
     let config = require(resolve(cwd, rdcConfName))
@@ -69,12 +68,6 @@ export default class DockerRun {
     if (fs.existsSync(rdaConfPath)) {
       config = extend(config, require(rdaConfPath))
     }
-
-    await render.renderTo('module', {
-      obj: config
-    }, resolve(rdeDir, rdcConfName), {
-      overwrite: true
-    })
 
     conf.rdMode = config.mode || conf.RdModes.Integrate
 
@@ -106,7 +99,7 @@ export default class DockerRun {
 
     for (let {from, to, options} of this.config.mappings) {
       const appDir = resolve(conf.cwd, from)
-      const destDir = resolve(rdeDir, to)
+      const destDir = resolve(integrateDir, to)
 
       await _.copy(appDir, destDir, {options})
     }
