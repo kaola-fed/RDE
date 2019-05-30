@@ -5,6 +5,7 @@ import * as path from 'path'
 import conf from '../services/conf'
 import {debug} from '../services/logger'
 import render from '../services/render'
+import sync from '../services/sync'
 import Watcher from '../services/watcher'
 import _ from '../util'
 
@@ -12,8 +13,10 @@ type Config = (RdcConf & AppConf) | (RdcConf)
 const {resolve} = path
 const {
   templateDir,
-  rdeDir,
-  runtimeDir
+  integrateDir,
+  runtimeDir,
+  dockerWorkDirRoot,
+  RdTypes,
 } = conf
 
 export default class DockerRun {
@@ -30,7 +33,7 @@ export default class DockerRun {
 
     if (conf.isIntegrate) {
       // template render to .integrated
-      await this.renderDir(templateDir, rdeDir)
+      await this.renderDir(templateDir, integrateDir)
       // compose rde and watch app
       await this.composeRde()
 
@@ -39,8 +42,16 @@ export default class DockerRun {
       await this.renderDir(templateDir, runtimeDir)
     }
 
-    if (this.watch && conf.rdType === conf.RdTypes.Container) {
-      await this.watchTemplate(conf.isIntegrate ? rdeDir : runtimeDir)
+    if (conf.rdType === RdTypes.Application) {
+      await sync.mergePkgJson(
+        resolve(dockerWorkDirRoot, 'app', 'package.json'),
+        resolve(dockerWorkDirRoot, templateDir, 'package.json'),
+        resolve(dockerWorkDirRoot, conf.rdeDir)
+      )
+    }
+
+    if (this.watch && conf.rdType === RdTypes.Container) {
+      await this.watchTemplate(conf.rdeDir)
     }
   }
 
@@ -49,7 +60,6 @@ export default class DockerRun {
       cwd,
       appConfName,
       rdcConfName,
-      rdeDir,
     } = conf
 
     let config = require(resolve(cwd, rdcConfName))
@@ -58,12 +68,6 @@ export default class DockerRun {
     if (fs.existsSync(rdaConfPath)) {
       config = extend(config, require(rdaConfPath))
     }
-
-    await render.renderTo('module', {
-      obj: config
-    }, resolve(rdeDir, rdcConfName), {
-      overwrite: true
-    })
 
     conf.rdMode = config.mode || conf.RdModes.Integrate
 
@@ -82,12 +86,18 @@ export default class DockerRun {
 
     const dataView = container ? container.render : rdtRender.mock || {}
 
+    const options: any = {
+      overwrite: true,
+      dot: true,
+    }
+
+    if (conf.isIntegrate) {
+      options.filter = /.*(?<!\.d\.ts)$/
+    }
+
     await render.renderDir(from, {
       ...dataView
-    }, includes, to, {
-      overwrite: true,
-      dot: true
-    })
+    }, includes, to, options)
   }
 
   public async composeRde() {
@@ -95,7 +105,12 @@ export default class DockerRun {
 
     for (let {from, to, options} of this.config.mappings) {
       const appDir = resolve(conf.cwd, from)
-      const destDir = resolve(rdeDir, to)
+      const destDir = resolve(integrateDir, to)
+
+      if (!options || options.filter) {
+        options = options || {}
+        options.filter = /.*(?<!\.d\.ts)$/
+      }
 
       await _.copy(appDir, destDir, {options})
     }

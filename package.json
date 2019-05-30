@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Recommanded Development Environment",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.5",
   "bin": {
     "rde": "./bin/run"
   },
@@ -14,6 +14,7 @@
     "browser-sync": "^2.26.4",
     "chalk": "^2.4.2",
     "chokidar": "^2.1.5",
+    "clean-stack": "^2.1.0",
     "cli-table2": "^0.2.0",
     "create-html": "^4.1.0",
     "deasync": "^0.1.15",
@@ -23,11 +24,13 @@
     "enquirer": "^2.3.0",
     "fs-extra": "^7.0.1",
     "highlight.js": "^9.15.6",
+    "ip": "^1.1.5",
     "markdown-it": "^8.4.2",
     "markdown-it-meta": "0.0.1",
     "mustache": "^3.0.1",
     "read-package-json": "^2.0.13",
     "recursive-copy": "^2.0.10",
+    "retry-axios": "^1.0.1",
     "rimraf": "^2.6.3",
     "semver": "^6.0.0",
     "staged-git-files": "^1.2.0",

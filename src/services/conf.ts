@@ -56,8 +56,12 @@ const conf = {
     return 'runtime'
   },
 
-  get rdeDir() {
+  get integrateDir() {
     return resolve(conf.cwd, '.integrate')
+  },
+
+  get rdeDir() {
+    return this.isIntegrate ? this.integrateDir : this.runtimeDir
   },
 
   get cliName() { return 'rde' },

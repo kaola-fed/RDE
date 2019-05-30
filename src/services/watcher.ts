@@ -47,7 +47,7 @@ export default class Watcher extends Events {
     const relativeToFromPath = relative(resolve(cwd, mapping.from), filePath)
 
     // 将相对路径 加在 to 后面，拼成 完整的目标路径
-    const destPath = resolve(conf.rdeDir, mapping.to, relativeToFromPath)
+    const destPath = resolve(conf.integrateDir, mapping.to, relativeToFromPath)
 
     if (['add', 'change', 'addDir'].includes(type)) {
       await this.copy(filePath, destPath, mapping)

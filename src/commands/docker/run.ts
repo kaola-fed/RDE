@@ -59,7 +59,7 @@ export default class DockerRun extends RunBase {
     }
 
     await _.asyncSpawn('npm', args, {
-      cwd: conf.isIntegrate ? conf.rdeDir : conf.runtimeDir,
+      cwd: conf.isIntegrate ? conf.integrateDir : conf.runtimeDir,
       env: process.env
     })
     process.exit(0)
