@@ -6,6 +6,7 @@ import * as writePkg from 'write-pkg'
 
 import conf from '../services/conf'
 import docker from '../services/docker'
+import {debug} from '../services/logger'
 import _ from '../util'
 
 import ide from './ide'
@@ -60,6 +61,8 @@ class Sync {
    * need to gen extra staged files
    */
   public async start({watch, cmd, skipInstall = false}) {
+    await _.asyncExec(`mkdir -p ${conf.localCacheDir}`)
+
     if (conf.isApp) {
       await this.genAppStagedFiles()
     } else {
@@ -167,6 +170,9 @@ class Sync {
   }
 
   public async mergePkgJson(appPkgPath, rdcPkgPath, destPath) {
+    debug('appPkgPath', appPkgPath)
+    debug('rdcPkgPath', rdcPkgPath)
+
     let pkgJson = require(rdcPkgPath)
 
     if (
