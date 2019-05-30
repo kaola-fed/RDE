@@ -89,18 +89,23 @@ export default class DockerRun {
     }
 
     if (suites && suites.length) {
-      container.render.suites = suites.map(item => {
-        const arr = item.split('/')
-        let alias = item
-        if (arr.length > 1) {
-          alias = arr[1]
-        }
-        alias = alias.replace(/[-_]/gim, '').toUpperCase()
+      Object.keys(conf.frameworks).forEach(framework => {
+        container.render[`${framework}Suites`] = suites.filter(item => {
+          if (item.framework === framework) {
+            const arr = item.split('/')
+            let alias = item
+            if (arr.length > 1) {
+              alias = arr[1]
+            }
+            alias = alias.replace(/[-_]/gim, '').toUpperCase()
 
-        return {
-          name: item,
-          alias,
-        }
+            return {
+              name: item,
+              alias,
+            }
+          }
+          return false
+        })
       })
     }
 
