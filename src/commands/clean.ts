@@ -1,3 +1,4 @@
+import * as enquirer from 'enquirer'
 import * as fs from 'fs'
 
 import Base from '../base'
@@ -20,7 +21,13 @@ export default class Clean extends RunBase {
   }
 
   public async run() {
-    if (conf.isApp) {
+    const {confirmed} = await enquirer.prompt({
+      type: 'confirm',
+      name: 'confirmed',
+      message: 'Are you sure to delete template & local cache files?'
+    })
+
+    if (conf.isApp && confirmed) {
       logger.warn('Start removing files...')
 
       const whitelist = [
