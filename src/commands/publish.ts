@@ -6,7 +6,6 @@ import conf from '../services/conf'
 import docker from '../services/docker'
 import {debug, logger} from '../services/logger'
 import {MCOMMON} from '../services/message'
-import render from '../services/render'
 import {validateRdc} from '../services/validate'
 
 export default class Publish extends Base {
@@ -101,13 +100,6 @@ export default class Publish extends Base {
   }
 
   public async postRun() {
-    const {docker: dockerConf} = this.rdcConf
-    dockerConf.tag = this.tag
-
-    await render.renderTo('module', {
-      obj: this.rdcConf,
-    }, conf.rdcConfName, {overwrite: true})
-
     logger.log(`Published ${this.tag} successfully`)
   }
 }

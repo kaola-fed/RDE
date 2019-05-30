@@ -81,7 +81,19 @@ export default class DockerRun {
     const {includes = []} = rdtRender
 
     if (suites && suites.length) {
-      container.render.suites = suites
+      container.render.suites = suites.map(item => {
+        const arr = item.split('/')
+        let alias = item
+        if (arr.length > 1) {
+          alias = arr[1]
+        }
+        alias = alias.replace(/[-_]/gim, '').toUpperCase()
+
+        return {
+          name: item,
+          alias,
+        }
+      })
     }
 
     const dataView = container ? container.render : rdtRender.mock || {}
