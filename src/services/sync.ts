@@ -8,6 +8,7 @@ import conf from '../services/conf'
 import docker from '../services/docker'
 import _ from '../util'
 
+import ide from './ide'
 import {MRDA} from './message'
 import render from './render'
 
@@ -94,6 +95,8 @@ class Sync {
     if (!skipInstall) {
       await this.install()
     }
+
+    await ide.initSettings(conf.isApp)
   }
 
   /**
