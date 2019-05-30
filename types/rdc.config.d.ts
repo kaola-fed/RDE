@@ -37,5 +37,8 @@ interface RdcConf {
   mappings: Mapping[]
   docker: Docker,
   nodeVersion: string,
-  extensions: string[]
+  extensions: string[],
+  lint: {
+    ext: string[]
+  }
 }

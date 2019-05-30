@@ -5,6 +5,7 @@ import * as validateMessage from 'validate-commit-msg'
 
 import Base from '../base'
 import RunBase from '../base/run'
+import eslint from '../services/eslint'
 import {MCOMMON} from '../services/message'
 import _ from '../util'
 
@@ -44,9 +45,8 @@ export default class Lint extends RunBase {
       let filenames = []
       await util.promisify(sgf)('ACM').then(files => {
         filenames = files.map(file => file.filename)
-          .filter(file => /(app\/)|(template\/)/.test(file))
       })
-
+      filenames = eslint.getLintFiles(filenames)
       flags.extras = filenames.join(' ')
       delete flags.staged
     } else {
