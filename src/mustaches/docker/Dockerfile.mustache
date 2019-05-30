@@ -7,7 +7,7 @@ RUN yarn global add rde
 
 WORKDIR {{{workDir}}}
 
-COPY .cache/package-cache.json template/.npmrc* template/.yarnrc* {{{workDir}}}/
+COPY .cache/package-cache.json template/.npmrc* template/.yarnrc* app/.npmrc* app/.yarnrc* {{{workDir}}}/
 RUN mv package-cache.json package.json
 
 {{!cache node-modules}}

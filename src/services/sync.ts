@@ -165,12 +165,6 @@ class Sync {
 
   public async mergePkgJson(appPkgPath, rdcPkgPath, destPath) {
     let pkgJson = require(rdcPkgPath)
-    const suites = this.appConf.suites || []
-
-    suites.forEach(item => {
-      pkgJson.dependencies = pkgJson.dependencies || {}
-      pkgJson.dependencies[item.name] = item.version
-    })
 
     if (
       fs.existsSync(appPkgPath) &&

@@ -4,15 +4,8 @@ interface AppConfTemplate {
   render?: { [key: string]: any }
 }
 
-interface AppConfSuite {
-  name: string,
-  alias: string,
-  version: string,
-  docs: string,
-}
-
 interface AppConf {
   container: AppConfTemplate,
-  suites: AppConfSuite[],
+  suites: string[],
   docker: Docker,
 }
