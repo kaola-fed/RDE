@@ -12,7 +12,7 @@ interface Docs {
 interface Render {
   includes: string[],
   tags: string[],
-  validate: ((dataView: any) => boolean)[],
+  validate: ((dataView: any) => any)[],
   mock: {[key: string]: any}
 }
 

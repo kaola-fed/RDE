@@ -45,7 +45,7 @@ export default class DockerRun {
     if (conf.rdType === RdTypes.Application) {
       await sync.mergePkgJson(
         resolve(dockerWorkDirRoot, 'app', 'package.json'),
-        resolve(dockerWorkDirRoot, templateDir, 'package.json'),
+        resolve(dockerWorkDirRoot, conf.rdeDir, 'package.json'),
         resolve(dockerWorkDirRoot, conf.rdeDir)
       )
     }
@@ -79,6 +79,14 @@ export default class DockerRun {
     const {render: rdtRender = {} as any, container, suites} = this.config
 
     const {includes = []} = rdtRender
+    container.render = container.render || {}
+
+    if (rdtRender.validate) {
+      const result = rdtRender.validate(container.render)
+      if (result !== true) {
+        throw Error(result)
+      }
+    }
 
     if (suites && suites.length) {
       container.render.suites = suites.map(item => {
