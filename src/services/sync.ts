@@ -105,8 +105,7 @@ class Sync {
   /**
    * 1. copy template/package.json to .cache/package.json
    * 2. copy rde/rdc.config.js to .cache/rdc.config.js
-   * 3. add suite to package.json
-   * 4. merge app optional pkg.json & rdc package.json
+   * 3. merge app optional pkg.json & rdc package.json
    */
   public async genAppStagedFiles(createRdc = null) {
     const {
