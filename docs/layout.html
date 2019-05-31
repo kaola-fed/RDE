@@ -61,12 +61,17 @@
     .m-sidebar-page { font-size: 14px; line-height: 40px; height: 40px; font-weight: 400; color: #999; }
     .m-sidebar-page a { text-decoration: none; color: #333; }
     .m-sidebar-page a:hover, .m-sidebar-page a:hover i { color: #68BAEB; }
+
     .m-sidebar i { color: #999; font-style: normal; }
 
     .m-sidebar-sub { list-style: none; }
     .m-sidebar-sub-page { height: 30px; line-height: 30px; }
     .m-sidebar-sub-page a { text-decoration: none; color: #333; }
     .m-sidebar-sub-page a:hover, .m-sidebar-sub-page a:hover i { color: #68BAEB;}
+
+    .m-sidebar-page.active a, .m-sidebar-page.active i,
+    .m-sidebar-sub-page.active a, .m-sidebar-sub-page.active i
+    { color: #68BAEB; }
 
     .m-cnt { font-size: 13px; width: 960px; box-sizing: border-box; padding: 20px 0 180px 60px; }
 
@@ -103,7 +108,7 @@
 <div class="g-bd">
   <ul id="sidebar" class="m-sidebar">
     <li v-for="page in pages">
-      <p class="m-sidebar-page">
+      <p class="m-sidebar-page" :class="{'active': isCrtPage(page)}">
         <span v-if="!page.url">
           {{page.title}}
           <i v-if="page.enTitle">{{page.enTitle}}</i>
@@ -115,7 +120,7 @@
       </p>
 
       <ul class="m-sidebar-sub" v-if="page.children && page.children.length">
-        <li class="m-sidebar-sub-page" v-for="subPage in page.children">
+        <li class="m-sidebar-sub-page" v-for="subPage in page.children" :class="{'active': isCrtPage(subPage)}">
           <a :href="subPage.url">
             {{subPage.title}}
             <i v-if="subPage.enTitle">{{subPage.enTitle}}</i>
@@ -193,19 +198,10 @@
       };
     },
     mounted() {
-      const contentEl = new SimpleBar(document.body)
+      const contentEl = new SimpleBar(document.body);
       contentEl.recalculate()
     },
     methods: {
-      isCrtNav(nav) {
-        if (!nav.main && nav.url === location.pathname) {
-          return true;
-        }
-
-        if (nav.main) {
-          return true;
-        }
-      },
       isCrtPage(page) {
         return page.url === location.pathname;
       },
