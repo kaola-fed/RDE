@@ -6,6 +6,7 @@ import conf from '../services/conf'
 import docker from '../services/docker'
 import {debug, logger} from '../services/logger'
 import {MCOMMON} from '../services/message'
+import {uploadHubble} from '../services/track'
 import {validateRdc} from '../services/validate'
 
 export default class Publish extends Base {
@@ -75,6 +76,8 @@ export default class Publish extends Base {
   }
 
   public async run() {
+    uploadHubble({cmd: 'publish'})
+
     const arr = this.rdc.split(':')
     const name = arr[0]
 

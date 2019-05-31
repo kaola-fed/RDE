@@ -5,6 +5,7 @@ import ApplicationCreate from '../core/create/application'
 import ContainerCreate from '../core/create/container'
 import conf from '../services/conf'
 import {logger} from '../services/logger'
+import {uploadHubble} from '../services/track'
 import _ from '../util'
 
 export default class Create extends Base {
@@ -52,6 +53,8 @@ export default class Create extends Base {
   }
 
   public async run() {
+    uploadHubble({cmd: 'create'})
+
     const opts = {
       name: this.name,
       type: conf.rdType,

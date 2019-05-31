@@ -6,7 +6,7 @@ import Base from '../base'
 import conf from '../services/conf'
 import {debug} from '../services/logger'
 import {MCOMMON} from '../services/message'
-import {TError, TStart} from '../services/track'
+import {TError, TStart, uploadHubble} from '../services/track'
 import _ from '../util'
 
 const {resolve} = path
@@ -39,6 +39,9 @@ export default class RunBase extends Base {
     this.cmd = args.cmd
     this.watch = flags.watch
     this.extras = flags.extras
+
+    const cmd = this.cmd || (this.constructor as any).id
+    uploadHubble({cmd})
 
     return flags
   }

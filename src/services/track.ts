@@ -21,7 +21,7 @@ const logTrack = msg => {
   isDebug && console.log(msg) // tslint:disable-line
 }
 
-const uploadHubble = async (info = {}) => {
+export const uploadHubble = (info = {}) => {
   const name = path.basename(conf.cwd)
   const {appConfPath, rdcConfPath} = conf
   let tag = 'RDC'
@@ -33,27 +33,32 @@ const uploadHubble = async (info = {}) => {
     tag = rdcConf.docker.tag
   }
 
-  const params = {
-    userId: name || tag.split(':')[0],
-    dataType: 'ie',
-    sdkType: 'server',
-    eventId: 'RdeTrack',
-    time: (new Date as any).getTime(), // tslint:disable-line
-    appKey,
-    attributes: {...info, ...{version: tag, project: name}}
-  }
-  const data = Buffer.from(JSON.stringify(params)).toString('base64')
-  await request({
-    method: 'get',
-    url: serverUrl,
-    params: {data},
-    raxConfig: {
-      onRetryAttempt: err => {
-        const cfg = rax.getConfig(err)
-        logTrack(`Retry attempt #${cfg.currentRetryAttempt}`)
-      }
+  try {
+    const params = {
+      userId: name || tag.split(':')[0],
+      dataType: 'ie',
+      sdkType: 'server',
+      eventId: 'RdeTrack',
+      time: (new Date as any).getTime(), // tslint:disable-line
+      appKey,
+      attributes: {...info, ...{version: tag, project: name}}
     }
-  })
+    const data = Buffer.from(JSON.stringify(params)).toString('base64')
+
+    request({
+      method: 'get',
+      url: serverUrl,
+      params: {data},
+      raxConfig: {
+        onRetryAttempt: err => {
+          const cfg = rax.getConfig(err)
+          logTrack(`Retry attempt #${cfg.currentRetryAttempt}`)
+        }
+      }
+    })
+  } catch (_e) {
+    if (_e) {}
+  }
 }
 
 export function TStart(target, key, descriptor) {
@@ -61,7 +66,7 @@ export function TStart(target, key, descriptor) {
     async value(...params) {
       try {
         logTrack(`\n开始执行----->: ${key} in ${target.constructor.name}\n`)
-        await uploadHubble({executor: `${key} in ${target.constructor.name}`})
+        uploadHubble({executor: `${key} in ${target.constructor.name}`})
         await descriptor.value.apply(this, params)
       } catch (err) {
         throw Error(err)
