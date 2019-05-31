@@ -1,0 +1,17 @@
+{
+  "name": "rde-doc",
+  "version": "1.0.0",
+  "repository": "https://github.com/kaola-fed/rde-doc.git",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^2.0.1"
+  },
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "node ./docs.js",
+    "publish": "node ./publish.js"
+  },
+  "dependencies": {
+    "recursive-copy": "^2.0.10"
+  }
+}
