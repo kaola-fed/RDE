@@ -35,6 +35,7 @@ export default class Clean extends RunBase {
         'README.md',
         '.gitignore',
         '.git',
+        '.devcontainer',
         conf.appConfName,
       ]
       const files = fs.readdirSync(process.cwd())
