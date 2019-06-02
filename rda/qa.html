@@ -83,24 +83,33 @@
     .rde-h4 { font-size: 18px; margin-top: 40px; }
     .rde-h5 { font-size: 14px; }
 
-    .rde-p { line-height: 1.5em; }
+    .rde-p { line-height: 26px; }
     .rde-p + .rde-p { margin-top: 20px; }
+    .rde-p img { width: 100%; }
 
     .rde-a { color: var(--link-color); text-decoration: none; }
     blockquote { font-weight: bold; margin: 20px 0; padding-left: 20px; border-left: 2px solid #68BAEB; }
 
     .hljs { font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+
+    /* rde-component api */
+    .rde-table { table-layout: fixed; font-size: 12px; width: 100%; margin: 8px 0; }
+    .rde-table th { text-align: center; background: #eef1f4; border-bottom: 1px solid #ecf2f9; color: #666; }
+    .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.5em 1.4em; border: none; }
+    .rde-table td { border-bottom: 1px solid #ecf2f9; }
+    .rde-table tr:nth-child(2n-1) { background: #fff; }
+    .rde-table tr:nth-child(2n) { background: #f6f9fc; }
   </style>
 </head>
 <body>
 <div class="g-top">
   <div class="g-topc">
-    <a class="u-logo u-logo-index" href="index.html">RDE</a>
+    <a class="u-logo u-logo-index" href="/index.html">RDE</a>
     <ul class="m-navbar f-fr">
-      <li><a href="start/quickstart.html">开始使用</a></li>
-      <li><a href="cssunit/base.html">文档</a></li>
-      <li><a href="cssmodule/navbar.html">速查表</a></li>
-      <li><a href="jsunit/dropdown.html">容器示例</a></li>
+      <li><a href="rda/quickstart.html">开始使用</a></li>
+      <li><a href="/about.html">文档</a></li>
+      <li><a href="/about.html">速查表</a></li>
+      <li><a href="/about.html">容器示例</a></li>
     </ul>
   </div>
 </div>
@@ -131,7 +140,21 @@
   </ul>
 
   <div class="m-cnt">
-    
+    <h4 class="rde-h4">提示 Unrecognized application project, please use <code>$ rde create</code> to create one</h4>
+<p class="rde-p">在当前目录没有找到rda.config.js文件，请先确定执行目录是否正确</p>
+<h4 class="rde-h4">如何排查问题</h4>
+<p class="rde-p">由于rde run执行的命令实际是在docker容器中执行的，这时候本地看不到当下执行的全部文件与环境情况；如果要排查，可以按照如下步骤执行：</p>
+<ul>
+<li><p class="rde-p">运行rde serve启动容器</li>
+<li><p class="rde-p">通过docker命令进入docker容器中排查，这里推荐使用<a class="rde-a" href="https://code.visualstudio.com/insiders/">vscode-insiders</a></li>
+<li><p class="rde-p">打开vscode-insiders后F1,找到attach to a container，选择对应的容器后</li>
+<li><p class="rde-p">通过F1, open File，打开/rde目录，这时候你就可以看到运行时的全部文件了</li>
+<li><p class="rde-p">你还可以通过vscode-insiders的terminal运行npm script，排查问题</li>
+</ul>
+<blockquote>
+<p class="rde-p">常用docker命令可以参考：https://github.com/kaola-fed/RDE/wiki/docker-cheatsheet</p>
+</blockquote>
+
   </div>
 </div>
 

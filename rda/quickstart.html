@@ -83,24 +83,33 @@
     .rde-h4 { font-size: 18px; margin-top: 40px; }
     .rde-h5 { font-size: 14px; }
 
-    .rde-p { line-height: 1.5em; }
+    .rde-p { line-height: 26px; }
     .rde-p + .rde-p { margin-top: 20px; }
+    .rde-p img { width: 100%; }
 
     .rde-a { color: var(--link-color); text-decoration: none; }
     blockquote { font-weight: bold; margin: 20px 0; padding-left: 20px; border-left: 2px solid #68BAEB; }
 
     .hljs { font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+
+    /* rde-component api */
+    .rde-table { table-layout: fixed; font-size: 12px; width: 100%; margin: 8px 0; }
+    .rde-table th { text-align: center; background: #eef1f4; border-bottom: 1px solid #ecf2f9; color: #666; }
+    .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.5em 1.4em; border: none; }
+    .rde-table td { border-bottom: 1px solid #ecf2f9; }
+    .rde-table tr:nth-child(2n-1) { background: #fff; }
+    .rde-table tr:nth-child(2n) { background: #f6f9fc; }
   </style>
 </head>
 <body>
 <div class="g-top">
   <div class="g-topc">
-    <a class="u-logo u-logo-index" href="index.html">RDE</a>
+    <a class="u-logo u-logo-index" href="/index.html">RDE</a>
     <ul class="m-navbar f-fr">
-      <li><a href="start/quickstart.html">开始使用</a></li>
-      <li><a href="cssunit/base.html">文档</a></li>
-      <li><a href="cssmodule/navbar.html">速查表</a></li>
-      <li><a href="jsunit/dropdown.html">容器示例</a></li>
+      <li><a href="rda/quickstart.html">开始使用</a></li>
+      <li><a href="/about.html">文档</a></li>
+      <li><a href="/about.html">速查表</a></li>
+      <li><a href="/about.html">容器示例</a></li>
     </ul>
   </div>
 </div>
@@ -132,43 +141,130 @@
 
   <div class="m-cnt">
     <h1 class="rde-h1">QuickStart</h1>
-<h4 class="rde-h4"></h4>
 <h4 class="rde-h4">安装依赖环境</h4>
 <ul>
 <li><p class="rde-p"><a class="rde-a" href="https://nodejs.org">Node</a></li>
 <li><p class="rde-p"><a class="rde-a" href="https://docs.docker.com/install/">Docker</a></li>
 </ul>
-<pre class="hljs"><code>$ docker pull node
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> docker pull node</span>
 </code></pre>
 <h4 class="rde-h4">安装RDE</h4>
-<pre class="hljs"><code>$ npm i -g rde
-$ yarn global add rde // if using yarn
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> npm i -g rde</span>
+<span class="hljs-meta">
+$</span><span class="bash"> yarn global add rde // <span class="hljs-keyword">if</span> using yarn</span>
 </code></pre>
 <h4 class="rde-h4">创建工程</h4>
-<pre class="hljs"><code>$ rde create
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde create</span>
 </code></pre>
-<p class="rde-p">第一步填写要创建的工程名，然后选择创建类型为Application，容器和容器版本使用默认即可；</p>
-<h4 class="rde-h4">开始探索</h4>
-<p class="rde-p">创建成功后，可以开始探索了，先切换到工程目录后，发现生成了：</p>
 <ul>
-<li><p class="rde-p">初始的app目录</li>
-<li><p class="rde-p">template目录</li>
-<li><p class="rde-p">rda.config.js配置文件</li>
-<li><p class="rde-p">gitignore文件和.git目录（生成了precommit钩子和commit-msg校验）</li>
-<li><p class="rde-p">编辑器配置文件</li>
-<li><p class="rde-p">README.md</li>
-<li><p class="rde-p">.devcontainer目录，使用vscode-insiders版本的开发可以直接使用</li>
-<li><p class="rde-p">安装的node_modules目录</li>
+<li><p class="rde-p">填写要创建的工程名</li>
+<li><p class="rde-p">选择创建类型为Application</li>
+<li><p class="rde-p">选择要创建的工程的框架</li>
+<li><p class="rde-p">为了体验，容器和容器版本选择默认即可</li>
 </ul>
-<p class="rde-p">其中这里我们要关注的只有app目录和rda.config.js，其他文件都是为了本地开发使用，从镜像中复制出来的，已经添加在gitignore中， 不允许修改的，现在执行:</p>
-<pre class="hljs"><code>$ rde clean
+<h4 class="rde-h4">开始探索</h4>
+<p class="rde-p">  创建成功后，可以开始探索了，先切换到工程目录后，发现生成了：</p>
+<table class="rde-table">
+<tr>
+</th>
+<th style=" width:70px">文件</th>
+<th style=" width:30px;">类型</th>
+<th style=" width:300px;">说明</th>
+<th style="">IDE显示</th>
+<th style="">GITIGNORE</th>
+<th style="">sync覆盖</th>
+<th style="">RDA关注</th>
+</tr>
+<tr>
+  <td>app</td>
+  <td>目录</td>
+  <td>初始的业务代码目录</td>
+  <td>●</td>
+  <td>-</td>
+  <td>-</td>
+  <td>●</td>
+<tr>
+  <td>template</td>
+  <td>目录</td>
+  <td>从镜像中拷贝出来的，供本地开发使用的配置文件及其他文件</td>
+  <td>-</td>
+  <td>●</td>
+  <td>●</td>
+  <td>-</td>
+<tr>
+  <td>rda.config.js</td>
+  <td>文件</td>
+  <td>RDA配置文件</td>
+  <td>●</td>
+  <td>-</td>
+  <td>-</td>
+  <td>●</td>
+<tr>
+  <td>.git</td>
+  <td>目录</td>
+  <td>生成了precommit钩子和commit-msg校验</td>
+  <td>-</td>
+  <td>●</td>
+  <td>only hooks</td>
+  <td>-</td>
+<tr>
+  <td>gitignore</td>
+  <td>文件</td>
+  <td>包括初始规则的文件</td>
+  <td>●</td>
+  <td>-</td>
+  <td>-</td>
+  <td>●</td>
+<tr>
+  <td>.vscode/.idea</td>
+  <td>目录</td>
+  <td>编辑器初始配置文件</td>
+  <td>-</td>
+  <td>●</td>
+  <td>●</td>
+  <td>-</td>
+<tr>
+  <td>.devcontainer</td>
+  <td>目录</td>
+  <td>提供给vscode-insiders体验的配置</td>
+  <td>-</td>
+  <td>●</td>
+  <td>●</td>
+  <td>-</td>
+<tr>
+  <td>node_modules</td>
+  <td>目录</td>
+  <td>根据容器要求安装的node_modules</td>
+  <td>●</td>
+  <td>●</td>
+  <td>-</td>
+  <td>-</td>
+<tr>
+  <td>README.md</td>
+  <td>文件</td>
+  <td>自动生成的readme</td>
+  <td>●</td>
+  <td>-</td>
+  <td>-</td>
+  <td>●</td>
+</tr>
+</table>
+<p class="rde-p">  其中这里我们要关注的只有app目录和rda.config.js，其他文件都是为了本地开发使用，从镜像中复制出来的，已经添加在gitignore中， 不允许修改的，具体解释如下：</p>
+<ul>
+<li><p class="rde-p">IDE显示：在vscode或者webstorm中开发时，是否显示该目录</li>
+<li><p class="rde-p">GITIGNORE: 默认已经加在gitignore中的规则</li>
+<li><p class="rde-p">sync覆盖： 执行rde sync时会被覆盖的文件</li>
+<li><p class="rde-p">RDA关注: 开发业务应用需要关注的文件</li>
+</ul>
+<p class="rde-p">  接下来执行:</p>
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde clean</span>
 </code></pre>
-<p class="rde-p">会删除除了应用需要关注的目录外的所有文件；如果要还原，可以再执行</p>
-<pre class="hljs"><code>$ rde sync
+<p class="rde-p">  会删除除了应用需要关注的目录外的所有文件；如果要还原，可以再执行</p>
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde sync</span>
 </code></pre>
-<p class="rde-p">又还原出了所有的文件，sync可以再每次升级容器版本、误删除某些文件的情况下使用；</p>
-<p class="rde-p">使用vscode或者webstorm打开工程，可以发现默认只能看到app, rda.config.js等几个文件，因为RDE已经帮你生成了初始配置，隐藏了不需要关注的文件；</p>
-<p class="rde-p">另外，如果你使用的是<a class="rde-a" href="https://code.visualstudio.com/insiders/">vscode-insiders</a>，在使用rde clean后就可以进行开发了，直接打开container即可；由于vscode-insiders不是稳定版本，所以只作为测试体验功能使用，不推荐；</p>
+<p class="rde-p">  又还原出了所有的文件，sync可以再每次升级容器版本、误删除某些文件的情况下使用；</p>
+<p class="rde-p">  使用vscode或者webstorm打开工程，可以发现默认只能看到app, rda.config.js等几个文件，因为RDE已经帮你生成了初始配置，隐藏了不需要关注的文件；
+另外，如果你使用的是<a class="rde-a" href="https://code.visualstudio.com/insiders/">vscode-insiders</a>，在使用rde clean后就可以进行开发了，直接打开container即可；由于vscode-insiders不是稳定版本，所以只作为测试体验功能使用，不推荐；</p>
 
   </div>
 </div>
