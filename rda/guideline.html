@@ -122,7 +122,7 @@
           {{page.title}}
           <i v-if="page.enTitle">{{page.enTitle}}</i>
         </span>
-        <a v-else :href="page.url">
+        <a v-else :href="baseUrl + page.url">
           {{page.title}}
           <i v-if="page.enTitle">{{page.enTitle}}</i>
         </a>
@@ -130,7 +130,7 @@
 
       <ul class="m-sidebar-sub" v-if="page.children && page.children.length">
         <li class="m-sidebar-sub-page" v-for="subPage in page.children" :class="{'active': isCrtPage(subPage)}">
-          <a :href="subPage.url">
+          <a :href="baseUrl + subPage.url">
             {{subPage.title}}
             <i v-if="subPage.enTitle">{{subPage.enTitle}}</i>
           </a>
@@ -168,46 +168,47 @@
     el: '#sidebar',
     data() {
       return {
+        baseUrl: 'https://kaola-fed.github.io/RDE',
         pages: [{
-          title: '关于', enTitle: 'About', url: 'about.html'
+          title: '关于', enTitle: 'About', url: '/about.html'
         }, {
-          title: '快速上手', enTitle: 'QuickStart', url: 'rda/quickstart.html'
+          title: '快速上手', enTitle: 'QuickStart', url: '/rda/quickstart.html'
         }, {
           title: 'RDE工具', url: '/cli/cli.html'
         }, {
           title: 'RDA应用',
           children: [{
-            title: '快速上手', enTitle: 'QuickStart', url: 'rda/quickstart.html'
+            title: '快速上手', enTitle: 'QuickStart', url: '/rda/quickstart.html'
           }, {
-            title: '开发规范', enTitle: 'Guideline', url: 'rda/guideline.html'
+            title: '开发规范', enTitle: 'Guideline', url: '/rda/guideline.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : 'rda/docs.html'
+            title: '文档开发', enTitle: 'Docs', url : '/rda/docs.html'
           }, {
-            title: '配置说明', enTitle: 'Config', url: 'rda/config.html'
+            title: '配置说明', enTitle: 'Config', url: '/rda/config.html'
           }, {
-            title: '常见问题', enTitle: 'Q&A', url: 'rda/qa.html'
+            title: '常见问题', enTitle: 'Q&A', url: '/rda/qa.html'
           }]
         }, {
           title: 'RDC容器',
           children: [{
-            title: '快速上手', enTitle: 'QuickStart', url: 'rdc/quickstart.html'
+            title: '快速上手', enTitle: 'QuickStart', url: '/rdc/quickstart.html'
           }, {
-            title: '开发规范', enTitle: 'Guideline', url: 'rdc/guideline.html'
+            title: '开发规范', enTitle: 'Guideline', url: '/rdc/guideline.html'
           }, {
-            title: '模式选择', enTitle: 'Modes', url: 'rdc/modes.html'
+            title: '模式选择', enTitle: 'Modes', url: '/rdc/modes.html'
           }, {
-            title: '开发流程', enTitle: 'Process', url: 'rdc/process.html'
+            title: '开发流程', enTitle: 'Process', url: '/rdc/process.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : 'rdc/docs.html'
+            title: '文档开发', enTitle: 'Docs', url : '/rdc/docs.html'
           }, {
-            title: '配置说明', enTitle: 'Config', url: 'rdc/config.html'
+            title: '配置说明', enTitle: 'Config', url: '/rdc/config.html'
           }, {
-            title: '常见问题', enTitle: 'Q&A', url: 'rdc/qa.html'
+            title: '常见问题', enTitle: 'Q&A', url: '/rdc/qa.html'
           }]
         }, {
           title: 'RDS套件',
           children: [{
-            title: '开发规范', enTitle: 'Guideline', url: 'rdc/quickstart.html'
+            title: '开发规范', enTitle: 'Guideline', url: '/rdc/quickstart.html'
           }]
         }]
       };
