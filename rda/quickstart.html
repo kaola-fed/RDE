@@ -337,7 +337,7 @@ $</span><span class="bash"> yarn global add rde // <span class="hljs-keyword">if
     },
     methods: {
       isCrtPage(page) {
-        return page.url === location.pathname;
+        return location.pathname.endsWith(page.url);
       },
     },
   });
