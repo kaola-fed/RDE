@@ -100,6 +100,8 @@ class Sync {
     }
 
     await ide.initSettings(conf.isApp)
+
+    await this.registerHooks()
   }
 
   /**
@@ -166,6 +168,25 @@ class Sync {
         overwrite: true,
       })
     }
+  }
+
+  public async registerHooks() {
+    if (!fs.existsSync('.git')) {
+      await _.asyncExec('git init')
+    }
+
+    fs.writeFileSync(join('.git', 'hooks', 'pre-commit'),
+      `
+#!/bin/sh
+rde lint -s
+      `, {encoding: 'UTF-8', mode: '755'})
+
+    fs.writeFileSync(join('.git', 'hooks', 'commit-msg'),
+      `
+#!/bin/sh
+commitMsg=$(cat $1)
+rde lint -m "$commitMsg"
+      `, {encoding: 'UTF-8', mode: '755'})
   }
 
   public async mergePkgJson(appPkgPath, rdcPkgPath, destPath) {
