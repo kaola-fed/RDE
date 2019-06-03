@@ -139,7 +139,279 @@
   </ul>
 
   <div class="m-cnt">
-    <p class="rde-p">This Page is Under Construction...</p>
+    <h4 class="rde-h4">RDC 配置说明</h4>
+<h5 class="rde-h5">framework</h5>
+<blockquote>
+<p class="rde-p">创建工程时，指定工程的框架，根据不同的类型会提示不同rdc。可选值有：</p>
+</blockquote>
+<ul>
+<li><p class="rde-p">可选值：vue、regular、react、angular</li>
+</ul>
+<h5 class="rde-h5">mode</h5>
+<blockquote>
+<p class="rde-p">根据选择mode的不同，工程运行时会在docker中生成不同的目录结构。</p>
+</blockquote>
+<ul>
+<li><p class="rde-p">可选值：integrate、origin</li>
+<li><p class="rde-p">integrate模式： 在docker中会生成.integrate目录。app和template将会根据 rdc.config.js中的mappings配置，集成到一起。npm run serve 命令实际运行在此目录下。</li>
+<li><p class="rde-p">origin模式：app和template直接挂载到docker中，template将会被渲染到同级目录结构的runtime下（渲染template模板中的mustache变量），npm run serve 命令运行在runtime目录下。</li>
+<li><p class="rde-p">具体可参考<a class="rde-a" href="/RDE/rdc/modes.html">模式选择</a></li>
+</ul>
+<h5 class="rde-h5">docs</h5>
+<table class="rde-table">
+<thead>
+<tr>
+<th style="">字段</th>
+<th style="">必填项</th>
+<th style="">说明</th>
+<th style="">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logo</td>
+<td>-</td>
+<td>rdc 文档的logo url地址</td>
+<td></td>
+</tr>
+<tr>
+<td>keywords</td>
+<td>-</td>
+<td>rdc 文档的关键字</td>
+<td></td>
+</tr>
+<tr>
+<td>url</td>
+<td>-</td>
+<td>rdc 文档地址</td>
+<td></td>
+</tr>
+<tr>
+<td>userStyles</td>
+<td>-</td>
+<td>rdc 文档要引入的css文件url数组</td>
+<td>-</td>
+</tr>
+<tr>
+<td>userScripts</td>
+<td>-</td>
+<td>rdc 文档要引入的script文件url数组</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h5 class="rde-h5">render</h5>
+<table class="rde-table">
+<thead>
+<tr>
+<th style="">字段</th>
+<th style="">必填项</th>
+<th style="">说明</th>
+<th style="">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>includes</td>
+<td>-</td>
+<td>template模板中需要渲染的文件后缀数组</td>
+<td></td>
+</tr>
+<tr>
+<td>tags</td>
+<td>-</td>
+<td>template 模板使用mustache渲染的符号</td>
+<td>默认是{{ }}</td>
+</tr>
+<tr>
+<td>validate</td>
+<td>-</td>
+<td>验证函数，用于验证rda传入的render参数是否符合要求</td>
+<td></td>
+</tr>
+<tr>
+<td>mock</td>
+<td>-</td>
+<td>rdc 开发过程中 mock rda的render参数</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h5 class="rde-h5">mappings</h5>
+<blockquote>
+<p class="rde-p">integrate 模式下，需要将app下的目录文件copy到对应的运行时目录下，这里填写的是映射关系</p>
+</blockquote>
+<table class="rde-table">
+<thead>
+<tr>
+<th style="">字段</th>
+<th style="">必填项</th>
+<th style="">说明</th>
+<th style="">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>from</td>
+<td>-</td>
+<td>copy的源地址，基于rdc项目根目录</td>
+<td>例如： from: 'app/main.js'。可以是文件或目录地址</td>
+</tr>
+<tr>
+<td>to</td>
+<td>-</td>
+<td>copy的目的地址，基于运行时目录</td>
+<td>例如：'src/main.js'，可以是文件或目录地址</td>
+</tr>
+<tr>
+<td>options</td>
+<td>-</td>
+<td>copy过程的处理，可参考<a class="rde-a" href="https://www.npmjs.com/package/recursive-copy">recursive-copy</a>的options</td>
+<td></td>
+</tr>
+<tr>
+<td>merge</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h5 class="rde-h5">docker</h5>
+<table class="rde-table">
+<thead>
+<tr>
+<th style="">字段</th>
+<th style="">必填项</th>
+<th style="">说明</th>
+<th style="">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tag</td>
+<td>-</td>
+<td>rdc docker镜像 tag</td>
+<td>例：rdebase/rdc-vue-start:0.0.1</td>
+</tr>
+<tr>
+<td>ports</td>
+<td>-</td>
+<td>容器映射到本地的端口号</td>
+<td>与Dockerfile中ports格式保持一致</td>
+</tr>
+</tbody>
+</table>
+<h5 class="rde-h5">nodeVesion</h5>
+<blockquote>
+<p class="rde-p">支持的node版本号</p>
+</blockquote>
+<h5 class="rde-h5">extensions</h5>
+<blockquote>
+<p class="rde-p">用于vscode-insiders的 默认开启插件列表，现可忽略</p>
+</blockquote>
+<h5 class="rde-h5">lint</h5>
+<table class="rde-table">
+<thead>
+<tr>
+<th style="">字段</th>
+<th style="">必填项</th>
+<th style="">说明</th>
+<th style="">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ext</td>
+<td>-</td>
+<td>需要lint的文件后缀数组</td>
+<td>例如：['.js', '.vue']</td>
+</tr>
+</tbody>
+</table>
+<h4 class="rde-h4">完整示例</h4>
+<pre class="hljs"><code><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">framework</span>: <span class="hljs-string">'vue'</span>,
+  <span class="hljs-attr">docs</span>: {
+    <span class="hljs-attr">url</span>: <span class="hljs-string">'https://rdepro.github.io/rdc-vue-starter/'</span>
+  },
+  <span class="hljs-attr">render</span>: {
+    <span class="hljs-attr">includes</span>: [
+      <span class="hljs-string">'.html'</span>,
+      <span class="hljs-string">'.js'</span>
+    ],
+    <span class="hljs-attr">mock</span>: {
+      <span class="hljs-attr">title</span>: <span class="hljs-string">'title'</span>
+    }
+  },
+  <span class="hljs-attr">mappings</span>: [
+    {
+      <span class="hljs-attr">from</span>: <span class="hljs-string">'app/App.vue'</span>,
+      <span class="hljs-attr">to</span>: <span class="hljs-string">'src/App.vue'</span>
+    },
+    {
+      <span class="hljs-attr">from</span>: <span class="hljs-string">'app/components'</span>,
+      <span class="hljs-attr">to</span>: <span class="hljs-string">'src/components'</span>
+    }
+  ],
+  <span class="hljs-attr">docker</span>: {
+    <span class="hljs-attr">tag</span>: <span class="hljs-string">'soonw/demo.rdc'</span>,
+    <span class="hljs-attr">ports</span>: [
+      <span class="hljs-string">'8080:8080'</span>
+    ]
+  },
+  <span class="hljs-attr">lint</span>: {
+      <span class="hljs-attr">ext</span>: [<span class="hljs-string">'.js'</span>, <span class="hljs-string">'.vue'</span>]
+  }
+}
+</code></pre>
+<h4 class="rde-h4">Typescript描述</h4>
+<pre class="hljs"><code><span class="hljs-keyword">type</span> Framework = <span class="hljs-string">'vue'</span> | <span class="hljs-string">'regular'</span> | <span class="hljs-string">'react'</span> | <span class="hljs-string">'angular'</span>
+<span class="hljs-keyword">type</span> Mode = <span class="hljs-string">'integrate'</span> | <span class="hljs-string">'origin'</span>
+
+<span class="hljs-keyword">interface</span> Docs {
+  logo: <span class="hljs-built_in">string</span>
+  keywords: <span class="hljs-built_in">string</span>[]
+  url: <span class="hljs-built_in">string</span>
+  userStyles?: <span class="hljs-built_in">string</span>[]
+  userScripts?: <span class="hljs-built_in">string</span>[]
+}
+
+<span class="hljs-keyword">interface</span> Render {
+  includes: <span class="hljs-built_in">string</span>[],
+  tags: <span class="hljs-built_in">string</span>[],
+  validate: <span class="hljs-function">(<span class="hljs-params">(<span class="hljs-params">dataView: <span class="hljs-built_in">any</span></span>) =&gt; <span class="hljs-built_in">any</span></span>)[],
+  <span class="hljs-params">mock</span>: {[<span class="hljs-params">key</span>: <span class="hljs-params">string</span>]: <span class="hljs-params">any</span>}
+}
+
+<span class="hljs-params">interface</span> <span class="hljs-params">Mapping</span> {
+  <span class="hljs-params">from</span>: <span class="hljs-params">string</span>
+  <span class="hljs-params">to</span>: <span class="hljs-params">string</span>
+  <span class="hljs-params">options</span>?: <span class="hljs-params">any</span>
+  <span class="hljs-params">merge</span>?: <span class="hljs-params">string</span>
+}
+
+<span class="hljs-params">interface</span> <span class="hljs-params">Docker</span> {
+  <span class="hljs-params">tag</span>?: <span class="hljs-params">string</span>
+  <span class="hljs-params">ports</span>?: <span class="hljs-params">string</span>[]
+}
+
+<span class="hljs-params">interface</span> <span class="hljs-params">RdcConf</span> {
+  <span class="hljs-params">extends</span>: <span class="hljs-params">string</span>
+  <span class="hljs-params">mode</span>: <span class="hljs-params">Mode</span>
+  <span class="hljs-params">framework</span>: <span class="hljs-params">Framework</span>
+  <span class="hljs-params">docs</span>: <span class="hljs-params">Docs</span>
+  <span class="hljs-params">render</span>: <span class="hljs-params">Render</span>
+  <span class="hljs-params">mappings</span>: <span class="hljs-params">Mapping</span>[]
+  <span class="hljs-params">docker</span>: <span class="hljs-params">Docker</span>,
+  <span class="hljs-params">nodeVersion</span>: <span class="hljs-params">string</span>,
+  <span class="hljs-params">extensions</span>: <span class="hljs-params">string</span>[],
+  <span class="hljs-params">lint</span>: {
+    <span class="hljs-params">ext</span>: <span class="hljs-params">string</span>[]
+  }
+}
+
+</span></code></pre>
 
   </div>
 </div>
