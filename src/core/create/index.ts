@@ -1,9 +1,5 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import sync from '../../services/sync'
 
-import _ from '../../util'
-
-const {join} = path
 export default class CreateCore {
   public name = ''
 
@@ -29,24 +25,7 @@ export default class CreateCore {
 
     await this.genExtraFiles()
 
-    await this.registerHooks()
-  }
-
-  public async registerHooks() {
-    await _.asyncExec('git init')
-
-    fs.writeFileSync(join('.git', 'hooks', 'pre-commit'),
-      `
-#!/bin/sh
-rde lint -s
-      `, {encoding: 'UTF-8', mode: '755'})
-
-    fs.writeFileSync(join('.git', 'hooks', 'commit-msg'),
-      `
-#!/bin/sh
-commitMsg=$(cat $1)
-rde lint -m "$commitMsg"
-      `, {encoding: 'UTF-8', mode: '755'})
+    await sync.registerHooks()
   }
 
   protected async prepare() {}
