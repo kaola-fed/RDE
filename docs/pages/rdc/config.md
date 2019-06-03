@@ -16,41 +16,101 @@
 
 ##### docs
 
-
-字段 | 必填项 | 说明 | 备注
----|---|---|---
-logo | - | rdc 文档的logo url地址 |
-keywords | - | rdc 文档的关键字 |
-url | - | rdc 文档地址 |
-userStyles| - | rdc 文档要引入的css文件url数组 | -
-userScripts | - | rdc 文档要引入的script文件url数组 | -
+```table
+字段 [@th width:80px]
+必填项 [@th width: 80px]
+说明
+备注
+|- logo
+| - 
+| rdc文档的logo url地址
+| -
+|- keywords
+| -
+| rdc 文档的关键字
+| -
+|- url
+| -
+| rdc 文档地址
+| -
+|- userStyles
+| -
+| rdc 文档要引入的css文件
+| 文件url数组
+|- userScripts
+| -
+| rdc 文档 要引入的script文件
+| 文件url 数组
+```
 
 ##### render
 
-字段 | 必填项 | 说明 | 备注
----|---|---|---
-includes | - | template模板中需要渲染的文件后缀数组 |
-tags | - | template 模板使用mustache渲染的符号 | 默认是{{ }}
-validate | - | 验证函数，用于验证rda传入的render参数是否符合要求 |
-mock | - | rdc 开发过程中 mock rda的render参数 | 
+```table
+字段 [@th width:80px]
+必填项 [@th width:80px]
+说明
+备注
+|- includes 
+| - 
+| template模板中需要渲染的文件后缀数组 
+| -
+|- tags 
+| - 
+| template 模板使用mustache渲染的符号 
+| 默认是{{ }}
+|- validate 
+| - 
+| 验证函数，用于验证rda传入的render参数是否符合要求 
+| 
+|- mock 
+| - 
+| rdc 开发过程中 mock rda的render参数 
+| 
+```
 
 ##### mappings
 
 > integrate 模式下，需要将app下的目录文件copy到对应的运行时目录下，这里填写的是映射关系
 
-字段 | 必填项 | 说明 | 备注
----|---|---|---
-from | - | copy的源地址，基于rdc项目根目录 | 例如： from: 'app/main.js'。可以是文件或目录地址
-to | - | copy的目的地址，基于运行时目录 | 例如：'src/main.js'，可以是文件或目录地址
-options | - | copy过程的处理，可参考[recursive-copy](https://www.npmjs.com/package/recursive-copy)的options
-merge |
+```table
+字段 [@th width:80px]
+必填项 [@th width:80px]
+说明
+备注
+|- from 
+| - 
+| copy的源地址，基于rdc项目根目录 
+| 例如： from: 'app/main.js'。可以是文件或目录地址
+|- to 
+| - 
+| copy的目的地址，基于运行时目录 
+| 例如：'src/main.js'，可以是文件或目录地址
+|- options 
+| - 
+| copy过程的处理，
+| 可参考[recursive-copy](https://www.npmjs.com/package/recursive-copy)的options
+|- merge 
+|
+|
+|
+```
 
 ##### docker
 
-字段 | 必填项 | 说明 | 备注
----|---|---|---
-tag | - | rdc docker镜像 tag | 例：rdebase/rdc-vue-start:0.0.1
-ports | - | 容器映射到本地的端口号 | 与Dockerfile中ports格式保持一致
+```table
+字段 [@th width:80px]
+必填项 [@th width:80px]
+说明
+备注
+|- tag 
+| - 
+| rdc docker镜像 tag 
+| 例：rdebase/rdc-vue-start:0.0.1
+|- ports 
+| - 
+| 容器映射到本地的端口号 
+| 与Dockerfile中ports格式保持一致
+```
 
 ##### nodeVesion
 
@@ -62,11 +122,19 @@ ports | - | 容器映射到本地的端口号 | 与Dockerfile中ports格式保�
 
 ##### lint
 
-字段 | 必填项 | 说明 | 备注
----|---|---|---
-ext | - | 需要lint的文件后缀数组 | 例如：['.js', '.vue']
+```table
+字段 [@th width:80px]
+必填项 [@th width:80px]
+说明
+备注
+|- ext 
+| - 
+| 需要lint的文件后缀数组 
+| 例如：['.js', '.vue']
+```
 
 #### 完整示例
+
 ```javascript
 module.exports = {
   framework: 'vue',
@@ -105,6 +173,7 @@ module.exports = {
 ```
 
 #### Typescript描述
+
 ```typescript
 type Framework = 'vue' | 'regular' | 'react' | 'angular'
 type Mode = 'integrate' | 'origin'
