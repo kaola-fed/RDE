@@ -177,6 +177,7 @@
 </li>
 </ul>
 <p class="rde-p">  RDE充当着连接各部分的角色，提供方案，让这3部分的开发变得更简单；实现细节可以关注<a class="rde-a" href="https://github.com/kaola-fed/RDE/wiki">wiki</a>，整体思路很简单，将工程拆分为一个app目录、一个template目录，app目录放业务，template目录放基础设施，app目录放在业务的git工程中，template目录发布在docker hub容器里，本地运行时，将二者在docker中进行聚合，然后运行；</p>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/bf0c98ac-6416-4d29-8bd4-bf94172a4354_835_619.png" alt=""></p>
 <h3 class="rde-h3">核心功能CASE</h3>
 <p class="rde-p">RDC容器：用户自己封装维护，并发布在dockerhub上的的工程基础设施镜像，C代表Container</p>
 <p class="rde-p">RDA应用：业务工程应用，A代表Application</p>
