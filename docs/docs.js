@@ -10,6 +10,7 @@ const render = require(resolve(__dirname, '../lib/services/render')).default;
 const srcDir = path.resolve(__dirname, "pages");
 const destDir = path.resolve(__dirname, "dist");
 
+// copy md
 copy(srcDir, destDir, {
   overwrite: true,
   rename(filePath) {
@@ -37,3 +38,10 @@ copy(srcDir, destDir, {
     });
   },
 });
+
+// copy homepage
+copy(
+  resolve(__dirname, 'homepage'),
+  resolve(destDir),
+  {overwrite: true},
+);

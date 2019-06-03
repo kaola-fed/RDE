@@ -14,6 +14,21 @@ export default (mdIt, opt) => {
     return '</table>\n'
   }
 
+  mdIt.renderer.rules.th_open = function (tokens, idx) {
+    if (tokens[idx].nesting === 1) {
+      const {content} = tokens[idx]
+      const title = content.split(' ')[0] || ''
+
+      const thMatch = content.match(/\[@th(.*)\]/)
+      let thStyle = ''
+      if (thMatch) {
+        thStyle = thMatch[1]
+      }
+
+      return `<th style="${thStyle}">${title}`
+    }
+  }
+
   mdIt.renderer.rules.line_break = () => {
     return opt.lineBreak
   }
@@ -22,7 +37,7 @@ export default (mdIt, opt) => {
     return Array(opt.indent + 1).join(' ')
   }
 
-  mdIt.block.ruler.at('table', function (state, startLine, _endLine, _silent) {
+  mdIt.block.ruler.before('fence', 'table', function (state, startLine, _endLine, _silent) {
     function getLine(state, line) {
       const pos = state.bMarks[line] + state.blkIndent
       const max = state.eMarks[line]
@@ -34,7 +49,6 @@ export default (mdIt, opt) => {
       token = state.push(tag + '_open', tag, 1)
       token = state.push('inline', '', 0)
       token.content = content
-      // token.map = [startLine, startLine + 1]
       token.children = []
     }
 
@@ -42,10 +56,6 @@ export default (mdIt, opt) => {
     let nextLine
     let lineText
     let content
-
-    // if (startLine + 2 > endLine) {
-    //   return false
-    // }
 
     const startLineEndPos = state.eMarks[startLine]
     // match string after ```
@@ -81,7 +91,9 @@ export default (mdIt, opt) => {
         token = state.push('tr_close', 'tr', -1)
         token = state.push('table_close', 'table', -1)
         renderType = null
-        return false
+
+        state.line = ruleEndLine + 2
+        return true
       }
 
       if (/^\|-|\|-$/g.test(lineText)) {
@@ -111,11 +123,9 @@ export default (mdIt, opt) => {
         renderType = 0 // 渲染th
       }
 
-      // token.map = [startLine + 2, 0]
-
       if (renderType === 0) {
-        content = lineText
-        pushToken(token, state, 'th')
+        token = state.push('th_open', 'th', 1)
+        token.content = lineText
       } else if (renderType === 1) {
         content = lineText.replace(/^\|-\s|\|-$/g, '')
         token = state.push('tr_open', 'tr', 1)
@@ -124,15 +134,7 @@ export default (mdIt, opt) => {
         content = lineText.replace(/^\|\s|\|$/g, '')
         pushToken(token, state, 'td')
       }
-
     }
-
-    // state.line = nextLine
-    // return true
-
-    state.line = ruleEndLine + 2
-    return true
-
   })
 
 }
