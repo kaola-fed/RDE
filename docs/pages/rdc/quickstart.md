@@ -88,13 +88,6 @@ RDC关注
 | ●
 | ●
 | -
-|- .devcontainer
-| 目录
-| 提供给vscode-insiders体验的配置
-| - 
-| ●
-| ●
-| -
 |- node_modules
 | 目录
 | starter工程依赖的node_modules，供体验使用，正式开发请删除
