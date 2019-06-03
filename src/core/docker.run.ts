@@ -79,9 +79,8 @@ export default class DockerRun {
     const {render: rdtRender = {} as any, container, suites} = this.config
 
     const {includes = []} = rdtRender
-    container.render = container.render || {}
 
-    if (rdtRender.validate) {
+    if (container && rdtRender.validate) {
       const result = rdtRender.validate(container.render)
       if (result !== true) {
         throw Error(result)
@@ -89,6 +88,8 @@ export default class DockerRun {
     }
 
     if (suites && suites.length) {
+      container.render = container.render || {}
+
       Object.keys(conf.frameworks).forEach(framework => {
         container.render[`${framework}Suites`] = suites.filter(item => {
           if (item.framework === framework) {
