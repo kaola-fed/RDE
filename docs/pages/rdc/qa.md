@@ -15,3 +15,11 @@ module.exports = {
     }
 };
 ```
+
+#### RDC在JS中配置的mustache模板后，eslint解析不通过
+
+请使用[rde-eslint-parser](https://github.com/RdePro/rde-eslint-parser)，并在模板的位置加上相应的注释
+
+#### 如何在rdc.config.js中判断环境？根据不同环境配置不同的render值
+
+请在执行rde命令前将对应的NODE_ENV设置好， rdc.config.js中可以直接使用process.env.NODE_ENV进行判断
