@@ -51,11 +51,11 @@
 说明
 备注
 |- includes 
-| - 
+| ●
 | template模板中需要渲染的文件后缀数组 
 | -
 |- tags 
-| - 
+| ●
 | template 模板使用mustache渲染的符号 
 | 默认是{{ }}
 |- validate 
@@ -78,11 +78,11 @@
 说明
 备注
 |- from 
-| - 
+| ● 
 | copy的源地址，基于rdc项目根目录 
 | 例如： from: 'app/main.js'。可以是文件或目录地址
 |- to 
-| - 
+| ● 
 | copy的目的地址，基于运行时目录 
 | 例如：'src/main.js'，可以是文件或目录地址
 |- options 
@@ -103,11 +103,11 @@
 说明
 备注
 |- tag 
-| - 
+| ● 
 | rdc docker镜像 tag 
 | 例：rdebase/rdc-vue-start:0.0.1
 |- ports 
-| - 
+| ● 
 | 容器映射到本地的端口号 
 | 与Dockerfile中ports格式保持一致
 ```
@@ -128,7 +128,7 @@
 说明
 备注
 |- ext 
-| - 
+| ● 
 | 需要lint的文件后缀数组 
 | 例如：['.js', '.vue']
 ```

@@ -57,10 +57,7 @@
 |   |   |-- main.js
 |   |-- package.json
 ```
-
-##### integrate 示意图
-
-![image](https://haitao.nos.netease.com/0a0be696-4ac4-4d9b-bc90-c56ab79809b5_902_497.jpg)
+![image](https://haitao.nos.netease.com/34469a3b-e541-4d5e-b1b2-87b967c7b502_860_589.png)
 
 #### orgin 模式
 
@@ -81,6 +78,8 @@ rda 应用目录结构、rdc 工程目录接口已经rdc.config.js 中mapping的
 |   |   |-- main.js
 |   |-- package.json
 ```
+
+![image](https://haitao.nos.netease.com/87cb27d8-e239-42ae-94b5-b179bf61f715_860_589.png)
 - 在origin模式下，npm run serve 命令运行在runtime目录下，runtime下直接引用外层app目录下代码，需要rdc 开发者需要合理配置webapck、eslint-loader、ts-loader等。
 
 #### 开发流程
