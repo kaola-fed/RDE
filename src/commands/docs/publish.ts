@@ -6,7 +6,7 @@ import {logger} from '../../services/logger'
 
 export default class DocsPublish extends BaseDocs {
   public static examples = [
-    '$ rde docs:serve',
+    '$ rde docs:publish',
   ]
 
   public async run() {
