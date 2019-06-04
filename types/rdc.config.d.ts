@@ -2,9 +2,9 @@ type Framework = 'vue' | 'regular' | 'react' | 'angular'
 type Mode = 'integrate' | 'origin'
 
 interface Docs {
-  logo: string
-  keywords: string[]
-  url: string
+  title?: string
+  keywords?: string[]
+  url?: string
   userStyles?: string[]
   userScripts?: string[]
 }

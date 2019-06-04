@@ -8,14 +8,13 @@ import * as rimraf from 'rimraf'
 import * as through from 'through2'
 
 import conf from '../services/conf'
-import {logger} from '../services/logger'
+import {debug, logger} from '../services/logger'
 import mdIt from '../services/markdown'
 import {MCOMMON, MDOCS} from '../services/message'
 import render from '../services/render'
 import {TError, TStart} from '../services/track'
 
 const {resolve, join} = path
-const {RdTypes} = conf
 export default abstract class DocsBase extends Command {
   public static flags = {
     verbose: flags.boolean({char: 'v', required: false, description: 'show verbose logs'}),
@@ -33,14 +32,14 @@ export default abstract class DocsBase extends Command {
     const navs = [
       {title: '文档', main: true},
       {title: 'FAQ', url: '/FAQ.html'},
-      {title: '日志', url: '/changelog.html'},
+      // {title: '日志', url: '/changelog.html'},
     ]
 
-    if (conf.rdType === RdTypes.Container) {
-      const nav = {title: '速查', url: '/cheatSheet.html'}
-      navs.splice(1, 0, nav)
-      return navs
-    }
+    // if (conf.rdType === RdTypes.Container) {
+    //   const nav = {title: '速查', url: '/cheatSheet.html'}
+    //   navs.splice(1, 0, nav)
+    //   return navs
+    // }
 
     return navs
   }
@@ -103,8 +102,10 @@ export default abstract class DocsBase extends Command {
           const style = load('docs/style')
           const layout = load('docs/layout')
 
+          const {docs = {}} = this.localConfig || {}
+
           const output = render.render(index, {
-            title: 'RDE',
+            title: docs.title || '',
             content,
             navs: JSON.stringify(this.navs),
             pages: JSON.stringify(this.pages),
@@ -170,11 +171,8 @@ export default abstract class DocsBase extends Command {
   public async postRun() {}
 
   public async catch(e) {
-    if (this.verbose) {
-      logger.error(e)
-    } else {
-      logger.error(e.message)
-    }
+    logger.error(e.message)
+    debug('stack: %O', e)
     this.exit(1)
   }
 
@@ -185,7 +183,7 @@ export default abstract class DocsBase extends Command {
   }
 
   public getPages() {
-    const pages: DocPageRoute[] = []
+    let pages: DocPageRoute[] = []
 
     const files = dirTree(conf.docsDir, {
       extensions: /\.md$/,
@@ -200,7 +198,9 @@ export default abstract class DocsBase extends Command {
 
         pages.push({
           title: meta.title || file.name,
-          url: `/${file.name.slice(0, -3)}.html`
+          subTitle: meta.subTitle || '',
+          url: `/${file.name.slice(0, -3)}.html`,
+          order: meta.order || 0
         })
       }
 
@@ -219,13 +219,24 @@ export default abstract class DocsBase extends Command {
 
             return {
               title: meta.title || child.name,
-              url: `/${file.name}/${child.name.slice(0, -3)}.html`
+              subTitle: meta.subTitle || '',
+              url: `/${file.name}/${child.name.slice(0, -3)}.html`,
+              order: meta.order || 0
             }
-          })
+          }),
+          order: 0,
         }
         page.title = category || file.name
+
+        page.children.sort((prev, next) => {
+          return next.order - prev.order
+        })
         pages.push(page)
       }
+    })
+
+    pages.sort((prev, next) => {
+      return next.order - prev.order
     })
 
     return pages

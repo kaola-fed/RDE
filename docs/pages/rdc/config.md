@@ -21,25 +21,25 @@
 必填项 [@th width: 80px]
 说明
 备注
-|- logo
+|- title
 | - 
-| rdc文档的logo url地址
+| 文档的title名称
 | -
 |- keywords
 | -
-| rdc 文档的关键字
+| 文档的关键字
 | -
 |- url
 | -
-| rdc 文档地址
+| 文档地址
 | -
 |- userStyles
 | -
-| rdc 文档要引入的css文件
+| 文档要引入的css文件
 | 文件url数组
 |- userScripts
 | -
-| rdc 文档 要引入的script文件
+| 文档 要引入的script文件
 | 文件url 数组
 ```
 
@@ -179,9 +179,9 @@ type Framework = 'vue' | 'regular' | 'react' | 'angular'
 type Mode = 'integrate' | 'origin'
 
 interface Docs {
-  logo: string
-  keywords: string[]
-  url: string
+  title?: string
+  keywords?: string[]
+  url?: string
   userStyles?: string[]
   userScripts?: string[]
 }

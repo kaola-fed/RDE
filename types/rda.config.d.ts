@@ -13,4 +13,5 @@ interface AppConf {
   container: AppConfTemplate,
   suites: Suite[],
   docker: Docker,
+  docs: Docs,
 }

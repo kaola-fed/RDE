@@ -1,8 +1,9 @@
 interface DocPageRoute {
   title: string
+  subTitle?: string
   url?: string
-  children?: DocPageRoute[]
-  main?: boolean
+  children?: DocPageRoute[],
+  order?: number
 }
 
 interface DocNavRoute {

@@ -1,10 +1,11 @@
 import * as browserSync from 'browser-sync'
+import * as chokidar from 'chokidar'
 import * as path from 'path'
+import * as copy from 'recursive-copy'
 
 import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
 import {TError, TStart} from '../../services/track'
-import Watcher from '../../services/watcher'
 
 const {join} = path
 export default class DocsServe extends BaseDocs {
@@ -19,6 +20,11 @@ export default class DocsServe extends BaseDocs {
   @TError({conf})
   @TStart
   public async run() {
+    if (conf.rdType === conf.RdTypes.Container) {
+      // await doc.generateChangelog()
+      // await doc.generateCheatSheet()
+    }
+
     this.watchFiles()
 
     browserSync({
@@ -27,21 +33,28 @@ export default class DocsServe extends BaseDocs {
         port: 4040,
       },
       watch: true,
-      open: false,
+      open: true,
     })
   }
 
   @TError({conf})
   @TStart
   public watchFiles() {
-    const mappings = [
-      {
-        from: conf.docsDir,
-        to: join('..', conf.docsPagesDir),
-        options: this.options,
-      },
-    ]
+    const watcher = chokidar.watch(conf.docsDir, {
+      interval: 300,
+    })
 
-    new Watcher(mappings).start()
+    const handler = async () => {
+      await copy(
+        conf.docsDir,
+        join(conf.docsPagesDir),
+        this.options,
+      )
+    }
+
+    watcher
+      .on('add', handler)
+      .on('change', handler)
+      .on('unlink', handler)
   }
 }

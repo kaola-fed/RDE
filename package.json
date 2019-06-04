@@ -23,6 +23,7 @@
     "directory-tree": "^2.2.1",
     "enquirer": "^2.3.0",
     "fs-extra": "^7.0.1",
+    "gh-pages": "^2.0.1",
     "highlight.js": "^9.15.6",
     "ip": "^1.1.5",
     "markdown-it": "^8.4.2",
@@ -106,6 +107,7 @@
   "repository": "kaolafed/rde",
   "scripts": {
     "posttest": "tslint -p test -t stylish",
+    "copym": "cp -r src/mustaches lib/mustaches",
     "prepublishOnly": "tsc -b && oclif-dev readme && cp -r src/mustaches lib/mustaches",
     "manifest": "oclif-dev manifest",
     "test:coverage": "nyc --extension .ts mocha --project ./test/tsconfig.json --opts ./test/mocha.opts --forbid-only \"test/**/*.test.ts\"",

@@ -2,44 +2,49 @@
   :root {
     --font-size: 14px;
     --font-color: #666;
-    --primary-color: #00C4C0;
+    --primary-color: #68BAEB;
     --link-color: #0398FF;
 
-    --header-height: 80px;
+    --header-height: 68px;
     --sidebar-width: 240px;
   }
 
   .simplebar-scrollbar:before { background: #C8C9CD!important; }
 
-  html, body { width: 100%; height: 100%; font-family: 'Helvetica Neue',Helvetica,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',SimSun,sans-serif; font-weight: 400; color: var(--font-color); font-size: var(--font-size); }
+  html, body { width: 100%; height: 100%; font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif; color: var(--font-color); font-size: var(--font-size); }
   body { overflow: hidden; }
   *  { margin: 0; padding: 0; }
   ul, li { list-style: none; }
   table { border-collapse: collapse; border-spacing: 0; }
 
   #rde-docs { position: relative; width: 1200px; height: 100%; margin: 0 auto; }
-  #rde-page { position: absolute; left: var(--sidebar-width); top: var(--header-height); right: calc((1200px - 100vw)/2); bottom: 0; padding: 48px calc((100vw - 1200px)/2) 48px 20px; }
+  #rde-page { position: absolute; left: var(--sidebar-width); top: var(--header-height); right: calc((1200px - 100vw)/2); bottom: 0; padding: 48px calc((100vw - 1200px)/2) 48px 60px; }
 
   /* header */
-  .rde-header { height: var(--header-height); border-bottom: 1px solid #DCDFE6;  }
-  .rde-header-logo { display: flex; float: left; height: 100%; margin: 0; align-items: center; font-size: 32px; font-weight: 300; }
+  .rde-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: var(--primary-color);  }
+  .rde-header__wrap { width: 1080px; margin: 0 auto; }
+  .rde-header-logo { display: flex; float: left; height: 100%; margin: 0; color: #fff; align-items: center; font-size: 32px; font-weight: lighter; }
+  .rde-header-logo__img { display: block; float: left; margin-left: 12px; margin-right: 20px; width: 72px; height: 72px; font-size: 0; background: url(https://haitao.nos.netease.com/6f8e6539-cfca-4d4b-869c-dc6bf9bc4c65_323_329.png) center center no-repeat #fff; background-size: 54px;  }
 
   .rde-header-navs { float: right; height: 100%;  list-style: none; }
   .rde-header-navs__item { float: left; height: 100%; }
-  .rde-header-navs__item a { position: relative; display: flex; align-items: center; height: 100%; text-decoration: none; padding: 0 22px; font-size: 16px; color: #999; }
-  .rde-header-navs__item a:hover { text-decoration: none; color: var(--primary-color); padding: 0 22px; font-size: 16px; }
-  .rde-header-navs__item--crt a { color: var(--primary-color); }
+  .rde-header-navs__item a { position: relative; display: flex; align-items: center; height: 100%; text-decoration: none; padding: 0 22px; font-size: 14px; color: rgba(255,255,255,.75); transition: color .3s; }
+  .rde-header-navs__item a:hover { text-decoration: none; color: #fff; padding: 0 22px; }
+  .rde-header-navs__item--crt a { color: #fff; }
   .rde-header-navs__item--crt a:after { content: ''; display: inline-block; position: absolute; bottom: 0; left: 22px; width: calc(100% - 44px); height: 2px; background: var(--primary-color) }
 
   /* sidebar */
   .rde-sidebar-wrap { position: absolute; top: var(--header-height); left: 0; bottom: 0; width: var(--sidebar-width); }
-  .rde-sidebar { font-size: 14px; padding-top: 48px; padding-bottom: 50px; }
+  .rde-sidebar-pagewrap { padding-left: 40px; }
+  .rde-sidebar { box-sizing: border-box; height: 100%; font-size: 14px; padding: 20px 10px 100px 10px; border-right: 1px solid #ececec; }
   .rde-sidebar a { text-decoration: none; }
-  .rde-sidebar__category { height: 32px; line-height: 32px; font-size: 12px; color: #999; }
-  .rde-sidebar__nav { display: block; height: 40px; line-height: 40px;  color: #333; font-size: 16px; font-weight: bold; }
+  .rde-sidebar__category { height: 40px; line-height: 40px; margin: 14px 0; font-size: 14px; color: #999; }
+  .rde-sidebar__page i, .rde-sidebar__category i { margin-left: 2px; font-style: normal; color: #999; }
+  .rde-sidebar__nav { display: block; height: 40px; line-height: 40px;  color: #999; font-size: 14px; font-weight: 400; }
 
 
-  .rde-sidebar__page { height: 40px; line-height: 40px; font-size: 14px; color: #666; }
+  .rde-sidebar__page { height: 30px; line-height: 30px; font-size: 13px; color: #333; }
+  .rde-sidebar__page--main { display: block; height: 40px; line-height: 40px; margin: 14px 0; }
   .rde-sidebar__page--crt { color: var(--primary-color); }
   .rde-sidebar__page:hover { color: var(--primary-color); }
 </style>
@@ -89,8 +94,9 @@
 </style>
 
 <style>
-  .hljs { padding: 16px 24px; margin: 24px 0;  background: #fafafa; border: 1px solid #eaeefb; line-height: 1.8; font-family: Menlo,Monaco,Consolas,Courier,monospace; }
+  .hljs { font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+
   .hljs code { font-size: 12px; color: #333; background: none; border: none; }
-  .hljs-keyword, .hljs-attribute, .hljs-selector-tag, .hljs-meta-keyword, .hljs-doctag, .hljs-name { color: #7EC9C9; }
+  .hljs-keyword, .hljs-attribute, .hljs-selector-tag, .hljs-meta-keyword, .hljs-doctag, .hljs-name { color: var(--primary-color); }
   .hljs-type, .hljs-string, .hljs-number, .hljs-selector-id, .hljs-selector-class, .hljs-quote, .hljs-template-tag, .hljs-deletion { color: #D4595C; }
 </style>
