@@ -8,6 +8,7 @@
     "npm-watch": "^0.6.0"
   },
   "scripts": {
+    "serve": "npx http-server dist",
     "watch": "npm-watch",
     "build": "node ./docs.js",
     "publish": "npm run build && gh-pages -d dist"
