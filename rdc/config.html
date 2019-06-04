@@ -167,29 +167,29 @@
 <th style="">备注</th>
 </tr>
 <tr>
-  <td>logo</td>
+  <td>title</td>
   <td>-</td>
-  <td>rdc文档的logo url地址</td>
+  <td>文档的title名称</td>
   <td>-</td>
 <tr>
   <td>keywords</td>
   <td>-</td>
-  <td>rdc 文档的关键字</td>
+  <td>文档的关键字</td>
   <td>-</td>
 <tr>
   <td>url</td>
   <td>-</td>
-  <td>rdc 文档地址</td>
+  <td>文档地址</td>
   <td>-</td>
 <tr>
   <td>userStyles</td>
   <td>-</td>
-  <td>rdc 文档要引入的css文件</td>
+  <td>文档要引入的css文件</td>
   <td>文件url数组</td>
 <tr>
   <td>userScripts</td>
   <td>-</td>
-  <td>rdc 文档 要引入的script文件</td>
+  <td>文档 要引入的script文件</td>
   <td>文件url 数组</td>
 </tr>
 </table>
@@ -204,12 +204,12 @@
 </tr>
 <tr>
   <td>includes</td>
-  <td>-</td>
+  <td>●</td>
   <td>template模板中需要渲染的文件后缀数组</td>
   <td>-</td>
 <tr>
   <td>tags</td>
-  <td>-</td>
+  <td>●</td>
   <td>template 模板使用mustache渲染的符号</td>
   <td>默认是{{ }}</td>
 <tr>
@@ -238,12 +238,12 @@
 </tr>
 <tr>
   <td>from</td>
-  <td>-</td>
+  <td>●</td>
   <td>copy的源地址，基于rdc项目根目录</td>
   <td>例如： from: 'app/main.js'。可以是文件或目录地址</td>
 <tr>
   <td>to</td>
-  <td>-</td>
+  <td>●</td>
   <td>copy的目的地址，基于运行时目录</td>
   <td>例如：'src/main.js'，可以是文件或目录地址</td>
 <tr>
@@ -269,12 +269,12 @@
 </tr>
 <tr>
   <td>tag</td>
-  <td>-</td>
+  <td>●</td>
   <td>rdc docker镜像 tag</td>
   <td>例：rdebase/rdc-vue-start:0.0.1</td>
 <tr>
   <td>ports</td>
-  <td>-</td>
+  <td>●</td>
   <td>容器映射到本地的端口号</td>
   <td>与Dockerfile中ports格式保持一致</td>
 </tr>
@@ -298,7 +298,7 @@
 </tr>
 <tr>
   <td>ext</td>
-  <td>-</td>
+  <td>●</td>
   <td>需要lint的文件后缀数组</td>
   <td>例如：['.js', '.vue']</td>
 </tr>
@@ -344,9 +344,9 @@
 <span class="hljs-keyword">type</span> Mode = <span class="hljs-string">'integrate'</span> | <span class="hljs-string">'origin'</span>
 
 <span class="hljs-keyword">interface</span> Docs {
-  logo: <span class="hljs-built_in">string</span>
-  keywords: <span class="hljs-built_in">string</span>[]
-  url: <span class="hljs-built_in">string</span>
+  title?: <span class="hljs-built_in">string</span>
+  keywords?: <span class="hljs-built_in">string</span>[]
+  url?: <span class="hljs-built_in">string</span>
   userStyles?: <span class="hljs-built_in">string</span>[]
   userScripts?: <span class="hljs-built_in">string</span>[]
 }
@@ -424,8 +424,6 @@
           }, {
             title: '开发规范', enTitle: 'Guideline', url: '/rda/guideline.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : '/rda/docs.html'
-          }, {
             title: '配置说明', enTitle: 'Config', url: '/rda/config.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rda/qa.html'
@@ -439,8 +437,6 @@
           }, {
             title: '模式选择', enTitle: 'Modes', url: '/rdc/modes.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : '/rdc/docs.html'
-          }, {
             title: '配置说明', enTitle: 'Config', url: '/rdc/config.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rdc/qa.html'
@@ -449,6 +445,15 @@
           title: 'RDS套件',
           children: [{
             title: '关于', enTitle: 'About', url: '/rds/about.html'
+          }]
+        }, {
+          title: 'Docs开发',
+          children: [{
+            title: '关于', enTitle: 'About', url: '/docs/about.html'
+          }, {
+            title: '快速上手', enTitle: 'QuickStart', url: '/docs/quickstart.html'
+          }, {
+            title: '扩展语法', enTitle: 'Markdown', url: '/docs/markdown.html'
           }]
         }]
       };

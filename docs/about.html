@@ -139,114 +139,17 @@
   </ul>
 
   <div class="m-cnt">
-    <h4 class="rde-h4">创建工程</h4>
-<blockquote>
-<p class="rde-p">Create</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde create [NAME]</span>
-
-ARGUMENTS
-  NAME  project name to create， optional
-</code></pre>
-<p class="rde-p">创建一个新的工程，可以选择创建的工程类型Application/Container；</p>
-<blockquote>
-<p class="rde-p">Sync</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde sync</span>
-</code></pre>
-<p class="rde-p">使用场景：</p>
+    <h1 class="rde-h1">About</h1>
+<p class="rde-p">  RDE文档主要解决如下问题：</p>
 <ul>
-<li>
-<p class="rde-p">第一次从git拉取别人创建的RDA/RDC工程后， 需要先执行rde sync后才可以进行开发</p>
-</li>
-<li>
-<p class="rde-p">每次升级了rda.config.js中的container的tag版本后，需要先本地同步下</p>
-</li>
-<li>
-<p class="rde-p">误操作删除了template、.cache或者IDE配置等后，可以执行还原</p>
-</li>
-<li>
-<p class="rde-p">如果是RDA工程，本地对非app目录进行了修改，想直接还原，可以执行</p>
-</li>
+<li><p class="rde-p">主流文档都想覆盖各种文档场景，功能复杂，上手成本比较高</li>
+<li><p class="rde-p">针对业务开发、中后台项目场景，常用的组件展示，API都需要到处找插件支持</li>
+<li><p class="rde-p">官方的样式也都是最通用的文档样式， 并不适合组件、套件的展示</li>
+<li><p class="rde-p">支持的功能比较多，比较难定位到自己需要的功能</li>
+<li><p class="rde-p">理想情况下RDC在本地是不希望被看到的，所以需要开发RDC的文档展示出RDC的包依赖、lint规则等</li>
 </ul>
-<h4 class="rde-h4">开发运行</h4>
-<blockquote>
-<p class="rde-p">Build</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde build</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run build</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">如果RDC的scripts中提供了build脚本，可以运行rde build或者rde run build进行工程构建，如果需要重新构建镜像，可以后面带一个-r参数</p>
-<blockquote>
-<p class="rde-p">Serve</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde serve</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run serve</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">启动工程</p>
-<blockquote>
-<p class="rde-p">Lint</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde lint</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run lint</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">lint工程</p>
-<blockquote>
-<p class="rde-p">Run</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde run [CMD]</span>
-
-ARGUMENTS
-  CMD  scripts provided by container
-
-OPTIONS
-  -e, --extras=extras  arguments need to pass to npm run cmd
-  -r, --rebuild        rebuild image before run
-  -v, --verbose        show verbose logs
-</code></pre>
-<p class="rde-p">如果RDC开发提供了除了上面几个以外的script脚本，可以通过rde run [CMD]执行， 如果需要传额外的参数给script，可以配合-e使用，如</p>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde run <span class="hljs-built_in">test</span> -e <span class="hljs-string">'test.js'</span></span>
-</code></pre>
-<h4 class="rde-h4">容器发布</h4>
-<blockquote>
-<p class="rde-p">Publish</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde publish</span>
-
-OPTIONS
-  -i, --increment=increment  Increment a version by the specified level.
-                             Level can be one of: major, minor, patch, premajor, preminor,
-                             prepatch, or prerelease.  Default level is 'patch'. Only one version may be
-                             specified.
-  -t, --tag=tag              as your image tag for pushing to docker hub, you should use increment just in case
-  -v, --verbose              show verbose logs
-  --preid=preid              Identifier to be used to prefix premajor, preminor, prepatch or prerelease version
-                             increments.
-
-EXAMPLES
-<span class="hljs-meta">  $</span><span class="bash"> rde publish -t &lt;semver-like version&gt;</span>
-<span class="hljs-meta">  $</span><span class="bash"> rde publish -i prerelease --preid beta</span>
-<span class="hljs-meta">  $</span><span class="bash"> rde publish --preid beta</span>
-</code></pre>
-<p class="rde-p">容器需要发布到docker hub，可以使用rde publish发布，它会校验工程基础配置，并自动生成发布需要的Dockerfile；参数与semver参数一致；</p>
-<pre class="hljs"><code>要特别注意：如果提供了一个已经发布过的tag，docker hub会覆盖原版本， 这个是危险的行为，请每次检查发布新的版本，一般情况下，请不要使用latest版本，因为每次都会被覆盖；
-</code></pre>
-<h4 class="rde-h4">其他</h4>
-<blockquote>
-<p class="rde-p">Clean</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde clean</span>
-</code></pre>
-<p class="rde-p">一般情况下不需要使用，保留下.devcontainer目录后，执行后可以体验下；</p>
+<p class="rde-p">  RDE文档的使用场景只是使用了RDE的前端工程，这样大大的缩小了场景范文，并且可以增加更多的定制功能；让整个RDE开发变得更流畅；</p>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/5d675be1-aea0-49dc-9ef1-b2bb6cf19413_2874_1528.jpg" alt=""></p>
 
   </div>
 </div>

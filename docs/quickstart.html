@@ -139,114 +139,77 @@
   </ul>
 
   <div class="m-cnt">
-    <h4 class="rde-h4">创建工程</h4>
+    <h1 class="rde-h1">QuickStart</h1>
+<h4 class="rde-h4">准备工作</h4>
+<p class="rde-p">  如果本地没有_docs目录，在项目根目录执行:</p>
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde docs:init</span>
+</code></pre>
+<p class="rde-p">  生成目录如下：</p>
+<table class="rde-table">
+<tr>
+</th>
+<th style=" width:80px">文件/目录</th>
+<th style="">说明</th>
+</tr>
+<tr>
+  <td>_docs</td>
+  <td>文档目录</td>
+<tr>
+  <td>_docs/index.md</td>
+  <td>文档首页/关于页，请填写工程的基本介绍，该目录不可删除</td>
+<tr>
+  <td>_docs/faq.md</td>
+  <td>工程faq页，初始可以不填写信息，在之后维护过程中发现的问题可以记录在这里, 该目录不可删除</td>
+</tr>
+</table>
+<h4 class="rde-h4">开发文档</h4>
+<p class="rde-p">  在_docs目录下新建需要的文档，在每个文档的开始，请填写meta信息，解释如下：</p>
+<pre class="hljs"><code>---
+title: 关于
+subTitle: About
+order: 12
+<span class="hljs-section">category: Components
+---</span>
+</code></pre>
+<table class="rde-table">
+<tr>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width:80px">默认值</th>
+<th style="">说明</th>
+</tr>
+<tr>
+  <td>title</td>
+  <td>-</td>
+  <td>文档在sidebar展示的名称</td>
+<tr>
+  <td>subTitle</td>
+  <td>-</td>
+  <td>文档在sidebar展示的子名称</td>
+<tr>
+  <td>order</td>
+  <td>0</td>
+  <td>文档在sidebar展示的顺序, order值越大，越靠前</td>
+<tr>
+  <td>category</td>
+  <td>-</td>
+  <td>如果是有子目录，则在子目录下的文件需要填写category分类</td>
+</tr>
+</table>
 <blockquote>
-<p class="rde-p">Create</p>
+<p class="rde-p">RDE目前仅支持一级目录，也就是说最多在_docs目录下新建一级目录作为category分类，否则会被忽略；</p>
 </blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde create [NAME]</span>
-
-ARGUMENTS
-  NAME  project name to create， optional
+<h4 class="rde-h4">开发预览</h4>
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde docs:serve</span>
 </code></pre>
-<p class="rde-p">创建一个新的工程，可以选择创建的工程类型Application/Container；</p>
+<p class="rde-p">运行如上命令，可以边修改文档内容，边在浏览器预览</p>
+<h4 class="rde-h4">发布文档到github gh-pages</h4>
+<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde docs:publish</span>
+</code></pre>
+<p class="rde-p">发布完成后，可以登陆github gh-pages的链接，查看效果</p>
 <blockquote>
-<p class="rde-p">Sync</p>
+<p class="rde-p">最后， 请不要忘记，将文档的链接填写到rdc.config.js或者rda.config.js对应的位置上，方便使用者查看</p>
 </blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde sync</span>
-</code></pre>
-<p class="rde-p">使用场景：</p>
-<ul>
-<li>
-<p class="rde-p">第一次从git拉取别人创建的RDA/RDC工程后， 需要先执行rde sync后才可以进行开发</p>
-</li>
-<li>
-<p class="rde-p">每次升级了rda.config.js中的container的tag版本后，需要先本地同步下</p>
-</li>
-<li>
-<p class="rde-p">误操作删除了template、.cache或者IDE配置等后，可以执行还原</p>
-</li>
-<li>
-<p class="rde-p">如果是RDA工程，本地对非app目录进行了修改，想直接还原，可以执行</p>
-</li>
-</ul>
-<h4 class="rde-h4">开发运行</h4>
-<blockquote>
-<p class="rde-p">Build</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde build</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run build</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">如果RDC的scripts中提供了build脚本，可以运行rde build或者rde run build进行工程构建，如果需要重新构建镜像，可以后面带一个-r参数</p>
-<blockquote>
-<p class="rde-p">Serve</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde serve</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run serve</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">启动工程</p>
-<blockquote>
-<p class="rde-p">Lint</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde lint</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run lint</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">lint工程</p>
-<blockquote>
-<p class="rde-p">Run</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde run [CMD]</span>
-
-ARGUMENTS
-  CMD  scripts provided by container
-
-OPTIONS
-  -e, --extras=extras  arguments need to pass to npm run cmd
-  -r, --rebuild        rebuild image before run
-  -v, --verbose        show verbose logs
-</code></pre>
-<p class="rde-p">如果RDC开发提供了除了上面几个以外的script脚本，可以通过rde run [CMD]执行， 如果需要传额外的参数给script，可以配合-e使用，如</p>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde run <span class="hljs-built_in">test</span> -e <span class="hljs-string">'test.js'</span></span>
-</code></pre>
-<h4 class="rde-h4">容器发布</h4>
-<blockquote>
-<p class="rde-p">Publish</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde publish</span>
-
-OPTIONS
-  -i, --increment=increment  Increment a version by the specified level.
-                             Level can be one of: major, minor, patch, premajor, preminor,
-                             prepatch, or prerelease.  Default level is 'patch'. Only one version may be
-                             specified.
-  -t, --tag=tag              as your image tag for pushing to docker hub, you should use increment just in case
-  -v, --verbose              show verbose logs
-  --preid=preid              Identifier to be used to prefix premajor, preminor, prepatch or prerelease version
-                             increments.
-
-EXAMPLES
-<span class="hljs-meta">  $</span><span class="bash"> rde publish -t &lt;semver-like version&gt;</span>
-<span class="hljs-meta">  $</span><span class="bash"> rde publish -i prerelease --preid beta</span>
-<span class="hljs-meta">  $</span><span class="bash"> rde publish --preid beta</span>
-</code></pre>
-<p class="rde-p">容器需要发布到docker hub，可以使用rde publish发布，它会校验工程基础配置，并自动生成发布需要的Dockerfile；参数与semver参数一致；</p>
-<pre class="hljs"><code>要特别注意：如果提供了一个已经发布过的tag，docker hub会覆盖原版本， 这个是危险的行为，请每次检查发布新的版本，一般情况下，请不要使用latest版本，因为每次都会被覆盖；
-</code></pre>
-<h4 class="rde-h4">其他</h4>
-<blockquote>
-<p class="rde-p">Clean</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde clean</span>
-</code></pre>
-<p class="rde-p">一般情况下不需要使用，保留下.devcontainer目录后，执行后可以体验下；</p>
 
   </div>
 </div>

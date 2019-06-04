@@ -139,114 +139,74 @@
   </ul>
 
   <div class="m-cnt">
-    <h4 class="rde-h4">创建工程</h4>
-<blockquote>
-<p class="rde-p">Create</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde create [NAME]</span>
+    <h1 class="rde-h1">Markdown扩展语法</h1>
+<h4 class="rde-h4">Component展示</h4>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/2c2ebe3c-acf9-4c7a-8f6a-7586c888c07f_1099_632.png" alt=""></p>
+<p class="rde-p">  使用component_vue/component_react/component_regular包裹代码即可实现如上图常见的组件展示; 目前只实现了Vue，示例如下：</p>
+<pre class="hljs"><code>\<span class="hljs-code">`\`</span>\`component_vue
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span></span>
+<span class="hljs-code">    &lt;el-radio v-model="radio" label="1"&gt;备选项&lt;/el-radio&gt;</span>
+<span class="hljs-code">    &lt;el-radio v-model="radio" label="2"&gt;备选项&lt;/el-radio&gt;</span>
+<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>
 
-ARGUMENTS
-  NAME  project name to create， optional
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="undefined"></span></span>
+  export default {
+<span class="hljs-code">    data () {</span>
+<span class="hljs-code">      return {</span>
+<span class="hljs-code">        radio: 1,</span>
+<span class="hljs-code">        test: `this is a test`</span>
+<span class="hljs-code">      };</span>
+<span class="hljs-code">    }</span>
+  }
+<span class="xml"><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+\<span class="hljs-code">`\`</span>\`
+
+请去除前面的\
 </code></pre>
-<p class="rde-p">创建一个新的工程，可以选择创建的工程类型Application/Container；</p>
-<blockquote>
-<p class="rde-p">Sync</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde sync</span>
+<h4 class="rde-h4">API展示</h4>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/cbacb476-78c5-4e60-bbdf-c2a9d33f458a_1215_639.png" alt=""></p>
+<p class="rde-p">  示例代码如下：</p>
+<pre class="hljs"><code>\<span class="hljs-code">`\`</span>\`api
+drop(array, [n=1])
+this is a desc paragraph
+
+@param {array} [array=list] - this is an array
+@param {array} [array=list] - this is an array
+@returns {number} - the dot's width
+
+examples:
+
+drop(1144) // 123
+drop(234) // 234
+\<span class="hljs-code">`\`</span>\`
+
+请去除前面的\
 </code></pre>
-<p class="rde-p">使用场景：</p>
+<h4 class="rde-h4">Table展示</h4>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/777152d6-0e3d-432e-8120-dcab3ec63698_1013_554.png" alt=""></p>
+<p class="rde-p">  示例代码如下：</p>
+<pre class="hljs"><code>\<span class="hljs-code">`\`</span>\`table
+字段 [@th width:80px]
+必填项 [@th width:80px]
+说明
+备注
+|- tag 
+| - 
+| rdc docker镜像 tag 
+| 例：rdebase/rdc-vue-start:0.0.1
+|- ports 
+| - 
+| 容器映射到本地的端口号 
+| 与Dockerfile中ports格式保持一致
+\<span class="hljs-code">`\`</span>\`
+
+请去除前面的\
+</code></pre>
 <ul>
-<li>
-<p class="rde-p">第一次从git拉取别人创建的RDA/RDC工程后， 需要先执行rde sync后才可以进行开发</p>
-</li>
-<li>
-<p class="rde-p">每次升级了rda.config.js中的container的tag版本后，需要先本地同步下</p>
-</li>
-<li>
-<p class="rde-p">误操作删除了template、.cache或者IDE配置等后，可以执行还原</p>
-</li>
-<li>
-<p class="rde-p">如果是RDA工程，本地对非app目录进行了修改，想直接还原，可以执行</p>
-</li>
+<li><p class="rde-p">开始是th头，每个th头支持设置style，style格式与html的style格式一致，多个用分号间隔；</li>
+<li><p class="rde-p">每行以|-开始，之后每一行对应这行的每一列数据, 请注意每行前需要有|字符</li>
+<li><p class="rde-p">请注意不支持换行，以及空行</li>
 </ul>
-<h4 class="rde-h4">开发运行</h4>
-<blockquote>
-<p class="rde-p">Build</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde build</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run build</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">如果RDC的scripts中提供了build脚本，可以运行rde build或者rde run build进行工程构建，如果需要重新构建镜像，可以后面带一个-r参数</p>
-<blockquote>
-<p class="rde-p">Serve</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde serve</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run serve</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">启动工程</p>
-<blockquote>
-<p class="rde-p">Lint</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde lint</span>
-<span class="hljs-meta">$</span><span class="bash"> rde run lint</span>
-
-OPTIONS
-  -r, --rebuild              rebuild image before run
-</code></pre>
-<p class="rde-p">lint工程</p>
-<blockquote>
-<p class="rde-p">Run</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde run [CMD]</span>
-
-ARGUMENTS
-  CMD  scripts provided by container
-
-OPTIONS
-  -e, --extras=extras  arguments need to pass to npm run cmd
-  -r, --rebuild        rebuild image before run
-  -v, --verbose        show verbose logs
-</code></pre>
-<p class="rde-p">如果RDC开发提供了除了上面几个以外的script脚本，可以通过rde run [CMD]执行， 如果需要传额外的参数给script，可以配合-e使用，如</p>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde run <span class="hljs-built_in">test</span> -e <span class="hljs-string">'test.js'</span></span>
-</code></pre>
-<h4 class="rde-h4">容器发布</h4>
-<blockquote>
-<p class="rde-p">Publish</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde publish</span>
-
-OPTIONS
-  -i, --increment=increment  Increment a version by the specified level.
-                             Level can be one of: major, minor, patch, premajor, preminor,
-                             prepatch, or prerelease.  Default level is 'patch'. Only one version may be
-                             specified.
-  -t, --tag=tag              as your image tag for pushing to docker hub, you should use increment just in case
-  -v, --verbose              show verbose logs
-  --preid=preid              Identifier to be used to prefix premajor, preminor, prepatch or prerelease version
-                             increments.
-
-EXAMPLES
-<span class="hljs-meta">  $</span><span class="bash"> rde publish -t &lt;semver-like version&gt;</span>
-<span class="hljs-meta">  $</span><span class="bash"> rde publish -i prerelease --preid beta</span>
-<span class="hljs-meta">  $</span><span class="bash"> rde publish --preid beta</span>
-</code></pre>
-<p class="rde-p">容器需要发布到docker hub，可以使用rde publish发布，它会校验工程基础配置，并自动生成发布需要的Dockerfile；参数与semver参数一致；</p>
-<pre class="hljs"><code>要特别注意：如果提供了一个已经发布过的tag，docker hub会覆盖原版本， 这个是危险的行为，请每次检查发布新的版本，一般情况下，请不要使用latest版本，因为每次都会被覆盖；
-</code></pre>
-<h4 class="rde-h4">其他</h4>
-<blockquote>
-<p class="rde-p">Clean</p>
-</blockquote>
-<pre class="hljs"><code><span class="hljs-meta">$</span><span class="bash"> rde clean</span>
-</code></pre>
-<p class="rde-p">一般情况下不需要使用，保留下.devcontainer目录后，执行后可以体验下；</p>
 
   </div>
 </div>

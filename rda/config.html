@@ -182,6 +182,42 @@
   <td>与Dockerfile中的ports格式一致</td>
 </tr>
 </table>
+<h5 class="rde-h5">【可选属性】docs</h5>
+<table class="rde-table">
+<tr>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width: 80px">必填项</th>
+<th style="">说明</th>
+<th style="">备注</th>
+</tr>
+<tr>
+  <td>title</td>
+  <td>-</td>
+  <td>文档的title名称</td>
+  <td>-</td>
+<tr>
+  <td>keywords</td>
+  <td>-</td>
+  <td>文档的关键字</td>
+  <td>-</td>
+<tr>
+  <td>url</td>
+  <td>-</td>
+  <td>文档地址</td>
+  <td>-</td>
+<tr>
+  <td>userStyles</td>
+  <td>-</td>
+  <td>文档要引入的css文件</td>
+  <td>文件url数组</td>
+<tr>
+  <td>userScripts</td>
+  <td>-</td>
+  <td>文档 要引入的script文件</td>
+  <td>文件url 数组</td>
+</tr>
+</table>
 <h4 class="rde-h4">完整示例</h4>
 <pre class="hljs"><code><span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">container</span>: {
@@ -189,18 +225,22 @@
     <span class="hljs-attr">docs</span>: <span class="hljs-string">'https://github.com/RdePro/rdc-vue-starter'</span>,
     <span class="hljs-attr">render</span>: {
       <span class="hljs-attr">title</span>: <span class="hljs-string">'RDE应用'</span>,
-      <span class="hljs-attr">appKey</span>: <span class="hljs-string">'MA-73249C84DEFE23'</span>,
+      <span class="hljs-attr">appKey</span>: <span class="hljs-string">'BC-73249C84DEFE23'</span>,
     }
   },
   <span class="hljs-attr">docker</span>: {
     <span class="hljs-attr">ports</span>: [<span class="hljs-string">'8080:9000'</span>]
-  }
+  },
+  <span class="hljs-attr">docs</span>: {
+    <span class="hljs-attr">title</span>: <span class="hljs-string">'App'</span>,
+  },
 }
 </code></pre>
 <h4 class="rde-h4">Typescript描述</h4>
 <pre class="hljs"><code><span class="hljs-keyword">interface</span> RdaConf {
   container: Container,
   docker: Docker,
+  docs: Docs,
 }
 
 <span class="hljs-keyword">interface</span> Container {
@@ -211,6 +251,14 @@
 
 <span class="hljs-keyword">interface</span> Docker {
   ports?: <span class="hljs-built_in">string</span>[]
+}
+
+<span class="hljs-keyword">interface</span> Docs {
+  title?: <span class="hljs-built_in">string</span>
+  keywords?: <span class="hljs-built_in">string</span>[]
+  url?: <span class="hljs-built_in">string</span>
+  userStyles?: <span class="hljs-built_in">string</span>[]
+  userScripts?: <span class="hljs-built_in">string</span>[]
 }
 </code></pre>
 
@@ -251,8 +299,6 @@
           }, {
             title: '开发规范', enTitle: 'Guideline', url: '/rda/guideline.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : '/rda/docs.html'
-          }, {
             title: '配置说明', enTitle: 'Config', url: '/rda/config.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rda/qa.html'
@@ -266,8 +312,6 @@
           }, {
             title: '模式选择', enTitle: 'Modes', url: '/rdc/modes.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : '/rdc/docs.html'
-          }, {
             title: '配置说明', enTitle: 'Config', url: '/rdc/config.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rdc/qa.html'
@@ -276,6 +320,15 @@
           title: 'RDS套件',
           children: [{
             title: '关于', enTitle: 'About', url: '/rds/about.html'
+          }]
+        }, {
+          title: 'Docs开发',
+          children: [{
+            title: '关于', enTitle: 'About', url: '/docs/about.html'
+          }, {
+            title: '快速上手', enTitle: 'QuickStart', url: '/docs/quickstart.html'
+          }, {
+            title: '扩展语法', enTitle: 'Markdown', url: '/docs/markdown.html'
           }]
         }]
       };

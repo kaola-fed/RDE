@@ -187,8 +187,7 @@
 |   |   |-- main.js
 |   |-- package.json
 </code></pre>
-<h5 class="rde-h5">integrate 示意图</h5>
-<p class="rde-p"><img src="https://haitao.nos.netease.com/0a0be696-4ac4-4d9b-bc90-c56ab79809b5_902_497.jpg" alt="image"></p>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/34469a3b-e541-4d5e-b1b2-87b967c7b502_860_589.png" alt="image"></p>
 <h4 class="rde-h4">orgin 模式</h4>
 <blockquote>
 <p class="rde-p">app和template直接挂载到docker中，template将会被渲染到同级目录结构的runtime下（渲染template模板中的mustache变量），npm run serve 命令运行在runtime目录下。</p>
@@ -205,6 +204,7 @@
 |   |   |-- main.js
 |   |-- package.json
 </code></pre>
+<p class="rde-p"><img src="https://haitao.nos.netease.com/87cb27d8-e239-42ae-94b5-b179bf61f715_860_589.png" alt="image"></p>
 <ul>
 <li><p class="rde-p">在origin模式下，npm run serve 命令运行在runtime目录下，runtime下直接引用外层app目录下代码，需要rdc 开发者需要合理配置webapck、eslint-loader、ts-loader等。</li>
 </ul>
@@ -248,8 +248,6 @@
           }, {
             title: '开发规范', enTitle: 'Guideline', url: '/rda/guideline.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : '/rda/docs.html'
-          }, {
             title: '配置说明', enTitle: 'Config', url: '/rda/config.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rda/qa.html'
@@ -263,8 +261,6 @@
           }, {
             title: '模式选择', enTitle: 'Modes', url: '/rdc/modes.html'
           }, {
-            title: '文档开发', enTitle: 'Docs', url : '/rdc/docs.html'
-          }, {
             title: '配置说明', enTitle: 'Config', url: '/rdc/config.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rdc/qa.html'
@@ -273,6 +269,15 @@
           title: 'RDS套件',
           children: [{
             title: '关于', enTitle: 'About', url: '/rds/about.html'
+          }]
+        }, {
+          title: 'Docs开发',
+          children: [{
+            title: '关于', enTitle: 'About', url: '/docs/about.html'
+          }, {
+            title: '快速上手', enTitle: 'QuickStart', url: '/docs/quickstart.html'
+          }, {
+            title: '扩展语法', enTitle: 'Markdown', url: '/docs/markdown.html'
           }]
         }]
       };
