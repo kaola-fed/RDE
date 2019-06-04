@@ -19,22 +19,6 @@
 | 容器在渲染模板时会根据传入的属性渲染
 ```
 
-##### 【可选属性】suites
-```table
-字段 [@th width:80px]
-必填项 [@th width:60px]
-说明
-备注
-|- name
-| ●
-| 安装的套件的发布在npm上的包名
-| 与package.json中安装的一致
-|- framework
-| ●
-| vue、regular、react、angular
-| 容器会在需要时加载并install这些套件
-```
-
 ##### 【可选属性】docker
 ```table
 字段 [@th width:80px]
@@ -58,12 +42,6 @@ module.exports = {
       appKey: 'MA-73249C84DEFE23',
     }
   },
-  suites: [
-    {
-      name: 'rds-vue',
-      framework: 'vue',
-    }
-  ],
   docker: {
     ports: ['8080:9000']
   }
@@ -74,7 +52,6 @@ module.exports = {
 ```typescript
 interface RdaConf {
   container: Container,
-  suites: Suite[],
   docker: Docker,
 }
 
@@ -82,12 +59,6 @@ interface Container {
   name: string,
   docs?: string,
   render?: { [key: string]: any }
-}
-
-type Framework = 'vue' | 'regular' | 'react' | 'angular'
-interface Suite {
-  name: string,
-  framework: Framework,
 }
 
 interface Docker {
