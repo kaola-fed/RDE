@@ -166,27 +166,6 @@
   <td>容器在渲染模板时会根据传入的属性渲染</td>
 </tr>
 </table>
-<h5 class="rde-h5">【可选属性】suites</h5>
-<table class="rde-table">
-<tr>
-</th>
-<th style=" width:80px">字段</th>
-<th style=" width:60px">必填项</th>
-<th style="">说明</th>
-<th style="">备注</th>
-</tr>
-<tr>
-  <td>name</td>
-  <td>●</td>
-  <td>安装的套件的发布在npm上的包名</td>
-  <td>与package.json中安装的一致</td>
-<tr>
-  <td>framework</td>
-  <td>●</td>
-  <td>vue、regular、react、angular</td>
-  <td>容器会在需要时加载并install这些套件</td>
-</tr>
-</table>
 <h5 class="rde-h5">【可选属性】docker</h5>
 <table class="rde-table">
 <tr>
@@ -213,12 +192,6 @@
       <span class="hljs-attr">appKey</span>: <span class="hljs-string">'MA-73249C84DEFE23'</span>,
     }
   },
-  <span class="hljs-attr">suites</span>: [
-    {
-      <span class="hljs-attr">name</span>: <span class="hljs-string">'rds-vue'</span>,
-      <span class="hljs-attr">framework</span>: <span class="hljs-string">'vue'</span>,
-    }
-  ],
   <span class="hljs-attr">docker</span>: {
     <span class="hljs-attr">ports</span>: [<span class="hljs-string">'8080:9000'</span>]
   }
@@ -227,7 +200,6 @@
 <h4 class="rde-h4">Typescript描述</h4>
 <pre class="hljs"><code><span class="hljs-keyword">interface</span> RdaConf {
   container: Container,
-  suites: Suite[],
   docker: Docker,
 }
 
@@ -235,12 +207,6 @@
   name: <span class="hljs-built_in">string</span>,
   docs?: <span class="hljs-built_in">string</span>,
   render?: { [key: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">any</span> }
-}
-
-<span class="hljs-keyword">type</span> Framework = <span class="hljs-string">'vue'</span> | <span class="hljs-string">'regular'</span> | <span class="hljs-string">'react'</span> | <span class="hljs-string">'angular'</span>
-<span class="hljs-keyword">interface</span> Suite {
-  name: <span class="hljs-built_in">string</span>,
-  framework: Framework,
 }
 
 <span class="hljs-keyword">interface</span> Docker {
@@ -309,7 +275,7 @@
         }, {
           title: 'RDS套件',
           children: [{
-            title: '开发规范', enTitle: 'Guideline', url: '/rdc/quickstart.html'
+            title: '关于', enTitle: 'About', url: '/rds/about.html'
           }]
         }]
       };

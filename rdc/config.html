@@ -159,148 +159,125 @@
 </ul>
 <h5 class="rde-h5">docs</h5>
 <table class="rde-table">
-<thead>
 <tr>
-<th style="">字段</th>
-<th style="">必填项</th>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width: 80px">必填项</th>
 <th style="">说明</th>
 <th style="">备注</th>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>logo</td>
-<td>-</td>
-<td>rdc 文档的logo url地址</td>
-<td></td>
-</tr>
+  <td>logo</td>
+  <td>-</td>
+  <td>rdc文档的logo url地址</td>
+  <td>-</td>
 <tr>
-<td>keywords</td>
-<td>-</td>
-<td>rdc 文档的关键字</td>
-<td></td>
-</tr>
+  <td>keywords</td>
+  <td>-</td>
+  <td>rdc 文档的关键字</td>
+  <td>-</td>
 <tr>
-<td>url</td>
-<td>-</td>
-<td>rdc 文档地址</td>
-<td></td>
-</tr>
+  <td>url</td>
+  <td>-</td>
+  <td>rdc 文档地址</td>
+  <td>-</td>
 <tr>
-<td>userStyles</td>
-<td>-</td>
-<td>rdc 文档要引入的css文件url数组</td>
-<td>-</td>
-</tr>
+  <td>userStyles</td>
+  <td>-</td>
+  <td>rdc 文档要引入的css文件</td>
+  <td>文件url数组</td>
 <tr>
-<td>userScripts</td>
-<td>-</td>
-<td>rdc 文档要引入的script文件url数组</td>
-<td>-</td>
+  <td>userScripts</td>
+  <td>-</td>
+  <td>rdc 文档 要引入的script文件</td>
+  <td>文件url 数组</td>
 </tr>
-</tbody>
 </table>
 <h5 class="rde-h5">render</h5>
 <table class="rde-table">
-<thead>
 <tr>
-<th style="">字段</th>
-<th style="">必填项</th>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width:80px">必填项</th>
 <th style="">说明</th>
 <th style="">备注</th>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>includes</td>
-<td>-</td>
-<td>template模板中需要渲染的文件后缀数组</td>
-<td></td>
-</tr>
+  <td>includes</td>
+  <td>-</td>
+  <td>template模板中需要渲染的文件后缀数组</td>
+  <td>-</td>
 <tr>
-<td>tags</td>
-<td>-</td>
-<td>template 模板使用mustache渲染的符号</td>
-<td>默认是{{ }}</td>
-</tr>
+  <td>tags</td>
+  <td>-</td>
+  <td>template 模板使用mustache渲染的符号</td>
+  <td>默认是{{ }}</td>
 <tr>
-<td>validate</td>
-<td>-</td>
-<td>验证函数，用于验证rda传入的render参数是否符合要求</td>
-<td></td>
-</tr>
+  <td>validate</td>
+  <td>-</td>
+  <td>验证函数，用于验证rda传入的render参数是否符合要求</td>
+  <td></td>
 <tr>
-<td>mock</td>
-<td>-</td>
-<td>rdc 开发过程中 mock rda的render参数</td>
-<td></td>
+  <td>mock</td>
+  <td>-</td>
+  <td>rdc 开发过程中 mock rda的render参数</td>
+  <td></td>
 </tr>
-</tbody>
 </table>
 <h5 class="rde-h5">mappings</h5>
 <blockquote>
 <p class="rde-p">integrate 模式下，需要将app下的目录文件copy到对应的运行时目录下，这里填写的是映射关系</p>
 </blockquote>
 <table class="rde-table">
-<thead>
 <tr>
-<th style="">字段</th>
-<th style="">必填项</th>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width:80px">必填项</th>
 <th style="">说明</th>
 <th style="">备注</th>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>from</td>
-<td>-</td>
-<td>copy的源地址，基于rdc项目根目录</td>
-<td>例如： from: 'app/main.js'。可以是文件或目录地址</td>
-</tr>
+  <td>from</td>
+  <td>-</td>
+  <td>copy的源地址，基于rdc项目根目录</td>
+  <td>例如： from: 'app/main.js'。可以是文件或目录地址</td>
 <tr>
-<td>to</td>
-<td>-</td>
-<td>copy的目的地址，基于运行时目录</td>
-<td>例如：'src/main.js'，可以是文件或目录地址</td>
-</tr>
+  <td>to</td>
+  <td>-</td>
+  <td>copy的目的地址，基于运行时目录</td>
+  <td>例如：'src/main.js'，可以是文件或目录地址</td>
 <tr>
-<td>options</td>
-<td>-</td>
-<td>copy过程的处理，可参考<a class="rde-a" href="https://www.npmjs.com/package/recursive-copy">recursive-copy</a>的options</td>
-<td></td>
-</tr>
+  <td>options</td>
+  <td>-</td>
+  <td>copy过程的处理，</td>
+  <td>可参考<a class="rde-a" href="https://www.npmjs.com/package/recursive-copy">recursive-copy</a>的options</td>
 <tr>
-<td>merge</td>
-<td></td>
-<td></td>
-<td></td>
+  <td>merge</td>
+  <td></td>
+  <td></td>
+  <td></td>
 </tr>
-</tbody>
 </table>
 <h5 class="rde-h5">docker</h5>
 <table class="rde-table">
-<thead>
 <tr>
-<th style="">字段</th>
-<th style="">必填项</th>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width:80px">必填项</th>
 <th style="">说明</th>
 <th style="">备注</th>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>tag</td>
-<td>-</td>
-<td>rdc docker镜像 tag</td>
-<td>例：rdebase/rdc-vue-start:0.0.1</td>
-</tr>
+  <td>tag</td>
+  <td>-</td>
+  <td>rdc docker镜像 tag</td>
+  <td>例：rdebase/rdc-vue-start:0.0.1</td>
 <tr>
-<td>ports</td>
-<td>-</td>
-<td>容器映射到本地的端口号</td>
-<td>与Dockerfile中ports格式保持一致</td>
+  <td>ports</td>
+  <td>-</td>
+  <td>容器映射到本地的端口号</td>
+  <td>与Dockerfile中ports格式保持一致</td>
 </tr>
-</tbody>
 </table>
 <h5 class="rde-h5">nodeVesion</h5>
 <blockquote>
@@ -312,22 +289,19 @@
 </blockquote>
 <h5 class="rde-h5">lint</h5>
 <table class="rde-table">
-<thead>
 <tr>
-<th style="">字段</th>
-<th style="">必填项</th>
+</th>
+<th style=" width:80px">字段</th>
+<th style=" width:80px">必填项</th>
 <th style="">说明</th>
 <th style="">备注</th>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>ext</td>
-<td>-</td>
-<td>需要lint的文件后缀数组</td>
-<td>例如：['.js', '.vue']</td>
+  <td>ext</td>
+  <td>-</td>
+  <td>需要lint的文件后缀数组</td>
+  <td>例如：['.js', '.vue']</td>
 </tr>
-</tbody>
 </table>
 <h4 class="rde-h4">完整示例</h4>
 <pre class="hljs"><code><span class="hljs-built_in">module</span>.exports = {
@@ -474,7 +448,7 @@
         }, {
           title: 'RDS套件',
           children: [{
-            title: '开发规范', enTitle: 'Guideline', url: '/rdc/quickstart.html'
+            title: '关于', enTitle: 'About', url: '/rds/about.html'
           }]
         }]
       };
