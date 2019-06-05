@@ -10,7 +10,11 @@ export default class DocsPublish extends BaseDocs {
   ]
 
   public async run() {
-    ghpages.publish(conf.docsPagesDir)
+    await ghpages.publish(conf.docsPagesDir, e => {
+      if (e) {
+        logger.error(e)
+      }
+    })
   }
 
   public async postRun() {
