@@ -1,5 +1,9 @@
 FROM {{{from}}}
 
+RUN useradd -ms /bin/bash rde
+
+USER rde
+
 # Configure apt
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \

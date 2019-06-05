@@ -63,6 +63,9 @@ class Sync {
   public async start({watch, cmd, skipInstall = false}) {
     await _.asyncExec(`mkdir -p ${conf.localCacheDir}`)
 
+    await _.asyncExec('rm -rf app/node_modules')
+    await _.asyncExec(`rm -rf ${conf.templateDir}/node_modules`)
+
     if (conf.isApp) {
       await this.genAppStagedFiles()
     } else {
@@ -245,8 +248,13 @@ rde lint -m "$commitMsg"
       }
 
       const symPkgJsonPath = resolve(cwd, 'package.json')
+
+      if (fs.existsSync(symPkgJsonPath)) {
+        fs.unlinkSync(symPkgJsonPath)
+      }
+
       fs.symlinkSync(cachePkgJsonPath, symPkgJsonPath)
-      await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {
+      await _.asyncSpawn('npm', ['i', '--package-lock', 'false', '--registry', 'http://rnpm.hz.netease.com/'], {
         cwd,
       })
       fs.unlinkSync(symPkgJsonPath)
@@ -255,8 +263,13 @@ rde lint -m "$commitMsg"
     if (conf.rdType === RdTypes.Container) {
       const runtimePkgJsonPath = resolve(templateDir, 'package.json')
       const symPkgJsonPath = resolve(cwd, 'package.json')
+
+      if (fs.existsSync(symPkgJsonPath)) {
+        fs.unlinkSync(symPkgJsonPath)
+      }
+
       fs.symlinkSync(runtimePkgJsonPath, symPkgJsonPath)
-      await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {
+      await _.asyncSpawn('npm', ['i', '--package-lock', 'false', '--registry', 'http://rnpm.hz.netease.com/'], {
         cwd,
       })
       fs.unlinkSync(symPkgJsonPath)

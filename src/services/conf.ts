@@ -37,7 +37,7 @@ const conf = {
   },
 
   get dockerWorkDirRoot() {
-    return '/rde'
+    return '/home/rde'
   },
 
   get tmpDir() {
