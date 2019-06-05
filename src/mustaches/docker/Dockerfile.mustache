@@ -1,13 +1,15 @@
 FROM {{{from}}}
 
-RUN useradd -ms /bin/bash rde
-
-USER rde
-
 # Configure apt
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 RUN yarn global add rde
+
+RUN useradd -ms /bin/bash rde
+
+USER rde
+
+ENV HOME {{{workDir}}}
 
 WORKDIR {{{workDir}}}
 

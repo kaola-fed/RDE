@@ -4,6 +4,8 @@ RUN useradd -ms /bin/bash rde
 
 USER rde
 
+ENV HOME {{{workDir}}}
+
 # Configure apt
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
