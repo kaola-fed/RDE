@@ -2,9 +2,8 @@ version: '3'
 services:
   {{{tag}}}-service:
     build:
-    context: .
-    user: rde
-    dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile
 
     ports:
     {{#ports}}
