@@ -1,13 +1,10 @@
 import * as browserSync from 'browser-sync'
 import * as chokidar from 'chokidar'
-import * as path from 'path'
-import * as copy from 'recursive-copy'
 
 import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
 import {TError, TStart} from '../../services/track'
 
-const {join} = path
 export default class DocsServe extends BaseDocs {
   public static flags = {
     ...BaseDocs.flags,
@@ -45,11 +42,7 @@ export default class DocsServe extends BaseDocs {
     })
 
     const handler = async () => {
-      await copy(
-        conf.docsDir,
-        join(conf.docsPagesDir),
-        this.options,
-      )
+      await this.init()
     }
 
     watcher

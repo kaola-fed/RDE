@@ -10,8 +10,16 @@ export default class DocsInit extends Command {
 
   public async run() {
     await _.asyncExec('mkdir ./_docs')
-    await _.asyncExec('echo "about page" > ./_docs/index.md')
-    await _.asyncExec('echo "faq page" > ./_docs/faq.md')
+    await _.asyncExec(`echo "---
+title: 关于
+subTitle: About
+order: 12
+---" > ./_docs/index.md`)
+    await _.asyncExec(`echo "---
+title: FAQ
+order: 0
+---
+" > ./_docs/faq.md`)
 
     logger.log('Init successfully')
   }
