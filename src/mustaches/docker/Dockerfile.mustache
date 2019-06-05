@@ -5,16 +5,19 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 RUN yarn global add rde
 
-RUN useradd -ms /bin/bash rde
-
-USER rde
-
-ENV HOME {{{workDir}}}
+RUN groupadd rde && useradd -ms /bin/bash -g rde rde
 
 WORKDIR {{{workDir}}}
 
 COPY .cache/package-cache.json template/.npmrc* template/.yarnrc* app/.npmrc* app/.yarnrc* {{{workDir}}}/
+
 RUN mv package-cache.json package.json
 
+RUN chown -R rde:rde {{{workDir}}}
+
 {{!cache node-modules}}
+USER rde
+
+ENV HOME {{{workDir}}}
+
 RUN yarn
