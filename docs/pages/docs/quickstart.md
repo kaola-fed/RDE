@@ -61,6 +61,6 @@ $ rde docs:serve
 $ rde docs:publish
 ```
 
-发布完成后，可以登陆github gh-pages的链接，查看效果
+&emsp;&emsp;发布前，请确保工程的github上有gh-pages分支，发布完成后，可以登陆github gh-pages的链接，查看效果
 
 > 最后， 请不要忘记，将文档的链接填写到rdc.config.js或者rda.config.js对应的位置上，方便使用者查看
