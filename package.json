@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Recommanded Development Environment",
-  "version": "0.0.1-beta.20",
+  "version": "0.0.1-beta.21",
   "bin": {
     "rde": "./bin/run"
   },
@@ -16,7 +16,6 @@
     "chokidar": "^2.1.5",
     "clean-stack": "^2.1.0",
     "cli-table2": "^0.2.0",
-    "create-html": "^4.1.0",
     "deasync": "^0.1.15",
     "debug": "^4.1.1",
     "deep-extend": "^0.6.0",

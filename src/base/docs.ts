@@ -8,6 +8,7 @@ import * as rimraf from 'rimraf'
 import * as through from 'through2'
 
 import conf from '../services/conf'
+import doc from '../services/doc'
 import {debug, logger} from '../services/logger'
 import mdIt from '../services/markdown'
 import {MCOMMON, MDOCS} from '../services/message'
@@ -32,14 +33,13 @@ export default abstract class DocsBase extends Command {
     const navs = [
       {title: '文档', main: true},
       {title: 'FAQ', url: '/FAQ.html'},
-      // {title: '日志', url: '/changelog.html'},
     ]
 
-    // if (conf.rdType === RdTypes.Container) {
-    //   const nav = {title: '速查', url: '/cheatSheet.html'}
-    //   navs.splice(1, 0, nav)
-    //   return navs
-    // }
+    if (conf.isContainer) {
+      const nav = {title: '速查', url: '/cheatsheet.html'}
+      navs.splice(1, 0, nav)
+      return navs
+    }
 
     return navs
   }
@@ -162,10 +162,51 @@ export default abstract class DocsBase extends Command {
 
     await this.render()
 
+    await this.preRun()
+
     process.on('SIGINT', () => {
       rimraf.sync(conf.docsPagesDir)
       process.exit()
     })
+  }
+
+  public async preRun() {
+    if (conf.isApp) {
+      return
+    }
+
+    const {loadTemplate: load} = render
+    const index = load('docs/index')
+    const style = load('docs/style')
+    const layout = load('docs/layout')
+    const cheatsheet = load('docs/cheatsheet')
+
+    const {docs = {}, mappings = []} = this.localConfig as RdcConf || {}
+
+    const content = render.render(cheatsheet, {
+      deps: await doc.getPkgDeps(),
+      lint: doc.getLintModule(),
+      mappings,
+    })
+
+    const output = render.render(index, {
+      title: docs.title || '',
+      content,
+      navs: JSON.stringify(this.navs),
+      pages: JSON.stringify(this.pages),
+      userStyles: this.userStyles,
+      userScripts: this.userScripts,
+    }, ['<%', '%>'], {
+      style,
+      layout,
+      frameworkScripts: this.frameworkScripts,
+    })
+
+    fs.writeFileSync(
+      resolve(conf.docsPagesDir, 'cheatsheet.html'),
+      output,
+      {encoding: 'utf-8'},
+    )
   }
 
   public async postRun() {}

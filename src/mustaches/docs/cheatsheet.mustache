@@ -1,0 +1,39 @@
+<div>
+  <h4 class="rde-h4">文件映射</h4>
+  <table class="rde-table">
+    <tr>
+      <th>FROM</th>
+      <th>TO</th>
+    </tr>
+    {{#mappings}}
+    <tr>
+      <td>{{{from}}}</td>
+      <td>{{{to}}}</td>
+    </tr>
+    {{/mappings}}
+  </table>
+
+  <div style="display: flex; flex-direction: row; margin-top: 20px;">
+    <div style="width: 50%;">
+      <h4 class="rde-h4">依赖包</h4>
+      <table class="rde-table">
+        <tr>
+          <th>NAME</th>
+          <th>VERSION</th>
+        </tr>
+        {{#deps}}
+          <tr>
+            <td><a href="{{{link}}}" style="color: #87B8E2" target="_blank">{{{name}}}</a></td>
+            <td>{{{version}}}</td>
+          </tr>
+        {{/deps}}
+      </table>
+    </div>
+    <div style="width: 50%; margin-left: 8px;">
+      <h4 class="rde-h4">LINT规则</h4>
+      <div>
+        {{{lint}}}
+      </div>
+    </div>
+  </div>
+</div>

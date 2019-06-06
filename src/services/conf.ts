@@ -115,6 +115,10 @@ const conf = {
     return this.rdType === this.RdTypes.Application
   },
 
+  get isContainer() {
+    return this.rdType === this.RdTypes.Container
+  },
+
   get rdType() {
     return rdType
   },

@@ -17,11 +17,6 @@ export default class DocsServe extends BaseDocs {
   @TError({conf})
   @TStart
   public async run() {
-    if (conf.rdType === conf.RdTypes.Container) {
-      // await doc.generateChangelog()
-      // await doc.generateCheatSheet()
-    }
-
     this.watchFiles()
 
     browserSync({
