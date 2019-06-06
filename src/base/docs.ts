@@ -32,11 +32,11 @@ export default abstract class DocsBase extends Command {
   public get navs() {
     const navs = [
       {title: '文档', main: true},
-      {title: 'FAQ', url: '/FAQ.html'},
+      {title: 'FAQ', url: 'FAQ.html'},
     ]
 
     if (conf.isContainer) {
-      const nav = {title: '速查', url: '/cheatsheet.html'}
+      const nav = {title: '速查', url: 'cheatsheet.html'}
       navs.splice(1, 0, nav)
       return navs
     }
@@ -106,6 +106,7 @@ export default abstract class DocsBase extends Command {
 
           const output = render.render(index, {
             title: docs.title || '',
+            baseUrl: docs.url || '',
             content,
             navs: JSON.stringify(this.navs),
             pages: JSON.stringify(this.pages),
@@ -191,6 +192,7 @@ export default abstract class DocsBase extends Command {
 
     const output = render.render(index, {
       title: docs.title || '',
+      baseUrl: docs.url || '',
       content,
       navs: JSON.stringify(this.navs),
       pages: JSON.stringify(this.pages),
@@ -240,7 +242,7 @@ export default abstract class DocsBase extends Command {
         pages.push({
           title: meta.title || file.name,
           subTitle: meta.subTitle || '',
-          url: `/${file.name.slice(0, -3)}.html`,
+          url: `${file.name.slice(0, -3)}.html`,
           order: meta.order || 0
         })
       }
@@ -261,7 +263,7 @@ export default abstract class DocsBase extends Command {
             return {
               title: meta.title || child.name,
               subTitle: meta.subTitle || '',
-              url: `/${file.name}/${child.name.slice(0, -3)}.html`,
+              url: `${file.name}/${child.name.slice(0, -3)}.html`,
               order: meta.order || 0
             }
           }),

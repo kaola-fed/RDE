@@ -9,7 +9,7 @@
       <li v-for="nav in navs"
           class="rde-header-navs__item" :class="{'rde-header-navs__item--crt': isCrtNav(nav)}">
 
-        <a :href="nav.url || '/index.html'">{{nav.title}}</a>
+        <a :href="nav.url || 'index.html'">{{nav.title}}</a>
       </li>
     </ul>
   </div>
