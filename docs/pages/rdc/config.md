@@ -31,7 +31,7 @@
 | -
 |- url
 | -
-| 文档地址
+| 文档地址, 发布到github pages后会作为整个站点的baseUrl使用，所有nav路径都会将这个url作为prefix
 | -
 |- userStyles
 | -
