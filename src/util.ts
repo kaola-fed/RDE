@@ -6,8 +6,6 @@ import * as util from 'util'
 
 const asyncExec = util.promisify(exec)
 
-const asyncSpawn = util.promisify(spawn)
-
 export default {
   isEmptyDir(dir: string) {
     const files = fs.readdirSync(dir)
@@ -27,10 +25,23 @@ export default {
     return asyncExec(cmd)
   },
 
-  async asyncSpawn(cmd: string, args = [], options: SpawnOptions = {}) {
-    return asyncSpawn(cmd, args, {
+  async asyncSpawn(cmd: string, args: ReadonlyArray<string> = [], options: SpawnOptions = {}) {
+    const child = spawn(cmd, args, {
+      stdio: 'inherit',
       ...options,
-      stdio: 'inherit'
+    })
+
+    return new Promise((resolve, reject) => {
+      child.on('error', reject)
+
+      child.on('exit', code => {
+        if (code === 0) {
+          resolve()
+        } else {
+          const err = new Error(`child exited with code ${code}`)
+          reject(err)
+        }
+      })
     })
   },
 
@@ -48,20 +59,20 @@ export default {
   },
 
   async copy(src, dest, mapping) {
-    let option = {
+    let options = {
       overwrite: true,
       dot: true,
-      ...mapping.option,
+      ...mapping.options,
       rename(filePath) {
         // fix rename problem if src type is file
-        if (fs.lstatSync(src).isFile() && mapping.option.rename) {
-          const name = mapping.option.rename(path.basename(src))
+        if (fs.lstatSync(src).isFile() && mapping.options && mapping.options.rename) {
+          const name = mapping.options.rename(path.basename(src))
           return `../${name}`
         }
         return filePath
       },
     }
 
-    await copy(src, dest, option)
+    await copy(src, dest, options)
   },
 }

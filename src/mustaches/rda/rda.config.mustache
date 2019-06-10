@@ -1,0 +1,15 @@
+module.exports = {
+  container: {
+    name: '{{{container}}}',
+    docs: '{{{docs}}}',
+    render: {},
+  },
+  docker: {
+    ports: [
+      {{#ports}}
+      '{{{.}}}',
+      {{/ports}}
+    ],
+  },
+  suites: [],
+};

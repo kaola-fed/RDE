@@ -1,13 +1,11 @@
 // @ts-ignore
 import * as fs from 'fs'
-import * as beautify from 'js-beautify'
 import * as mustache from 'mustache'
 import * as path from 'path'
 // @ts-ignore
 import * as copy from 'recursive-copy'
+import * as stringifyObject from 'stringify-object'
 import * as through from 'through2'
-
-import {spinner} from './logger'
 
 let defaultTags = ['{{', '}}']
 
@@ -26,7 +24,10 @@ export default {
 
   async renderTo(tpl: string, dataView: any, dest: string, options = {}, tags = defaultTags) {
     if (tpl === 'module') {
-      dataView.obj = beautify.js(JSON.stringify(dataView.obj))
+      dataView.obj = stringifyObject(dataView.obj, {
+        indent: '  ',
+        singleQuotes: true,
+      })
     }
 
     await copy(path.resolve(mustachesDir, `${tpl}.mustache`), dest, {
@@ -41,8 +42,6 @@ export default {
   },
 
   async renderDir(src: string, dataView: any, includes: string[], dest: string, options = {}, tags = defaultTags) {
-    spinner.start(`Rendering ${src}. This might take a while...`)
-
     await copy(src, dest, {
       ...options,
       transform: (src: string) => {
@@ -51,12 +50,10 @@ export default {
             const output = this.render(chunk.toString(), dataView, tags)
             done(null, output)
           } else {
-            done(null, chunk.toString())
+            done(null, chunk)
           }
         })
       }
     })
-
-    spinner.stop()
   }
 }

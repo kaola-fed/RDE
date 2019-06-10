@@ -1,0 +1,12 @@
+module.exports = {
+  {{#extends}}extends: '{{{extends}}}',{{/extends}}
+  framework: '{{{framework}}}',
+  docs: {
+    url: '{{{docs}}}'
+  },
+  mappings: [],
+  docker: {
+    tag: '{{{rdcRepo}}}:0.0.0',
+    ports: [],
+  },
+};

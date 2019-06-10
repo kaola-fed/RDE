@@ -1,0 +1,29 @@
+{
+  "name": "rde",
+  "version": "1.0.0",
+  "repository": "https://github.com/kaola-fed/RDE.git",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^2.0.1",
+    "npm-watch": "^0.6.0"
+  },
+  "scripts": {
+    "serve": "npx http-server dist",
+    "watch": "npm-watch",
+    "build": "node ./docs.js",
+    "publish": "npm run build && gh-pages -d dist"
+  },
+  "dependencies": {
+    "recursive-copy": "^2.0.10"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "homepage",
+        "pages",
+        "layout.html"
+      ],
+      "extensions": "html,md"
+    }
+  }
+}

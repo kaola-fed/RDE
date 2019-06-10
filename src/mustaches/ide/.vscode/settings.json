@@ -1,0 +1,31 @@
+{
+  "eslint.validate": [
+    "typescript",
+    "javascript",
+    "javascriptreact",
+    "typescriptreact",
+    {
+      "language": "html",
+      "autoFix": true
+    },
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
+  "eslint.autoFixOnSave": true,
+  "eslint.options": {
+    "configFile": "{{{eslintrcPath}}}"
+  },
+  "files.exclude": {
+    "**/.cache": true,
+    "**/.idea": true,
+    "**/.vscode": true,
+    "**/.devcontainer": true,
+    "**/node_modules": true,
+    {{#isApp}}
+    "**/template": true,
+    {{/isApp}}
+  },
+  "javascript.implicitProjectConfig.experimentalDecorators": true
+}

@@ -1,36 +1,23 @@
-import * as browserSync from 'browser-sync'
+import * as ghpages from 'gh-pages'
 
-import BaseDocs from '../../base.docs'
+import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
-import Watcher from '../../services/watcher'
+import {logger} from '../../services/logger'
 
 export default class DocsPublish extends BaseDocs {
   public static examples = [
-    '$ rde docs:serve',
+    '$ rde docs:publish',
   ]
 
   public async run() {
-    this.watchFiles()
-
-    browserSync({
-      server: conf.docsPagesDir,
-      ui: {
-        port: 4040,
-      },
-      watch: true,
-      open: true,
+    await ghpages.publish(conf.docsPagesDir, e => {
+      if (e) {
+        logger.error(e)
+      }
     })
   }
 
-  public watchFiles() {
-    const mappings = [
-      {
-        from: conf.docsDir,
-        to: `../${conf.docsPagesDir}`,
-        option: this.option,
-      },
-    ]
-
-    new Watcher(mappings).start()
+  public async postRun() {
+    logger.log('Published successfully')
   }
 }

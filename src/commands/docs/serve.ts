@@ -1,14 +1,21 @@
 import * as browserSync from 'browser-sync'
+import * as chokidar from 'chokidar'
 
-import BaseDocs from '../../base.docs'
+import BaseDocs from '../../base/docs'
 import conf from '../../services/conf'
-import Watcher from '../../services/watcher'
+import {TError, TStart} from '../../services/track'
 
 export default class DocsServe extends BaseDocs {
+  public static flags = {
+    ...BaseDocs.flags,
+  }
+
   public static examples = [
     '$ rde docs:serve',
   ]
 
+  @TError({conf})
+  @TStart
   public async run() {
     this.watchFiles()
 
@@ -18,19 +25,24 @@ export default class DocsServe extends BaseDocs {
         port: 4040,
       },
       watch: true,
-      open: false,
+      open: true,
     })
   }
 
+  @TError({conf})
+  @TStart
   public watchFiles() {
-    const mappings = [
-      {
-        from: conf.docsDir,
-        to: `../${conf.docsPagesDir}`,
-        option: this.option,
-      },
-    ]
+    const watcher = chokidar.watch(conf.docsDir, {
+      interval: 300,
+    })
 
-    new Watcher(mappings).start()
+    const handler = async () => {
+      await this.init()
+    }
+
+    watcher
+      .on('add', handler)
+      .on('change', handler)
+      .on('unlink', handler)
   }
 }

@@ -6,5 +6,13 @@
 /package-lock.json
 /tmp
 node_modules
-.idea
 test/run
+tsconfig.tsbuildinfo
+.tsbuildinfo
+
+.idea/*
+!src/mustaches/ide/.idea
+.vscode/*
+!src/mustaches/ide/.vscode
+.history
+dist

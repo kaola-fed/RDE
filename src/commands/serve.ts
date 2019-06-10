@@ -1,12 +1,17 @@
+import Base from '../base'
 import _ from '../util'
 
 import Run from './run'
-import RdtServe from './template/serve'
 
-export default class Serve extends RdtServe {
+export default class Serve extends Base {
   public static examples = [
     '$ rde serve',
   ]
+
+  public static flags = {
+    ...Base.flags,
+    ...Run.flags,
+  }
 
   public async run() {
     const {flags} = this.parse(Serve)

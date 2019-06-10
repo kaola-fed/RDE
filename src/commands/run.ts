@@ -1,67 +1,138 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import {flags} from '@oclif/command'
+import {spawn} from 'child_process'
+import * as Table from 'cli-table2'
+import * as readline from 'readline'
 
-import Base from '../base'
+import RunBase from '../base/run'
 import cache from '../services/cache'
 import conf from '../services/conf'
-import _ from '../util'
+import docker from '../services/docker'
+import {debug} from '../services/logger'
+import sync from '../services/sync'
+import {validateRda, validateRdc} from '../services/validate'
 
-import RdtRun from './template/run'
-
-export default class Run extends RdtRun {
-  public static description = 'run scripts provided by rde'
+const {RdTypes, cwd} = conf
+export default class Run extends RunBase {
+  public static description = 'run scripts provided by container'
 
   public static examples = [
-    '$ rde run <script>',
+    '$ rde run <cmd>',
   ]
+
+  public static flags = {
+    ...RunBase.flags,
+    rebuild: flags.boolean({
+      char: 'r',
+      description: 'rebuild image before run',
+    }),
+    install: flags.boolean({
+      char: 'i',
+      description: 'generate local node_modules',
+    }),
+  }
 
   public static args = [{
     name: 'cmd',
-    required: true,
-    description: 'scripts provided by rdt',
+    required: false,
+    description: 'scripts provided by container',
   }]
 
-  public static flags = {
-    ...Base.flags,
-  }
+  public rebuild = false
 
-  public get needInstall() {
-    const {resolve} = path
-    const {devDependencies = {}, dependencies = {}} = _.ensureRequire(resolve(conf.cwd, 'package.json'))
-    const rdtVersion = devDependencies[this.rdtName] || dependencies[this.rdtName]
-
-    const runtimeRdtVersion = cache.get(this.rdtName)
-
-    // 判断运行时目录的 rdt 版本 和 项目根目录下 package.json 的 rdt 版本是否一致
-    if (rdtVersion !== runtimeRdtVersion || !fs.existsSync(resolve(conf.runtimeDir, 'node_modules'))) {
-      cache.set(this.rdtName, rdtVersion)
-      return true
-    }
-    return false
-  }
+  public install = false
 
   public async preInit() {
-    const {args} = this.parse(Run)
+    await super.preInit()
+    await this.config.runHook('checkUpdate', {})
 
-    const {app} = conf.getRdeConf()
-    const {template, mappings} = app
-    if (!template) {
-      throw Error('template is not provided in you config file, please check')
+    const {flags} = this.parse(Run)
+    this.rebuild = flags.rebuild
+    this.install = flags.install
+
+    if (conf.rdType === RdTypes.Container) {
+      await validateRdc()
     }
 
-    return {
-      cmd: args.cmd,
-      rdtName: template.name,
-      renderData: template.render,
-      mappings,
+    if (conf.isApp) {
+      await validateRda()
     }
   }
 
-  public async initialize({cmd, rdtName, renderData, mappings}) {
-    this.cmd = cmd
+  public async preRun() {
+    if (conf.isApp) {
+      const cacheContainer = cache.get('container')
+      const {container} = conf.getAppConf()
 
-    this.rdtName = rdtName
-    this.renderData = renderData
-    this.mappings = mappings
+      if (cacheContainer && cacheContainer !== container.name) {
+        const table = new Table({
+          style: {
+            'padding-left': 0,
+            'padding-right': 0,
+            border: ['yellow']
+          },
+          colWidths: [50],
+          rowHeights: [2],
+        })
+
+        table.push(
+          [{
+            hAlign: 'center',
+            content: `Container updated: ${container.name}\nPlease run: $rde install`
+          }],
+        )
+
+        // tslint:disable:no-console
+        console.log(table.toString())
+      }
+      cache.set('container', container.name)
+    }
+
+    await sync.start({
+      watch: this.watch,
+      cmd: this.cmd,
+      skipInstall: true
+    })
+  }
+
+  public async run() {
+    // not using docker-compose cuz .dockerignore in sub dir is not working,
+    // build with docker-compose is slow if node_modules exists
+    await docker.build(`dev-${conf.tag}`, cwd, this.rebuild, `${conf.localCacheDir}/Dockerfile`)
+
+    let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
+
+    debug(`docker build dev-${conf.tag}`)
+
+    if (this.watch) { args.push('--watch') }
+    if (this.verbose) { args.push('-v') }
+    if (this.extras) { args = args.concat(['-e', this.extras]) }
+
+    let child = null
+    process.on('SIGINT', () => child.kill())
+
+    if (this.watch) {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
+
+      rl.on('SIGINT', () => {
+        child.kill()
+        process.exit(0)
+      })
+    }
+
+    debug(`docker-compose ${args.join(' ')}`)
+
+    child = spawn('docker-compose', (args as ReadonlyArray<string>), {
+      cwd: conf.localCacheDir,
+      stdio: 'inherit',
+    })
+
+    child.on('close', code => {
+      if (code !== 0) {
+        process.exit(code)
+      }
+    })
   }
 }

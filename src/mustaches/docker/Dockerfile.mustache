@@ -1,13 +1,23 @@
-FROM node:10
+FROM {{{from}}}
 
-WORKDIR /usr/rde
+# Configure apt
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
-COPY .rde .rde
+RUN yarn global add rde
 
-COPY package.json .
+RUN groupadd rde && useradd -ms /bin/bash -g rde rde
 
-RUN npm ci
+WORKDIR {{{workDir}}}
 
-#ENTRYPOINT ["_git/install.hooks.sh"]
+COPY .cache/package-cache.json template/.npmrc* template/.yarnrc* app/.npmrc* app/.yarnrc* {{{workDir}}}/
 
-CMD [ "npm", "run", "{{cmd}}" ]
+RUN mv package-cache.json package.json
+
+RUN chown -R rde:rde {{{workDir}}}
+
+{{!cache node-modules}}
+USER rde
+
+ENV HOME {{{workDir}}}
+
+RUN yarn

@@ -3,18 +3,26 @@
   <meta title="<% title %>">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+  <base href="<%baseUrl%>">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet"
-        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/mono-blue.min.css">
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1183501_stmalbigu4h.css">
 
   <%>style%>
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 
   <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
   <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
 
   <%>frameworkScripts%>
-  <%>userScripts%>
+  <%#userStyles%>
+    <link rel="stylesheet" href="<%{.}%>" />
+  <%/userStyles%>
+  <%#userScripts%>
+    <script src="<%{.}%>"></script>
+  <%/userScripts%>
 </head>
 <body>
   <div id="rde-docs">
@@ -22,7 +30,7 @@
       <%>layout%>
     </div>
 
-    <div id="rde-page" data-simplebar>
+    <div id="rde-page">
       <%{content}%>
     </div>
   </div>
@@ -46,6 +54,9 @@
       mounted() {
         const el = new SimpleBar(this.$refs.sidebarWrap);
         el.recalculate();
+
+        const contentEl = new SimpleBar(document.querySelector('#rde-page'))
+        contentEl.recalculate()
       },
       methods: {
         isCrtNav(nav) {
@@ -61,7 +72,7 @@
           return page.url === location.pathname;
         },
       },
-    })
+    });
   </script>
 </body>
 </html>

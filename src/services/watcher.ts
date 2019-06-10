@@ -10,10 +10,12 @@ import {logger} from './logger'
 
 export default class Watcher extends Events {
   private readonly mappings: Mapping[] = []
+  private readonly copy
 
-  constructor(mappings: Mapping[] = []) {
+  constructor(mappings: Mapping[] = [], copy?) {
     super()
     this.mappings = mappings
+    this.copy = copy || _.copy
   }
 
   public start() {
@@ -45,10 +47,10 @@ export default class Watcher extends Events {
     const relativeToFromPath = relative(resolve(cwd, mapping.from), filePath)
 
     // 将相对路径 加在 to 后面，拼成 完整的目标路径
-    const destPath = resolve(conf.runtimeDir, mapping.to, relativeToFromPath)
+    const destPath = resolve(conf.integrateDir, mapping.to, relativeToFromPath)
 
     if (['add', 'change', 'addDir'].includes(type)) {
-      _.copy(filePath, destPath, mapping)
+      await this.copy(filePath, destPath, mapping)
     }
 
     if (type === 'unlink') {

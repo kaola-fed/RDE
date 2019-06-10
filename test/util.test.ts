@@ -9,15 +9,15 @@ const asyncExec = util.promisify(exec)
 describe('utils', () => {
   describe('isEmpty', () => {
     before(async () => {
-      await asyncExec('cd test && mkdir run')
+      await asyncExec('cd test && mkdir tmp')
     })
 
     after(async () => {
-      await asyncExec('rm -rf test/run')
+      await asyncExec('rm -rf test/tmp')
     })
 
     it('should return true with an empty folder', () => {
-      const result = _.isEmptyDir('./test/run')
+      const result = _.isEmptyDir('./test/tmp')
       expect(result).to.be.true
     })
 

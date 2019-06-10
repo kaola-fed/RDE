@@ -1,0 +1,13 @@
+{
+  "name": "{{{tag}}}",
+  "service": "{{{tag}}}-service",
+  "dockerComposeFile": "./docker-compose.yml",
+  "workspaceFolder": "{{{workDir}}}",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "rde docker:run && yarn",
+  "extensions": {{{extensions}}},
+  "settings": {
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "files.exclude": {}
+  }
+}

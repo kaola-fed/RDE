@@ -1,17 +1,19 @@
-import * as extend from 'deep-extend'
+import * as os from 'os'
 import * as path from 'path'
 
 import _ from '../util'
 
 const {resolve} = path
 
-const appConfName = 'rde.app.js'
+const appConfName = 'rda.config.js'
 
-const rdtConfName = 'rde.template.js'
+const rdcConfName = 'rdc.config.js'
 
-const rdsConfName = 'rde.suite.js'
+let rdType = ''
 
-const tmpDirName = '.tmp'
+let rdMode = ''
+
+let rdcConfMap: any = {}
 
 const conf = {
   get cwd() {
@@ -30,132 +32,132 @@ const conf = {
     return resolve(conf.cwd, appConfName)
   },
 
+  get rdcConfPath() {
+    return resolve(conf.cwd, rdcConfName)
+  },
+
+  get dockerWorkDirRoot() {
+    return '/home/rde'
+  },
+
   get tmpDir() {
-    return resolve(conf.cwd, tmpDirName)
+    return path.join(os.tmpdir(), 'rde_rdc_tmp')
+  },
+
+  get localCacheDir() {
+    return '.cache'
+  },
+
+  get templateDir() {
+    return 'template'
   },
 
   get runtimeDir() {
-    return resolve(conf.cwd, `.${conf.cliName}`)
+    return 'runtime'
+  },
+
+  get integrateDir() {
+    return resolve(conf.cwd, '.integrate')
+  },
+
+  get rdeDir() {
+    return this.isIntegrate ? this.integrateDir : this.runtimeDir
   },
 
   get cliName() { return 'rde' },
 
-  get homepage() { return 'https://github.com/kaola-fed/RDE' },
+  get homepage() { return 'https://kaola-fed.github.io/RDE/index.html' },
 
   get appConfName() { return appConfName },
 
-  get rdtConfName() { return rdtConfName },
+  get rdcConfName() { return rdcConfName },
 
-  get rdsConfName() { return rdsConfName },
+  get tag() {
+    if (this.rdType === this.RdTypes.Container) {
+      const rdcConf = require(path.join(conf.cwd, rdcConfName))
+      return rdcConf.docker.tag.split(':')[0]
+    }
 
-  get rdtAppDir() {
-    const {app} = conf.getAppConf()
-    return resolve(conf.cwd, 'node_modules', app.template.name, 'app')
+    if (this.isApp) {
+      // name app image with project dir name
+      return path.basename(conf.cwd)
+    }
   },
 
   get frameworks() {
     return {
       vue: {
-        rdtStarter: '@rde-pro/vue-starter-rdt',
+        rdcStarter: 'rdebase/rdc-vue-starter',
         cdn: [],
       },
       react: {
-        rdtStarter: '@rde-pro/react-starter-rdt',
+        rdcStarter: 'rdebase/rdc-react-starter',
         cdn: [
           'https://unpkg.com/react/umd/react.production.min.js',
           'https://unpkg.com/react-dom/umd/react-dom.production.min.js',
         ],
       },
       angular: {
-        rdtStarter: '@rde-pro/angular-starter-rdt',
+        rdcStarter: 'rdebase/rdc-angular-starter',
         cdn: ['https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js'],
       },
     }
   },
 
-  getRdtTemplateDir(rdtName) {
-    return resolve(conf.cwd, 'node_modules', rdtName, 'template')
-  },
-
-  getTmpRdtConf(): RdtConf {
-    return _.ensureRequire(resolve(conf.tmpDir, conf.rdtConfName))
-  },
-
-  getAppConf(): {app: AppConf} {
+  get RdTypes() {
     return {
-      app: _.ensureRequire(conf.appConfPath)
+      Application: 'Application',
+      Container: 'Container',
     }
   },
 
-  getRdtDir(srcDir: string, node: string): string {
-    return resolve(srcDir, 'node_modules', node)
+  get isApp() {
+    return this.rdType === this.RdTypes.Application
   },
 
-  getRdtConfPath(srcDir: string, node: string): RdtConf {
-    const rdtDir = conf.getRdtDir(srcDir, node)
-    return require(resolve(rdtDir, rdtConfName))
+  get isContainer() {
+    return this.rdType === this.RdTypes.Container
   },
 
-  getRdtChain(node, chain = []): string[] {
-    chain.push(node)
-
-    const rdtConfPath = resolve(conf.getRdtDir(conf.cwd, node), conf.rdtConfName)
-    const {extend} = require(rdtConfPath)
-
-    if (!extend) {
-      return chain.reverse()
-    }
-
-    return conf.getRdtChain(extend, chain)
+  get rdType() {
+    return rdType
   },
 
-  getRdtConf(node): {template: RdtConf} {
-    const chain = conf.getRdtChain(node)
+  get RdModes() {
     return {
-      template: conf.getRdtConfFromChain(chain)
+      Integrate: 'integrate',
+      Origin: 'origin'
     }
   },
 
-  getRdtConfFromChain(chain): RdtConf {
-    let merged: RdtConf
+  get isIntegrate() {
+    return this.rdMode === this.RdModes.Integrate
+  },
 
-    for (let node of chain) {
-      merged = extend(
-        {},
-        conf.getRdtConfPath(conf.cwd, node),
-        merged || {}
-      )
+  set rdType(type) {
+    rdType = type
+  },
+
+  get rdMode() {
+    return rdMode
+  },
+
+  set rdMode(mode) {
+    rdMode = mode
+  },
+
+  getAppConf(): AppConf {
+    return _.ensureRequire(conf.appConfPath)
+  },
+
+  getRdcConf(nodeDir): RdcConf {
+    if (rdcConfMap[nodeDir]) {
+      return rdcConfMap[nodeDir]
     }
 
-    return merged
+    rdcConfMap[nodeDir] = require(resolve(conf.cwd, nodeDir, conf.rdcConfName))
+    return rdcConfMap[nodeDir]
   },
-
-  getRdsConf(): RdsConf[] {
-    const {app} = conf.getAppConf()
-    let rdsConf = []
-
-    if (app.suites instanceof Array) {
-      rdsConf = app.suites.map((suite: AppConfSuite) => {
-        return conf.getSingleRdsConf(suite.name)
-      })
-    }
-
-    return rdsConf
-  },
-
-  getSingleRdsConf(suite: string): RdsConf {
-    let rdsConfPath = resolve(conf.cwd, 'node_modules', suite, rdsConfName)
-
-    return _.ensureRequire(rdsConfPath)
-  },
-
-  getRdeConf(): RdeConf {
-    const {app} = conf.getAppConf()
-    const rdtConf = conf.getRdtConf(app.template.name)
-    const suites = conf.getRdsConf()
-
-    return extend({}, {app}, rdtConf, {suites})
-  }
 }
 
 export default conf

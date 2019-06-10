@@ -1,16 +1,25 @@
 version: '3'
 services:
-  rede:
-    build:
-      context: {{context}}
-      dockerfile: ./.rede/Dockerfile
+  rde:
+    image: {{{tag}}}
     volumes:
-    - {{context}}.git:/usr/rede/.git
-    {{#mapping}}
-    - {{context}}app/{{from}}:/usr/rede/{{to}}
-    {{/mapping}}
+    {{#isApp}}
+    - ../app:{{{workDir}}}/app
+    - ../rda.config.js:{{{workDir}}}/rda.config.js
+    {{!- /Users/wangsong/rede/rde/lib:/usr/local/lib/node_modules/rde/lib
+    - /Users/wangsong/rede/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules!}}
+    {{/isApp}}
+    {{^isApp}}
+    - ../app:{{{workDir}}}/app
+    - ../template:{{{workDir}}}/template
+    - ../rdc.config.js:{{{workDir}}}/rdc.config.js
+    {{!- /Users/hale/Work/kaola/rde/lib:/usr/local/share/.config/yarn/global/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/share/.config/yarn/global/node_modules/rde/node_modules!}}
+    {{/isApp}}
+    {{#watch}}
     ports:
     {{#ports}}
     - "{{.}}"
     {{/ports}}
-    command: npm run dev
+    {{/watch}}
+    command: rde docker:run {{{cmd}}} {{#watch}}--watch{{/watch}}

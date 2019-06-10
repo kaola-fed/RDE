@@ -1,42 +1,51 @@
 <header class="rde-header">
-  <h1 class="rde-header-logo">
-    <img data-v-88c41124="" src="//haitao.nos.netease.com/8f6c2273-57df-4c79-b714-4095502aa33b.svg" width="60px" alt="element-logo" class="nav-logo">
-    &nbsp;<%title%>
-  </h1>
+  <div class="rde-header__wrap">
+    <h1 class="rde-header-logo">
+      <span class="rde-header-logo__img"></span>
+      &nbsp;<%title%>
+    </h1>
 
-  <ul class="rde-header-navs">
-    <li v-for="nav in navs"
-        class="rde-header-navs__item" :class="{'rde-header-navs__item--crt': isCrtNav(nav)}">
+    <ul class="rde-header-navs">
+      <li v-for="nav in navs"
+          class="rde-header-navs__item" :class="{'rde-header-navs__item--crt': isCrtNav(nav)}">
 
-      <a :href="nav.url || '/index.html'">{{nav.title}}</a>
-    </li>
-  </ul>
+        <a :href="nav.url || 'index.html'">{{nav.title}}</a>
+      </li>
+    </ul>
+  </div>
 </header>
 
 <aside class="rde-sidebar-wrap">
   <div style="height: 100%" ref="sidebarWrap">
     <ul class="rde-sidebar">
-      <li v-for="nav in navs">
-        <a :href="nav.url" class="rde-sidebar__nav">{{nav.title}}</a>
+      <li v-for="page in pages">
+        <ul v-if="page.children">
+          <li>
+            <p class="rde-sidebar__category">
+              {{page.title}}
+              <i>{{page.subTitle}}</i>
+            </p>
 
-        <ul v-if="nav.main">
-          <li v-for="page in pages">
-            <ul v-if="page.children">
-              <li class="rde-sidebar__category">{{page.title.charAt(0).toUpperCase() + page.title.slice(1)}}</li>
-
-              <li v-for="child in page.children">
+            <ul class="rde-sidebar-pagewrap">
+              <li v-for="child in page.children" class="rde-sidebar__page">
                 <a :href="child.url"
                    class="rde-sidebar__page"
-                   :class="{'rde-sidebar__page--crt': isCrtPage(child)}">{{child.title}}</a>
+                   :class="{'rde-sidebar__page--crt': isCrtPage(child)}">
+                  {{child.title}}
+                  <i>{{child.subTitle}}</i>
+                </a>
               </li>
             </ul>
-
-            <a v-else
-               :href="page.url"
-               class="rde-sidebar__page"
-               :class="{'rde-sidebar__page--crt': isCrtPage(page)}">{{page.title}}</a>
           </li>
         </ul>
+
+        <a v-else
+           :href="page.url"
+           class="rde-sidebar__page rde-sidebar__page--main"
+           :class="{'rde-sidebar__page--crt': isCrtPage(page)}">
+          {{page.title}}
+          <i>{{page.subTitle}}</i>
+        </a>
       </li>
     </ul>
   </div>

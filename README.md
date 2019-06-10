@@ -19,7 +19,7 @@ $ npm install -g rde
 $ rde COMMAND
 running command...
 $ rde (-v|--version|version)
-rde/0.0.0 darwin-x64 node-v10.5.0
+rde/0.0.1-beta.22 darwin-x64 node-v10.5.0
 $ rde --help [COMMAND]
 USAGE
   $ rde COMMAND
@@ -29,46 +29,142 @@ USAGE
 # Commands
 <!-- commands -->
 * [`rde build`](#rde-build)
-* [`rde create [APPNAME]`](#rde-create-appname)
+* [`rde clean [CMD]`](#rde-clean-cmd)
+* [`rde create [NAME]`](#rde-create-name)
+* [`rde docker:run [CMD]`](#rde-dockerrun-cmd)
+* [`rde docs:init`](#rde-docsinit)
+* [`rde docs:publish`](#rde-docspublish)
+* [`rde docs:serve`](#rde-docsserve)
 * [`rde help [COMMAND]`](#rde-help-command)
-* [`rde lint`](#rde-lint)
-* [`rde lint:fix`](#rde-lintfix)
-* [`rde run CMD`](#rde-run-cmd)
+* [`rde install [CMD]`](#rde-install-cmd)
+* [`rde lint [CMD]`](#rde-lint-cmd)
+* [`rde publish`](#rde-publish)
+* [`rde run [CMD]`](#rde-run-cmd)
 * [`rde serve`](#rde-serve)
-* [`rde suite`](#rde-suite)
-* [`rde template:create RDTNAME`](#rde-templatecreate-rdtname)
-* [`rde template:serve`](#rde-templateserve)
+* [`rde sync [CMD]`](#rde-sync-cmd)
 
 ## `rde build`
-
-@rede/suite development tool
 
 ```
 USAGE
   $ rde build
 
+OPTIONS
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -i, --install        generate local node_modules
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
+  -w, --watch
+
 EXAMPLE
-  $ rde suite init
+  $ rde build
 ```
 
-_See code: [src/commands/build.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/build.ts)_
+_See code: [lib/commands/build.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/build.js)_
 
-## `rde create [APPNAME]`
-
-create a rde project
+## `rde clean [CMD]`
 
 ```
 USAGE
-  $ rde create [APPNAME]
+  $ rde clean [CMD]
 
 ARGUMENTS
-  APPNAME  app name
+  CMD  scripts provided by container
+
+OPTIONS
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -v, --verbose        show verbose logs
+  -w, --watch
 
 EXAMPLE
-  $ rde create <appname>
+  $ rde clean
 ```
 
-_See code: [src/commands/create.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/create.ts)_
+_See code: [lib/commands/clean.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/clean.js)_
+
+## `rde create [NAME]`
+
+open RDE world
+
+```
+USAGE
+  $ rde create [NAME]
+
+ARGUMENTS
+  NAME  project name to create
+
+OPTIONS
+  -v, --verbose  show verbose logs
+
+EXAMPLE
+  $ rde create
+```
+
+_See code: [lib/commands/create.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/create.js)_
+
+## `rde docker:run [CMD]`
+
+run script inside docker container
+
+```
+USAGE
+  $ rde docker:run [CMD]
+
+ARGUMENTS
+  CMD  scripts provided by container
+
+OPTIONS
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -v, --verbose        show verbose logs
+  -w, --watch
+
+EXAMPLE
+  $ rde docker:run <cmd>
+```
+
+_See code: [lib/commands/docker/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/docker/run.js)_
+
+## `rde docs:init`
+
+```
+USAGE
+  $ rde docs:init
+
+EXAMPLE
+  $ rde docs:init
+```
+
+_See code: [lib/commands/docs/init.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/docs/init.js)_
+
+## `rde docs:publish`
+
+```
+USAGE
+  $ rde docs:publish
+
+OPTIONS
+  -v, --verbose  show verbose logs
+
+EXAMPLE
+  $ rde docs:publish
+```
+
+_See code: [lib/commands/docs/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/docs/publish.js)_
+
+## `rde docs:serve`
+
+```
+USAGE
+  $ rde docs:serve
+
+OPTIONS
+  -v, --verbose  show verbose logs
+
+EXAMPLE
+  $ rde docs:serve
+```
+
+_See code: [lib/commands/docs/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/docs/serve.js)_
 
 ## `rde help [COMMAND]`
 
@@ -87,113 +183,137 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `rde lint`
-
-@rede/suite development tool
+## `rde install [CMD]`
 
 ```
 USAGE
-  $ rde lint
-
-EXAMPLE
-  $ rde suite init
-```
-
-_See code: [src/commands/lint/index.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/lint/index.ts)_
-
-## `rde lint:fix`
-
-@rede/suite development tool
-
-```
-USAGE
-  $ rde lint:fix
-
-EXAMPLE
-  $ rde suite init
-```
-
-_See code: [src/commands/lint/fix.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/lint/fix.ts)_
-
-## `rde run CMD`
-
-run scripts provided by @rede/template
-
-```
-USAGE
-  $ rde run CMD
+  $ rde install [CMD]
 
 ARGUMENTS
-  CMD  commands provided by @rde/template
+  CMD  scripts provided by container
+
+OPTIONS
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -v, --verbose        show verbose logs
+  -w, --watch
 
 EXAMPLE
-  $ rde run dev
+  $ rde install
 ```
 
-_See code: [src/commands/run.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/run.ts)_
+_See code: [lib/commands/install.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/install.js)_
+
+## `rde lint [CMD]`
+
+```
+USAGE
+  $ rde lint [CMD]
+
+ARGUMENTS
+  CMD  scripts provided by container
+
+OPTIONS
+  -e, --extras=extras        arguments need to pass to npm run cmd
+  -i, --install              generate local node_modules
+  -m, --commitMsg=commitMsg  commit msg
+  -r, --rebuild              rebuild image before run
+  -s, --staged               lint staged
+  -v, --verbose              show verbose logs
+  -w, --watch
+
+EXAMPLE
+  $ rde lint
+```
+
+_See code: [lib/commands/lint.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/lint.js)_
+
+## `rde publish`
+
+```
+USAGE
+  $ rde publish
+
+OPTIONS
+  -i, --increment=increment  Increment a version by the specified level.
+                             Level can be one of: major, minor, patch, premajor, preminor,
+                             prepatch, or prerelease.  Default level is 'patch'. Only one version may be
+                             specified.
+
+  -t, --tag=tag              as your image tag for pushing to docker hub, you should use increment just in case
+
+  -v, --verbose              show verbose logs
+
+  --preid=preid              Identifier to be used to prefix premajor, preminor, prepatch or prerelease version
+                             increments.
+
+EXAMPLES
+  $ rde publish -t <semver-like version>
+  $ rde publish -i prerelease --preid beta
+  $ rde publish --preid beta
+```
+
+_See code: [lib/commands/publish.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/publish.js)_
+
+## `rde run [CMD]`
+
+run scripts provided by container
+
+```
+USAGE
+  $ rde run [CMD]
+
+ARGUMENTS
+  CMD  scripts provided by container
+
+OPTIONS
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -i, --install        generate local node_modules
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
+  -w, --watch
+
+EXAMPLE
+  $ rde run <cmd>
+```
+
+_See code: [lib/commands/run.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/run.js)_
 
 ## `rde serve`
 
-start a dev server
-
 ```
 USAGE
   $ rde serve
 
 OPTIONS
-  -d, --docker
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -i, --install        generate local node_modules
+  -r, --rebuild        rebuild image before run
+  -v, --verbose        show verbose logs
+  -w, --watch
 
 EXAMPLE
   $ rde serve
 ```
 
-_See code: [src/commands/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/serve.ts)_
+_See code: [lib/commands/serve.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/serve.js)_
 
-## `rde suite`
-
-@rde-pro/suite development tool
+## `rde sync [CMD]`
 
 ```
 USAGE
-  $ rde suite
-
-EXAMPLE
-  $ rde suite init
-```
-
-_See code: [src/commands/suite/index.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/suite/index.ts)_
-
-## `rde template:create RDTNAME`
-
-create a rde template project
-
-```
-USAGE
-  $ rde template:create RDTNAME
+  $ rde sync [CMD]
 
 ARGUMENTS
-  RDTNAME  rde template project name, used by package.json
-
-EXAMPLE
-  $ rde template:create <rdtname>
-```
-
-_See code: [src/commands/template/create.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/template/create.ts)_
-
-## `rde template:serve`
-
-start a template dev server
-
-```
-USAGE
-  $ rde template:serve
+  CMD  scripts provided by container
 
 OPTIONS
-  -d, --docker
+  -e, --extras=extras  arguments need to pass to npm run cmd
+  -v, --verbose        show verbose logs
+  -w, --watch
 
 EXAMPLE
-  $ rde template:serve
+  $ rde sync
 ```
 
-_See code: [src/commands/template/serve.ts](https://github.com/kaolafed/rde/blob/v0.0.0/src/commands/template/serve.ts)_
+_See code: [lib/commands/sync.js](https://github.com/kaolafed/rde/blob/v0.0.1-beta.22/lib/commands/sync.js)_
 <!-- commandsstop -->
