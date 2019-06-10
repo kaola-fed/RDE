@@ -3,6 +3,8 @@ FROM {{{from}}}
 # Configure apt
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
+COPY .cache/version {{{workDir}}}/
+
 RUN yarn global add rde
 
 RUN groupadd rde && useradd -ms /bin/bash -g rde rde

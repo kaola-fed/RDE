@@ -47,6 +47,8 @@ export default class Publish extends Base {
   public rdc: string
 
   public async preInit() {
+    await this.config.runHook('checkUpdate', {})
+
     const {flags} = this.parse(Publish)
     this.tag = flags.tag
     this.level = flags.increment

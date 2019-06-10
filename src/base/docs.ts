@@ -131,6 +131,8 @@ export default abstract class DocsBase extends Command {
     const {flags} = this.parse(this.constructor)
     this.verbose = flags.verbose
 
+    await this.config.runHook('checkUpdate', {})
+
     const {appConfPath, rdcConfPath, RdTypes} = conf
     if (fs.existsSync(appConfPath)) {
       conf.rdType = RdTypes.Application

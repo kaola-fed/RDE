@@ -3,7 +3,9 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as semver from 'semver'
 
+import conf from '../services/conf'
 import npm from '../services/npm'
+import _ from '../util'
 
 export default async function ({config}) {
   const file = path.join(config.cacheDir, 'version')
@@ -22,34 +24,36 @@ export default async function ({config}) {
     }
   }
 
-  const compareVersion = async () => {
+  const update = async () => {
     const {latest} = await fs.readJson(file)
 
-    if (!latest) await updateVersion()
-
-    const table = new Table({
-      head: ['package', 'current', 'latest'],
-      style: {
-        'padding-left': 1,
-        'padding-right': 1,
-        head: ['cyan'],
-        border: ['white']
-      },
-      colWidths: [15, 25, 25]
-    })
-
     if (semver.gt(latest, config.version)) {
+      const table = new Table({
+        head: ['package', 'current', 'latest'],
+        style: {
+          'padding-left': 1,
+          'padding-right': 1,
+          head: ['cyan'],
+          border: ['white']
+        },
+        colWidths: [15, 25, 25]
+      })
+
       table.push([config.name, config.version, latest])
       table.push([
         {
-          content: `New version available. Please enter 'npm i -g ${
-            config.name
-          }' to update`,
+          content: 'New version available. Updating RDE Cli Automatically',
           colSpan: 3
         }
       ])
       // tslint:disable:no-console
       console.log(table.toString())
+
+      await npm.install({
+        pkgs: [config.name],
+        isGlobal: true,
+        isDevDep: false,
+      })
     }
   }
 
@@ -63,11 +67,19 @@ export default async function ({config}) {
         current: config.version
       })
     )
+
+    await _.copy(
+      file,
+      path.join(conf.localCacheDir, 'version'),
+      {
+        options: {}
+      }
+    )
+
+    await update()
   }
 
   if (await needUpdate()) {
     await updateVersion()
   }
-
-  await compareVersion()
 }
