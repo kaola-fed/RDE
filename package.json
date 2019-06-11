@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Redesigned Development Environment",
-  "version": "0.0.1-beta.29",
+  "version": "0.0.1-beta.33",
   "bin": {
     "rde": "./bin/run"
   },
@@ -16,6 +16,7 @@
     "chokidar": "^2.1.5",
     "clean-stack": "^2.1.0",
     "cli-table2": "^0.2.0",
+    "cross-spawn": "^6.0.5",
     "deasync": "^0.1.15",
     "debug": "^4.1.1",
     "deep-extend": "^0.6.0",
@@ -39,12 +40,12 @@
     "through2": "^3.0.1",
     "ts-node": "^8.0.3",
     "typescript": "^3.3",
+    "validate-commit-msg": "^2.14.0",
     "vue": "^2.6.10",
     "vue-server-renderer": "^2.6.10",
     "vue-template-compiler": "^2.6.10",
     "write-json-file": "^4.1.0",
-    "write-pkg": "^3.2.0",
-    "validate-commit-msg": "^2.14.0"
+    "write-pkg": "^3.2.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",

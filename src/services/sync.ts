@@ -61,7 +61,7 @@ class Sync {
    * need to gen extra staged files
    */
   public async start({watch, cmd, skipInstall = false}) {
-    await _.asyncExec(`mkdir -p ${conf.localCacheDir}`)
+    await _.asyncSpawn('mkdir', ['-p', conf.localCacheDir], {})
 
     await _.asyncExec('rm -rf app/node_modules')
     await _.asyncExec(`rm -rf ${conf.templateDir}/node_modules`)
@@ -124,13 +124,13 @@ class Sync {
     // only create application will pass rdc param
     const image = createRdc || this.appConf.container.name
     await docker.copy(image, [{
-      from: resolve(dockerWorkDirRoot, templateDir, 'package.json'),
+      from: `${dockerWorkDirRoot}/${templateDir}/package.json`,
       to: localCacheDir,
     }, {
-      from: resolve(dockerWorkDirRoot, templateDir),
+      from: `${dockerWorkDirRoot}/${templateDir}`,
       to: cwd
     }, {
-      from: resolve(dockerWorkDirRoot, rdcConfName),
+      from: `${dockerWorkDirRoot}/${rdcConfName}`,
       to: localCacheDir,
     }])
 

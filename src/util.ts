@@ -1,4 +1,5 @@
-import {exec, spawn, SpawnOptions} from 'child_process'
+import {exec, SpawnOptions} from 'child_process'
+import * as spawn from 'cross-spawn'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as copy from 'recursive-copy'

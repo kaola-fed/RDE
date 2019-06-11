@@ -28,7 +28,8 @@ export default class ApplicationCreate extends CreateCore {
     await docker.copy(
       this.rdc,
       [{
-        from: resolve(dockerWorkDirRoot, 'app'),
+        // don't use join or resolve, cuz windows will change / to C:/
+        from: `${dockerWorkDirRoot}/app`,
         to: resolve(cwd, 'app'),
       }],
     )
