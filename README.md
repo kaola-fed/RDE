@@ -1,4 +1,4 @@
-RDE - 易于维护的前端研发架构
+RDE - 易于维护的前端研发架构 
 ====
 
 [Redesign Development Environment](https://kaola-fed.github.io/RDE/index.html)
