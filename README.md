@@ -1,7 +1,7 @@
-rede
+RDE
 ====
 
-[Redesigned Development Environment](https://kaola-fed.github.io/RDE/index.html)
+[Redesign Development Environment](https://kaola-fed.github.io/RDE/index.html)
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/rede.svg)](https://npmjs.org/package/rede)
