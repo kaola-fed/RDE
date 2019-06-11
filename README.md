@@ -4,9 +4,9 @@ RDE - 易于维护的前端研发架构
 [Redesign Development Environment](https://kaola-fed.github.io/RDE/index.html)
 
 [![RDE](https://img.shields.io/badge/cli-RDE-%2368BAEB.svg)](https://github.com/kaola-fed/RDE)
-[![Version](https://img.shields.io/npm/v/rede.svg)](https://npmjs.org/package/rede)
-[![Downloads/week](https://img.shields.io/npm/dw/rede.svg)](https://npmjs.org/package/rede)
-[![License](https://img.shields.io/npm/l/rede.svg)](https://github.com/nupthale/rede/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/rde.svg)](https://npmjs.org/package/rde)
+[![Downloads/week](https://img.shields.io/npm/dw/rde.svg)](https://www.npmjs.com/package/rde)
+[![License](https://img.shields.io/npm/l/rde.svg)](https://github.com/kaola-fed/RDE/blob/master/package.json)
 
 
 &emsp;&emsp;RDE诞生的背景是，我们发现前端工程目前存在以下问题：
