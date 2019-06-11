@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Redesigned Development Environment",
-  "version": "0.0.1-beta.26",
+  "version": "0.0.1-beta.29",
   "bin": {
     "rde": "./bin/run"
   },
@@ -106,11 +106,10 @@
   "scripts": {
     "posttest": "tslint -p test -t stylish",
     "copym": "cp -r src/mustaches lib/mustaches",
-    "prepublishOnly": "tsc -b && oclif-dev readme && cp -r src/mustaches lib/mustaches",
+    "prepublishOnly": "tsc -b && cp -r src/mustaches lib/mustaches",
     "manifest": "oclif-dev manifest",
     "test:coverage": "nyc --extension .ts mocha --project ./test/tsconfig.json --opts ./test/mocha.opts --forbid-only \"test/**/*.test.ts\"",
     "test": "mocha --project ./test/tsconfig.json --opts ./test/mocha.opts --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md",
     "commitmsg": "validate-commit-msg",
     "lint": "tsc --pretty && tslint --project ./tslint.json",
     "lint:fix": "tsc --pretty && tslint --project ./tslint.json --fix"
