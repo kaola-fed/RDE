@@ -4,6 +4,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 
 import conf from '../services/conf'
+import {debug} from '../services/logger'
 import npm from '../services/npm'
 import _ from '../util'
 
@@ -17,6 +18,9 @@ export default async function ({config}) {
       const expireDate = new Date(
         mtime.valueOf() + 1000 * 60 * 60 * 24 * delayInDays
       )
+
+      debug(`rde version cache path: ${file}`)
+      debug(`rde version cache mtime: ${mtime}`)
       return expireDate < new Date()
     } catch (e) {
       if (e.code !== 'ENOENT') throw e
@@ -68,18 +72,16 @@ export default async function ({config}) {
       })
     )
 
-    await _.copy(
-      file,
-      path.join(conf.localCacheDir, 'version'),
-      {
-        options: {}
-      }
-    )
-
     await update()
   }
 
   if (await needUpdate()) {
     await updateVersion()
   }
+
+  await _.copy(
+    file,
+    path.join(conf.localCacheDir, 'version'),
+    {},
+  )
 }

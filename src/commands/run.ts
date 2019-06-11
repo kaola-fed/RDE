@@ -78,7 +78,7 @@ export default class Run extends RunBase {
         table.push(
           [{
             hAlign: 'center',
-            content: `Container updated: ${container.name}\nPlease run: $rde install`
+            content: `Container updated\n${container.name}\nPlease run: $rde install`
           }],
         )
 
