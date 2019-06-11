@@ -184,6 +184,30 @@
 <p class="rde-p">RDE工具： 整套方案的连接器，提供创建工程、开发运行、发布、生成IDE配置等功能</p>
 <p class="rde-p">回顾前端发展进程，RDE可以作为集成汇总、组合所有服务的一个更通用的标准方案，让开发维护工程的粒度不再是工程，而可以根据自己实际需要，进行组合复用；如下图：</p>
 <p class="rde-p"><img src="https://haitao.nos.netease.com/aad8723b-98c7-4774-bfbb-072ddb3ac7b4_1552_1166.jpg" alt=""></p>
+<h3 class="rde-h3">最佳实践</h3>
+<p class="rde-p">  RDE打破了原有以单工程维护的业务架构，但是具体在业务中如何重组工程，拆分几个RDC，RDC如何定位，需要根据各自的业务讨论决定，不建议直接使用外部的RDC，每个团队(或部门)应该自己维护自己的RDC；即使是个人，假设你开发多个工程，个人也可以维护一个RDC，方便后续维护；目前RDC可以作为但不限于以下场景：</p>
+<ul>
+<li><p class="rde-p">作为业务工程的底层基建</li>
+<li><p class="rde-p">作为组件库、套件库的底层基建，可以包含发布、测试等基本功能，方便上层快速开发发布组件库</li>
+<li><p class="rde-p">可以作为Node端封装通用的配置或者逻辑部分</li>
+</ul>
+<p class="rde-p">  RDC的维护者需要配合RDE提供的render配置，创造出覆盖面更广的底层基建，需要抛弃单工程的开发的思维，结合上层各种应该用的场景进行开发维护；下面例举一下业务底层RDC的开发可能需要考虑的问题：</p>
+<ul>
+<li><p class="rde-p">是否封装了后台通用的菜单</li>
+<li><p class="rde-p">菜单如果是多种，是否可以让app层进行选择</li>
+<li><p class="rde-p">登陆、错误页、无权限页等通用场景是否需要封装进RDC</li>
+<li><p class="rde-p">是否制定路由规范，省去配置路由的麻烦</li>
+<li><p class="rde-p">制定团队lint规则</li>
+<li><p class="rde-p">是否包含mock、proxy等基础功能</li>
+<li><p class="rde-p">如果涉及发布、部署等命令，是否封装了这些操作</li>
+<li><p class="rde-p">如果需要使用单测，RDC是否提供了对应包的安装和配置</li>
+<li><p class="rde-p">一些最基础，最通用的包，是否安装， 如echart/momentjs/vue等</li>
+<li><p class="rde-p">如果使用了ts，一些最基本的d.ts文件的定义，是否已提供</li>
+<li><p class="rde-p">如果有样式规范，是否提供了最基本的样式以及对应的样式方法、mixins等，如BEM方法、常用的方法等</li>
+<li><p class="rde-p">是否提供了方便应用开发使用的webpack alias配置</li>
+<li><p class="rde-p">整个RDC哪些部分需要支持应用扩展，扩展规则如何制定</li>
+<li><p class="rde-p">是否提供了完善的文档，供应用开发者使用</li>
+</ul>
 
   </div>
 </div>
