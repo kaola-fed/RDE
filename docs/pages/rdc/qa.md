@@ -26,4 +26,10 @@ module.exports = {
 
 #### 在js/vue/ts等文件中使用mustache模板， eslint在parse时会报错，解析不通过
 
-请修改配置文件中的render.tags， 默认使用的是`{{}}`，可以配置为['///', '///']， 通过注释的形式跳过eslint的解析；
+请修改配置文件中的render.tags， 默认使用的是`{{}}`，可以配置为['///', '///']， 通过注释的形式跳过eslint的解析；使用例子：
+
+```javascript
+///#isTrue///
+const flag = true
+////isTrue///
+```
