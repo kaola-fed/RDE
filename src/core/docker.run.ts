@@ -123,7 +123,7 @@ export default class DockerRun {
 
     await render.renderDir(from, {
       ...dataView
-    }, includes, to, options)
+    }, includes, to, options, rdtRender.tags)
   }
 
   public async composeRde() {
