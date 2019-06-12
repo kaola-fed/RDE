@@ -13,3 +13,9 @@
 
 > 常用docker命令可以参考：https://github.com/kaola-fed/RDE/wiki/docker-cheatsheet
 
+#### windows如何安装Docker
+可以参考[这个教程](https://www.runoob.com/docker/windows-docker-install.html)，另外推荐使用cmder或者更好用的终端，针对windows无法使用localhost访问访问的情况，请使用
+```shell
+$ docker-machine ip
+```
+输出的IP访问
