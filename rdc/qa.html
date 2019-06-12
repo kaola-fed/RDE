@@ -157,6 +157,12 @@ module.exports = {
 <p class="rde-p">请使用<a class="rde-a" href="https://github.com/RdePro/rde-eslint-parser">rde-eslint-parser</a>，并在模板的位置加上相应的注释</p>
 <h4 class="rde-h4">如何在rdc.config.js中判断环境？根据不同环境配置不同的render值</h4>
 <p class="rde-p">请在执行rde命令前将对应的NODE_ENV设置好， rdc.config.js中可以直接使用process.env.NODE_ENV进行判断</p>
+<h4 class="rde-h4">在js/vue/ts等文件中使用mustache模板， eslint在parse时会报错，解析不通过</h4>
+<p class="rde-p">请修改配置文件中的render.tags， 默认使用的是<code>{{}}</code>，可以配置为['///', '///']， 通过注释的形式跳过eslint的解析；使用例子：</p>
+<pre class="hljs"><code><span class="hljs-comment">///#isTrue///</span>
+<span class="hljs-keyword">const</span> flag = <span class="hljs-literal">true</span>
+<span class="hljs-comment">////isTrue///</span>
+</code></pre>
 
   </div>
 </div>
