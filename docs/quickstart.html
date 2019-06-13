@@ -168,7 +168,8 @@
 title: 关于
 subTitle: About
 order: 12
-<span class="hljs-section">category: Components
+category: Components
+<span class="hljs-section">categoryOrder: 10
 ---</span>
 </code></pre>
 <table class="rde-table">
@@ -194,6 +195,10 @@ order: 12
   <td>category</td>
   <td>-</td>
   <td>如果是有子目录，则在子目录下的文件需要填写category分类</td>
+<tr>
+  <td>categoryOrder</td>
+  <td>-</td>
+  <td>如果是有子目录，在子目录下任意文件配置categoryOrder会作为父目录的order排序</td>
 </tr>
 </table>
 <blockquote>
