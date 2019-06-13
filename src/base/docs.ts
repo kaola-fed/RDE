@@ -45,12 +45,12 @@ export default abstract class DocsBase extends Command {
   }
 
   public get userStyles() {
-    const {docs} = this.localConfig
+    const {docs = {}} = this.localConfig
     return docs.userStyles || []
   }
 
   public get userScripts() {
-    const {docs} = this.localConfig
+    const {docs = {}} = this.localConfig
     return docs.userScripts || []
   }
 
