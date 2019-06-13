@@ -26,6 +26,7 @@ title: 关于
 subTitle: About
 order: 12
 category: Components
+categoryOrder: 10
 ---
 ```
 
@@ -45,6 +46,9 @@ category: Components
 |- category
 | -
 | 如果是有子目录，则在子目录下的文件需要填写category分类
+|- categoryOrder
+| -
+| 如果是有子目录，在子目录下任意文件配置categoryOrder会作为父目录的order排序
 ```
 
 > RDE目前仅支持一级目录，也就是说最多在_docs目录下新建一级目录作为category分类，否则会被忽略；

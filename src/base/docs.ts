@@ -251,6 +251,7 @@ export default abstract class DocsBase extends Command {
 
       if (file.type === 'directory') {
         let category
+        let categoryOrder
         const page = {
           title: file.name,
           children: file.children.map(child => {
@@ -259,7 +260,13 @@ export default abstract class DocsBase extends Command {
             const {meta = {}} = mdIt
 
             if (meta.category) {
-              category = meta.category
+              if (meta.category) {
+                category = meta.category
+              }
+
+              if (meta.categoryOrder) {
+                categoryOrder = meta.categoryOrder
+              }
             }
 
             return {
@@ -272,6 +279,7 @@ export default abstract class DocsBase extends Command {
           order: 0,
         }
         page.title = category || file.name
+        page.order = categoryOrder || 0
 
         page.children.sort((prev, next) => {
           return next.order - prev.order
