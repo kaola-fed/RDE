@@ -19,7 +19,7 @@
   <div style="height: 100%" ref="sidebarWrap">
     <ul class="rde-sidebar">
       <li v-for="page in pages">
-        <ul v-if="page.children">
+        <ul v-if="page.children" style="padding-inline-start: 0;">
           <li>
             <p class="rde-sidebar__category">
               {{page.title}}
