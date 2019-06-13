@@ -19,3 +19,6 @@
 $ docker-machine ip
 ```
 输出的IP访问
+
+#### RDC中已经定义了vue的d.ts文件，但是编辑器lint报错找不到.vue文件
+为了保持工程清晰，我们在编辑器的配置中隐藏了template目录，编辑器可能完全忽略了这个目录，没有去读取template下的d.ts文件，所以报错，这时候可以手动打开下template下的d.ts；
