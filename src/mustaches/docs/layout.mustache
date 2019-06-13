@@ -19,25 +19,23 @@
   <div style="height: 100%" ref="sidebarWrap">
     <ul class="rde-sidebar">
       <li v-for="page in pages">
-        <ul v-if="page.children" style="padding-inline-start: 0;">
-          <li>
-            <p class="rde-sidebar__category">
-              {{page.title}}
-              <i>{{page.subTitle}}</i>
-            </p>
+        <div v-if="page.children">
+          <p class="rde-sidebar__category">
+            {{page.title}}
+            <i>{{page.subTitle}}</i>
+          </p>
 
-            <ul class="rde-sidebar-pagewrap">
-              <li v-for="child in page.children" class="rde-sidebar__page">
-                <a :href="child.url"
-                   class="rde-sidebar__page"
-                   :class="{'rde-sidebar__page--crt': isCrtPage(child)}">
-                  {{child.title}}
-                  <i>{{child.subTitle}}</i>
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
+          <ul class="rde-sidebar-pagewrap">
+            <li v-for="child in page.children" class="rde-sidebar__page">
+              <a :href="child.url"
+                 class="rde-sidebar__page"
+                 :class="{'rde-sidebar__page--crt': isCrtPage(child)}">
+                {{child.title}}
+                <i>{{child.subTitle}}</i>
+              </a>
+            </li>
+          </ul>
+        </div>
 
         <a v-else
            :href="page.url"
