@@ -67,6 +67,8 @@ class Sync {
     await _.asyncExec(`rm -rf ${conf.templateDir}/node_modules`)
 
     if (conf.isApp) {
+      await docker.pull(this.appConf.container.name)
+
       await this.genAppStagedFiles()
     } else {
       await _.copy(

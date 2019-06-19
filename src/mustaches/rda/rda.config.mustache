@@ -2,14 +2,13 @@ module.exports = {
   container: {
     name: '{{{container}}}',
     docs: '{{{docs}}}',
-    render: {},
+    render: {}
   },
   docker: {
     ports: [
       {{#ports}}
       '{{{.}}}',
       {{/ports}}
-    ],
-  },
-  suites: [],
+    ]
+  }
 };
