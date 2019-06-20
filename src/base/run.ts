@@ -7,7 +7,6 @@ import conf from '../services/conf'
 import {debug} from '../services/logger'
 import {MCOMMON} from '../services/message'
 import {TError, TStart, uploadHubble} from '../services/track'
-import _ from '../util'
 
 const {resolve} = path
 export default class RunBase extends Base {
@@ -49,8 +48,6 @@ export default class RunBase extends Base {
   @TError({conf})
   @TStart
   public async initialize() {
-    await _.asyncExec(`rm -rf ${conf.tmpDir} && mkdir ${conf.tmpDir}`)
-
     const {appConfPath, rdcConfPath, cwd, RdTypes} = conf
     if (fs.existsSync(appConfPath)) {
       conf.rdType = RdTypes.Application
