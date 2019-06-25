@@ -1,11 +1,12 @@
 FROM {{{from}}}
 
 # Configure apt
-RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+# RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 COPY .cache/version {{{workDir}}}/
 
-RUN yarn global add rde
+# RUN yarn global add rde
+RUN npm i -g rde
 
 RUN groupadd rde && useradd -ms /bin/bash -g rde rde
 
@@ -24,4 +25,4 @@ USER rde
 
 ENV HOME {{{workDir}}}
 
-RUN yarn
+RUN npm i
