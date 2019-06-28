@@ -18,7 +18,7 @@ const config = {
   html: {
     template: resolve('index.html'),
     title: 'RDE - Resign Dev Env',
-    favicon: resolve('fav.ico')
+    // favicon: resolve('fav.ico')
   },
   babel: {
     transpileModules: [ '@zeit-ui/vue' ]
