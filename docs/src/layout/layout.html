@@ -1,0 +1,59 @@
+<div>
+  <div class="g-top">
+    <div class="g-topc">
+      <a class="u-logo u-logo-index" href="/RDE/index.html">RDE</a>
+      <ul class="m-navbar f-fr">
+        <li><a href="/RDE/rda/quickstart.html">开始使用</a></li>
+        <li><a href="/RDE/about.html">文档</a></li>
+        <li><a href="/RDE/container.html">容器示例</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="g-bd">
+    <ul id="sidebar" class="m-sidebar">
+      <li v-for="page in pages">
+        <p class="m-sidebar-page" :class="{'active': isCrtPage(page)}">
+      <span v-if="!page.url">
+        {{page.title}}
+        <i v-if="page.enTitle">{{page.enTitle}}</i>
+      </span>
+          <a v-else :href="baseUrl + page.url">
+            {{page.title}}
+            <i v-if="page.enTitle">{{page.enTitle}}</i>
+          </a>
+        </p>
+
+        <ul class="m-sidebar-sub" v-if="page.children && page.children.length">
+          <li class="m-sidebar-sub-page" v-for="subPage in page.children" :class="{'active': isCrtPage(subPage)}">
+            <a :href="baseUrl + subPage.url">
+              {{subPage.title}}
+              <i v-if="subPage.enTitle">{{subPage.enTitle}}</i>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="m-cnt">
+      <div id="app"></div>
+    </div>
+  </div>
+
+  <div class="g-ft">
+    <footer class="m-footer">
+      <p>
+        <a href="/RDE/index.html" class="footer_logo">
+          <img width="48px" src="https://haitao.nos.netease.com/6f8e6539-cfca-4d4b-869c-dc6bf9bc4c65_323_329.png" />
+        </a>
+      </p>
+      <p>
+        <a href="https://github.com/kaola-fed/RDE" target="_blank">GitHub</a> |
+        <a href="https://github.com/kaola-fed/RDE/issues" target="_blank">Issues</a> |
+        <a href="https://github.com/kaola-fed/RDE/releases" target="_blank">ChangeLog</a> |
+        <a href="https://github.com/kaola-fed/RDE/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a>
+      </p>
+      <p>Licensed under <a href="https://github.com/kaola-fed/RDE/blob/master/LICENSE" target="_blank">MIT license</a>.</p>
+    </footer>
+  </div>
+</div>
