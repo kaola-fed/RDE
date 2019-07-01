@@ -24,6 +24,7 @@ export default class Watcher extends Events {
     const watcher = chokidar.watch(watchFiles, {
       ignored: /(\.git)|(node_modules)/,
       ignoreInitial: true,
+      usePolling: true,
       interval: 300,
       binaryInterval: 300
     })
