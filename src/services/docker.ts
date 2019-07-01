@@ -86,6 +86,7 @@ class Docker {
       workDir,
       dockerWorkDirRoot: conf.dockerWorkDirRoot,
       isApp,
+      uid: process.getuid(),
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })
