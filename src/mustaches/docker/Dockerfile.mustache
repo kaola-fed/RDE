@@ -4,9 +4,9 @@ COPY .cache/version {{{workDir}}}/
 
 RUN npm config set registry https://registry.npm.taobao.org
 
-RUN npm i -g rde
+RUN npm i -g rde --registry=https://registry.npm.taobao.org
 
-RUN groupadd rde && useradd -ms /bin/bash -g rde rde
+RUN groupadd rde && useradd -ms /bin/bash -g rde -u {{{uid}}} rde
 
 WORKDIR {{{workDir}}}
 
