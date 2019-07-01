@@ -81,12 +81,17 @@ class Docker {
       overwrite: true,
     })
 
+    let uid = null
+    if (process.getuid) {
+      uid = process.getuid()
+    }
+
     await render.renderTo('docker/Dockerfile', {
       from,
       workDir,
       dockerWorkDirRoot: conf.dockerWorkDirRoot,
       isApp,
-      uid: process.getuid(),
+      uid,
     }, `${dir}/Dockerfile`, {
       overwrite: true,
     })
