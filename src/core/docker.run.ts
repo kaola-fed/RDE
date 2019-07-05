@@ -1,5 +1,6 @@
 import * as extend from 'deep-extend'
 import * as fs from 'fs'
+import {js as beautify} from 'js-beautify'
 import * as path from 'path'
 
 import conf from '../services/conf'
@@ -30,6 +31,9 @@ export default class DockerRun {
   public async start() {
     // merge rda.config rdc config
     this.config = await this.mergeRdcConf()
+
+    // write variable to rdc.variable.js
+    await this.writeVariable(this.config)
 
     if (conf.isIntegrate) {
       // template render to .integrated
@@ -72,6 +76,34 @@ export default class DockerRun {
     conf.rdMode = config.mode || conf.RdModes.Integrate
 
     return config
+  }
+
+  public async writeVariable(config) {
+    let variables = {}
+    if (conf.rdType === RdTypes.Application) {
+      variables = config.container.variables
+    } else {
+      variables = config.variables
+    }
+
+    const variablePath = resolve(dockerWorkDirRoot, 'rdc.variable.js')
+    await render.renderTo('module', {
+      obj: variables
+    }, variablePath, {
+      overwrite: true,
+    })
+
+    fs.readFile(variablePath, 'utf-8', (err, data) => {
+      if (err) {
+        throw err
+      }
+
+      fs.writeFile(variablePath, beautify(data, {}), err => {
+        if (err) {
+          throw err
+        }
+      })
+    })
   }
 
   public async renderDir(from, to) {

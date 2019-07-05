@@ -13,7 +13,7 @@ interface Render {
   includes: string[],
   tags: string[],
   validate: ((dataView: any) => any)[],
-  mock: {[key: string]: any}
+  mock: {[key: string]: any},
 }
 
 interface Mapping {
@@ -34,6 +34,7 @@ interface RdcConf {
   framework: Framework
   docs: Docs
   render: Render
+  variables: { [key: string]: any }
   mappings: Mapping[]
   docker: Docker,
   nodeVersion: string,

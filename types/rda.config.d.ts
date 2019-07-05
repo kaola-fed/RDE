@@ -1,7 +1,8 @@
 interface AppConfTemplate {
   name: string,
   docs?: string,
-  render?: { [key: string]: any }
+  render?: { [key: string]: any },
+  variables?: { [key: string]: any },
 }
 
 interface Suite {
