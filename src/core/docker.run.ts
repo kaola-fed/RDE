@@ -4,7 +4,7 @@ import {js as beautify} from 'js-beautify'
 import * as path from 'path'
 
 import conf from '../services/conf'
-import {debug} from '../services/logger'
+import {debug, logger} from '../services/logger'
 import render from '../services/render'
 import sync from '../services/sync'
 import Watcher from '../services/watcher'
@@ -158,6 +158,27 @@ export default class DockerRun {
     }, includes, to, options, rdtRender.tags)
   }
 
+  // app files should not overwrite template file with same path & name
+  public async copyApp(filePath, destPath, {to, options}) {
+    options = options || {}
+    debug(`【File Changed】${filePath} ${options}`)
+
+    /**
+     * 1. mapping.options.overwrite is not true
+     * 2. file or dir exist in template dir
+     */
+    const appPath = resolve(conf.cwd, 'app')
+    const fileAppPath = path.relative(appPath, filePath)
+    const fileTemplatePath = resolve(conf.templateDir, to, fileAppPath)
+
+    if (!options.overwrite && fs.existsSync(fileTemplatePath)) {
+      logger.error(`${filePath}: RDA should not overwrite RDC file with same name`)
+      return
+    }
+
+    await _.copy(filePath, destPath, {options})
+  }
+
   public async composeRde() {
     debug(`merged mappings: ${JSON.stringify(this.config.mappings)}`)
 
@@ -167,6 +188,7 @@ export default class DockerRun {
 
       if (!options || options.filter) {
         options = options || {}
+        options.overwrite = options.overwrite || false
         options.filter = /.*(?<!\.d\.ts)$/
       }
 
@@ -176,7 +198,7 @@ export default class DockerRun {
     if (this.watch) {
       let {mappings} = this.config
 
-      new Watcher(mappings).start()
+      new Watcher(mappings, this.copyApp.bind(this)).start()
     }
   }
 
