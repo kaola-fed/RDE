@@ -14,17 +14,19 @@ class Docker {
 
   @log('Copying files from image...')
   public async copy(image: string, mappings: any[]) {
-    if (await this.containerExist('rde-dummy')) {
-      await _.asyncExec('docker container rm /rde-dummy')
+    const containerName = `rde-dummy-${+new Date()}`
+
+    if (await this.containerExist(containerName)) {
+      await _.asyncExec(`docker container rm ${containerName}`)
     }
 
-    await _.asyncExec(`docker create -it --name rde-dummy ${image} bash`)
+    await _.asyncExec(`docker create -it --name ${containerName} ${image} bash`)
 
     for (const mapping of mappings) {
-      await _.asyncExec(`docker cp rde-dummy:${mapping.from} ${mapping.to}`)
+      await _.asyncExec(`docker cp ${containerName}:${mapping.from} ${mapping.to}`)
     }
 
-    await _.asyncExec('docker rm -fv rde-dummy')
+    await _.asyncExec(`docker rm -fv ${containerName}`)
   }
 
   public async imageExist(name) {
