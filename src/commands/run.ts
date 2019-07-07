@@ -8,6 +8,7 @@ import cache from '../services/cache'
 import conf from '../services/conf'
 import docker from '../services/docker'
 import {debug} from '../services/logger'
+import rdehook from '../services/rdehook'
 import sync from '../services/sync'
 import {validateRda, validateRdc} from '../services/validate'
 
@@ -96,6 +97,8 @@ export default class Run extends RunBase {
   }
 
   public async run() {
+    await rdehook.trigger('preMount')
+
     // not using docker-compose cuz .dockerignore in sub dir is not working,
     // build with docker-compose is slow if node_modules exists
     await docker.build(`dev-${conf.tag}`, cwd, this.rebuild, `${conf.localCacheDir}/Dockerfile`)

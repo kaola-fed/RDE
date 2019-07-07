@@ -3,6 +3,7 @@ import * as path from 'path'
 import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
 import conf from '../../services/conf'
+import rdehook from '../../services/rdehook'
 import _ from '../../util'
 
 export default class DockerRun extends RunBase {
@@ -31,6 +32,8 @@ export default class DockerRun extends RunBase {
     })
 
     await core.start()
+
+    await rdehook.trigger('preRun')
   }
 
   public async run() {
@@ -63,5 +66,7 @@ export default class DockerRun extends RunBase {
       env: process.env
     })
     process.exit(0)
+
+    await rdehook.trigger('postRun')
   }
 }

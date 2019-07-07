@@ -5,6 +5,7 @@ import * as path from 'path'
 
 import conf from '../services/conf'
 import {debug, logger} from '../services/logger'
+import rdehook from '../services/rdehook'
 import render from '../services/render'
 import sync from '../services/sync'
 import Watcher from '../services/watcher'
@@ -38,8 +39,11 @@ export default class DockerRun {
     if (conf.isIntegrate) {
       // template render to .integrated
       await this.renderDir(templateDir, integrateDir)
+
+      await rdehook.trigger('preIntegrate')
       // compose rde and watch app
       await this.composeRde()
+      await rdehook.trigger('postIntegrate')
 
     } else {
       // template render to runtime
@@ -86,7 +90,7 @@ export default class DockerRun {
       variables = config.variables
     }
 
-    const variablePath = resolve(dockerWorkDirRoot, 'rdc.variable.js')
+    const variablePath = resolve(dockerWorkDirRoot, 'rdc.variables.js')
     await render.renderTo('module', {
       obj: variables
     }, variablePath, {
