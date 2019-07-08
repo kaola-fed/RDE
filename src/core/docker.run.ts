@@ -85,9 +85,9 @@ export default class DockerRun {
   public async writeVariable(config) {
     let variables = {}
     if (conf.rdType === RdTypes.Application) {
-      variables = config.container.variables
+      variables = config.container.variables || {}
     } else {
-      variables = config.variables
+      variables = config.variables || {}
     }
 
     const variablePath = resolve(dockerWorkDirRoot, 'rdc.variables.js')
