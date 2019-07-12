@@ -79,6 +79,7 @@ export default async function ({config}) {
     await updateVersion()
   }
 
+  // TODO: 运行rde create会导致当前目录下copy出来一个.cache文件夹
   await _.copy(
     file,
     path.join(conf.localCacheDir, 'version'),
