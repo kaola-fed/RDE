@@ -17,6 +17,10 @@
 | -
 | 底层容器依赖的渲染属性，容器会校验是否填写，否则会报错，具体属性请参照对应容器文档
 | 容器在渲染模板时会根据传入的属性渲染
+|- variables
+| -
+| 底层容器依赖的JS变量配置，具体配置请参照对应容器文档
+| 这些变量配置后， 会提供给RDC内部使用, variables是对render的扩展，有一些场景render无法实现
 ```
 
 ##### 【可选属性】docker
@@ -69,6 +73,11 @@ module.exports = {
     render: {
       title: 'RDE应用',
       appKey: 'BC-73249C84DEFE23',
+    },
+    vairables: {
+      fn: () => {
+        return 'some config';
+      }
     }
   },
   docker: {
@@ -91,7 +100,8 @@ interface RdaConf {
 interface Container {
   name: string,
   docs?: string,
-  render?: { [key: string]: any }
+  render?: { [key: string]: any },
+  variables?: { [key: string]: any }
 }
 
 interface Docker {

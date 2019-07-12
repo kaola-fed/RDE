@@ -29,14 +29,14 @@ $ yarn global add rde // if using yarn
 ```
 $ rde create
 ```
-* 填写要创建的工程名
-* 选择创建类型为Container
-* 选择要创建的工程的框架
-* 容器填写上一步docker hub上创建的仓库名称（scope/name），如rdebase/rdc-vue-starter
+1. 填写要创建的工程名
+1. 选择创建类型为Container
+1. 选择要创建的工程的框架
+1. 容器填写上一步docker hub上创建的仓库名称（scope/name），如rdebase/rdc-vue-starter
 
 #### 开始探索
 
-&emsp;&emsp;创建成功后，可以开始探索了，先切换到工程目录后，发现生成了：
+创建成功后，可以开始探索了，先切换到工程目录后，发现生成了：
 
 ```table
 文件 [@th width:70px]
@@ -104,9 +104,10 @@ RDC关注
 | ●
 ```
 
-&emsp;&emsp;其中app和template目录是根据你在创建时选择的framework生成的starter工程，你可以删除里面的全部文件，在里面根据规范重新填写需要的内容；
+其中app和template目录是根据你在创建时选择的framework生成的starter工程，你可以删除里面的全部文件，在里面根据规范重新填写需要的内容；
 
-&emsp;&emsp;下面举一个例子，使用vue-cli搭建一个RDC，步骤如下：
+##### 举例
+下面举一个例子，使用vue-cli搭建一个RDC，步骤如下：
 
 * 【重置目录】清空app目录、template目录、删除node\_modules目录
 
@@ -161,4 +162,8 @@ $ rde publish -t 0.0.1-alpha.1
 执行该命令前，请先登陆docker hub
 ```
 
-> 可以发现，开发RDC是主要麻烦在跑通app和template这种分离结构的配置上，但经过收敛，只需要最熟悉的人修改配置一次，就可以让所有使用的人快速、轻易的使用到新的功能；目前支持的两种模式都不是最完美的，后续如果发现了更好的模式，也会引入进来，提升开发RDC的体验；开发RDC前建议先评估下实现app和template这种目录结构，是否通过简单的配置即可，如果是建议直接使用origin模式，否则使用integrate模式；
+可以发现，开发RDC是主要麻烦在跑通app和template这种分离结构的配置上，但经过收敛，只需要最熟悉的人修改配置一次，就可以让所有使用的人快速、轻易的使用到新的功能；目前支持的两种模式都不是最完美的，后续如果发现了更好的模式，也会引入进来，提升开发RDC的体验；开发RDC前建议先评估下实现app和template这种目录结构，是否通过简单的配置即可，如果是建议直接使用origin模式，否则使用integrate模式；
+
+#### 开发流程
+
+![image](https://haitao.nos.netease.com/a9894af3-2b6b-407f-be2c-8116611b1c20_849_180.png)
