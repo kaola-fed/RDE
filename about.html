@@ -7,8 +7,8 @@
   <meta name="keywords" content="RDE,Javascript,Node,Framework,Front-end">
   <meta name="description" content="RDE - Redesign Dev Env">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <link rel="icon" href="https://haitao.nos.netease.com/410707d1-d6aa-4fa6-b6cb-4f29ee7d8670_128_128.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="https://haitao.nos.netease.com/410707d1-d6aa-4fa6-b6cb-4f29ee7d8670_128_128.ico" type="image/x-icon">
+  <link rel="icon" href="https://haitao.nos.netease.com/9a549dba-edbf-4537-adf1-7fd2ab6b1bc8_128_128.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="https://haitao.nos.netease.com/9a549dba-edbf-4537-adf1-7fd2ab6b1bc8_128_128.ico" type="image/x-icon">
 
 <!--  <link rel="stylesheet"-->
 <!--        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/shades-of-purple.min.css">-->
@@ -32,16 +32,26 @@
   </script>
 
   <style>
-    body { color: #333; font-size: 12px; padding: 0; margin: 0; font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif; -webkit-font-smoothing: antialiased; }
+    :root {
+      --font-size: 14px;
+      --font-color: #666;
+      --primary-color: #68BAEB;
+      --link-color: #0398FF;
+
+      --header-height: 68px;
+      --sidebar-width: 240px;
+    }
+
+    body { color: #333; font-size: 14px; padding: 0; margin: 0; font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif; -webkit-font-smoothing: antialiased; }
     .f-fr { float: right; }
 
     .g-top { font: 14px/1.6 "Microsoft YaHei","Hiragino Sans GB","WenQuanYi Micro Hei",sans-serif; position: fixed; top: 0; left: 0; right: 0; height: 68px; z-index: 5; background: #68BAEB;  }
     .g-topc { margin: 0 auto; width: 1080px; }
     .u-logo { display: block; float: left; margin-left: 12px; background: url(https://haitao.nos.netease.com/6f8e6539-cfca-4d4b-869c-dc6bf9bc4c65_323_329.png) center center no-repeat #fff; width: 72px; height: 72px; font-size: 0; background-size: 54px; }
-    .m-navbar { list-style: none; margin: 0; padding: 0; color: #fff; letter-spacing: -4px; }
+    .m-navbar { list-style: none; margin: 0; padding: 0; color: #fff; letter-spacing: -5px; }
     .m-navbar li { display: inline-block; letter-spacing: normal; }
-    .m-navbar li a, .m-navbar li span {display: block; text-decoration: none; text-align: center; min-width: 120px; height: 68px; line-height: 68px; color: rgba(255,255,255,.75); transition: color .3s;  }
-    .m-navbar li a:hover { color: #fff; }
+    .m-navbar li a, .m-navbar li span {display: block; text-decoration: none; text-align: center; font-weight: bold; min-width: 120px; height: 68px; line-height: 68px; color: rgba(255,255,255,.75); transition: color .3s;  }
+    .m-navbar li a:hover, .m-navbar li a.crt { color: #fff; background: #63ABDD; }
 
     .g-bd { padding-top: 68px; display: flex; flex-direction: row; width: 1200px; margin: 0 auto; min-height: calc(100vh - 240px); }
 
@@ -69,7 +79,7 @@
     }
 
     .m-sidebar { box-sizing: border-box; margin: 0; padding: 20px 10px 100px 10px; list-style: none; width: 240px; border-right: 1px solid #ececec; }
-    .m-sidebar-page { font-size: 14px; line-height: 40px; height: 40px; font-weight: 400; color: #999; }
+    .m-sidebar-page { font-size: 13px; line-height: 40px; height: 40px; font-weight: 400; color: #999; }
     .m-sidebar-page a { text-decoration: none; color: #333; }
     .m-sidebar-page a:hover, .m-sidebar-page a:hover i { color: #68BAEB; }
 
@@ -77,37 +87,42 @@
 
     .m-sidebar-sub { list-style: none; }
     .m-sidebar-sub-page { height: 30px; line-height: 30px; }
-    .m-sidebar-sub-page a { text-decoration: none; color: #333; }
+    .m-sidebar-sub-page a { font-size: 13px; text-decoration: none; color: #333; }
     .m-sidebar-sub-page a:hover, .m-sidebar-sub-page a:hover i { color: #68BAEB;}
 
     .m-sidebar-page.active a, .m-sidebar-page.active i,
     .m-sidebar-sub-page.active a, .m-sidebar-sub-page.active i
     { color: #68BAEB; }
 
-    .m-cnt { font-size: 13px; width: 960px; box-sizing: border-box; padding: 20px 0 100px 60px; }
+    .m-cnt {
+      font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif; font-weight: 400;
+      line-height: 1.7; font-size: 14px; width: 960px; box-sizing: border-box; padding: 0px 0 100px 60px;
+    }
 
     /* style md */
-    .rde-h1, .rde-h2, .rde-h3, .rde-h4, .rde-h5 { font-weight: 400; color: #1f2f3d; margin: 15px 0; }
-    .rde-h1 { font-size: 28px; margin-top: 40px; }
-    .rde-h2 { font-size: 28px; margin-top: 40px; }
-    .rde-h3 { font-size: 22px; margin-top: 40px; }
-    .rde-h4 { font-size: 18px; margin-top: 40px; }
-    .rde-h5 { font-size: 14px; }
+    ol, ul { margin-bottom: 1em; padding-left: 2em; }
+    ol .rde-p, ul .rde-p { margin-bottom: 4px; }
+    .rde-h1, .rde-h2, .rde-h3, .rde-h4, .rde-h5 { margin-top: 1.275em; margin-bottom: .85em; font-weight: 700;  color: #1f2f3d; }
+    .rde-h1 { font-size: 2em; }
+    .rde-h2 { font-size: 1.75em; }
+    .rde-h3 { font-size: 1.5em; }
+    .rde-h4 { font-size: 1.25em; }
+    .rde-h5 { font-size: 1em; }
 
-    .rde-p { line-height: 26px; }
+    .rde-p { line-height: 1.7; margin-top: 0; margin-bottom: .85em; }
     .rde-p + .rde-p { margin-top: 20px; }
     .rde-p img { width: 700px; display: block; margin: 0 auto; }
 
     .rde-a { color: var(--link-color); text-decoration: none; }
-    blockquote { font-weight: bold; margin: 20px 0; padding-left: 20px; border-left: 2px solid #68BAEB; }
+    blockquote { border-left: 2px solid #68BAEB; color: #68BAEB; font-weight: bold; margin: 20px 0; padding-left: 14px; }
 
-    .hljs { font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+    .hljs { background: #f1f4f7!important; color: #3d516b!important; font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+    code { font-family: Consolas,"Liberation Mono",Menlo,Courier,monospace!important; }
 
     /* rde-component api */
-    .rde-table { table-layout: fixed; font-size: 12px; width: 100%; margin: 8px 0; }
-    .rde-table th { text-align: center; background: #eef1f4; border-bottom: 1px solid #ecf2f9; color: #666; }
-    .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.5em 1.4em; border: none; }
-    .rde-table td { border-bottom: 1px solid #ecf2f9; }
+    .rde-table { table-layout: fixed; border-spacing: 0; font-size: 12px; width: 100%; margin: 20px 0 40px 0; }
+    .rde-table th { text-align: center; background: #f1f4f7; border-bottom: 1px solid #ecf2f9; color: #666; }
+    .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.8em 1.4em; border: none; }
     .rde-table tr:nth-child(2n-1) { background: #fff; }
     .rde-table tr:nth-child(2n) { background: #f6f9fc; }
   </style>
@@ -118,8 +133,8 @@
     <a class="u-logo u-logo-index" href="/RDE/index.html">RDE</a>
     <ul class="m-navbar f-fr">
       <li><a href="/RDE/rda/quickstart.html">开始使用</a></li>
-      <li><a href="/RDE/about.html">文档</a></li>
-      <li><a href="/RDE/container.html">容器示例</a></li>
+      <li><a href="/RDE/about.html" id="nav-docs">文档</a></li>
+      <li><a href="/RDE/container.html" id="nav-container">容器示例</a></li>
     </ul>
   </div>
 </div>
@@ -154,39 +169,33 @@
 <blockquote>
 <p class="rde-p">易于维护的前端研发架构</p>
 </blockquote>
-<p class="rde-p">  RDE诞生的背景是，我们发现前端工程目前存在以下问题：</p>
-<ul>
+<p class="rde-p">RDE诞生的背景是，我们发现前端工程目前存在以下问题：</p>
+<ol>
 <li>
 <p class="rde-p">工程的开发与维护都是以工程为单位进行管理，每个工程都在重复开发基础设施</p>
 </li>
 <li>
 <p class="rde-p">脚手架都只负责初始化工程，只能保持在创建时一致，后续维护靠业务开发者自己重复维护</p>
 </li>
-</ul>
-<p class="rde-p">  如果业务中有大量工程，就会造成人力浪费与推进改造效率低下等问题；RDE通过重构前端工程结构，给出一套可维护的脚手架方案，实现业务与工程基础设施的分离、基础设施可持续升级维护、进一步提升业务开发者的开发体验</p>
+</ol>
+<p class="rde-p">如果业务中有大量工程，就会造成人力浪费与推进改造效率低下等问题；RDE通过重构前端工程结构，给出一套可维护的脚手架方案，实现业务与工程基础设施的分离、基础设施可持续升级维护、进一步提升业务开发者的开发体验</p>
 <h3 class="rde-h3">解决的问题</h3>
-<ul>
+<ol>
 <li><p class="rde-p">开发业务时，先要从一堆与业务无关的（配置）文件中定位到页面文件，整体工程的感觉比较混乱</li>
 <li><p class="rde-p">每个工程重复建设基础设施，重复配置，如webpack基础配置，打点、sentry、mock搭建等</li>
 <li><p class="rde-p">每次升级依赖，如webpack、vue等、优化打包等，都需要推进每一个工程升级，效率低下</li>
 <li><p class="rde-p">很难同步多个工程的依赖规范，如统一使用echart，统一表单验证库等</li>
 <li><p class="rde-p">很难同步多个工程的开发规范，如一些norm术语，lint、serve等，再比如目录结构规范；可以降低跨工程开发成本</li>
 <li><p class="rde-p">工程文档维护比较困难，每个工程虽然可以放一个README，但是新人上手体验不好，并且README很容易由于没有及时维护而失效</li>
-</ul>
+</ol>
 <h3 class="rde-h3">实现方案</h3>
-<p class="rde-p">  对原工程结构，按照功能进行拆分为3部分：</p>
-<ul>
-<li>
-<p class="rde-p">工程基础设施：打包、开发、mock、lint、precommit校验、commit-msg校验、lint规则制定、基础依赖包等</p>
-</li>
-<li>
-<p class="rde-p">开发套件：多个工程复用的component、util、directive、mixin、decorator、filter、style、request方法等；</p>
-</li>
-<li>
-<p class="rde-p">业务应用：业务生产的工程</p>
-</li>
-</ul>
-<p class="rde-p">  RDE充当着连接各部分的角色，提供方案，让这3部分的开发变得更简单；实现细节可以关注<a class="rde-a" href="https://github.com/kaola-fed/RDE/wiki">wiki</a>，整体思路很简单，将工程拆分为一个app目录、一个template目录，app目录放业务，template目录放基础设施，app目录放在业务的git工程中，template目录发布在docker hub容器里，本地运行时，将二者在docker中进行聚合，然后运行；</p>
+<p class="rde-p">对原工程结构，按照功能进行拆分为3部分：</p>
+<ol>
+<li><p class="rde-p">工程基础设施：打包、开发、mock、lint、precommit校验、commit-msg校验、lint规则制定、基础依赖包等</li>
+<li><p class="rde-p">开发套件：多个工程复用的component、util、directive、mixin、decorator、filter、style、request方法等；</li>
+<li><p class="rde-p">业务应用：业务生产的工程</li>
+</ol>
+<p class="rde-p">RDE充当着连接各部分的角色，提供方案，让这3部分的开发变得更简单；实现细节可以关注<a class="rde-a" href="https://github.com/kaola-fed/RDE/wiki">wiki</a>，整体思路很简单，将工程拆分为一个app目录、一个template目录，app目录放业务，template目录放基础设施，app目录放在业务的git工程中，template目录发布在docker hub容器里，本地运行时，将二者在docker中进行聚合，然后运行；</p>
 <p class="rde-p"><img src="https://haitao.nos.netease.com/bf0c98ac-6416-4d29-8bd4-bf94172a4354_835_619.png" alt=""></p>
 <h3 class="rde-h3">核心功能CASE</h3>
 <p class="rde-p">RDC容器：用户自己封装维护，并发布在dockerhub上的的工程基础设施镜像，C代表Container</p>
@@ -196,14 +205,14 @@
 <p class="rde-p">回顾前端发展进程，RDE可以作为集成汇总、组合所有服务的一个更通用的标准方案，让开发维护工程的粒度不再是工程，而可以根据自己实际需要，进行组合复用；如下图：</p>
 <p class="rde-p"><img src="https://haitao.nos.netease.com/aad8723b-98c7-4774-bfbb-072ddb3ac7b4_1552_1166.jpg" alt=""></p>
 <h3 class="rde-h3">最佳实践</h3>
-<p class="rde-p">  RDE打破了原有以单工程维护的业务架构，但是具体在业务中如何重组工程，拆分几个RDC，RDC如何定位，需要根据各自的业务讨论决定，不建议直接使用外部的RDC，每个团队(或部门)应该自己维护自己的RDC；即使是个人，假设你开发多个工程，个人也可以维护一个RDC，方便后续维护；目前RDC可以作为但不限于以下场景：</p>
-<ul>
+<p class="rde-p">RDE打破了原有以单工程维护的业务架构，但是具体在业务中如何重组工程，拆分几个RDC，RDC如何定位，需要根据各自的业务讨论决定，不建议直接使用外部的RDC，每个团队(或部门)应该自己维护自己的RDC；即使是个人，假设你开发多个工程，个人也可以维护一个RDC，方便后续维护；目前RDC可以作为但不限于以下场景：</p>
+<ol>
 <li><p class="rde-p">作为业务工程的底层基建</li>
 <li><p class="rde-p">作为组件库、套件库的底层基建，可以包含发布、测试等基本功能，方便上层快速开发发布组件库</li>
 <li><p class="rde-p">可以作为Node端封装通用的配置或者逻辑部分</li>
-</ul>
-<p class="rde-p">  RDC的维护者需要配合RDE提供的render配置，创造出覆盖面更广的底层基建，需要抛弃单工程的开发的思维，结合上层各种应该用的场景进行开发维护；下面例举一下业务底层RDC的开发可能需要考虑的问题：</p>
-<ul>
+</ol>
+<p class="rde-p">RDC的维护者需要配合RDE提供的<a class="rde-a" href="https://kaola-fed.github.io/RDE/rdc/extends.html">扩展配置</a>，创造出覆盖面更广的底层基建，需要抛弃单工程的开发的思维，结合上层各种应该用的场景进行开发维护；下面例举一下业务底层RDC的开发可能需要考虑的问题：</p>
+<ol>
 <li><p class="rde-p">是否封装了后台通用的菜单</li>
 <li><p class="rde-p">菜单如果是多种，是否可以让app层进行选择</li>
 <li><p class="rde-p">登陆、错误页、无权限页等通用场景是否需要封装进RDC</li>
@@ -220,7 +229,7 @@
 <li><p class="rde-p">是否提供了完善的文档，供应用开发者使用</li>
 <li><p class="rde-p">生态选型，版本升级维护，如未来的webpack升级，vue/react升级等</li>
 <li><p class="rde-p">打包性能优化</li>
-</ul>
+</ol>
 
   </div>
 </div>
@@ -239,6 +248,12 @@
 </div>
 
 <script>
+  if (location.pathname.includes('container.html')) {
+    document.querySelector('#nav-container').classList.add('crt');
+  } else {
+    document.querySelector('#nav-docs').classList.add('crt');
+  }
+
   new Vue({
     el: '#sidebar',
     data() {
@@ -273,6 +288,8 @@
             title: '模式选择', enTitle: 'Modes', url: '/rdc/modes.html'
           }, {
             title: '配置说明', enTitle: 'Config', url: '/rdc/config.html'
+          }, {
+            title: '扩展说明', enTitle: 'Extends', url: '/rdc/extends.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rdc/qa.html'
           }]

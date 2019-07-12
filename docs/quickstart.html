@@ -7,8 +7,8 @@
   <meta name="keywords" content="RDE,Javascript,Node,Framework,Front-end">
   <meta name="description" content="RDE - Redesign Dev Env">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <link rel="icon" href="https://haitao.nos.netease.com/410707d1-d6aa-4fa6-b6cb-4f29ee7d8670_128_128.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="https://haitao.nos.netease.com/410707d1-d6aa-4fa6-b6cb-4f29ee7d8670_128_128.ico" type="image/x-icon">
+  <link rel="icon" href="https://haitao.nos.netease.com/9a549dba-edbf-4537-adf1-7fd2ab6b1bc8_128_128.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="https://haitao.nos.netease.com/9a549dba-edbf-4537-adf1-7fd2ab6b1bc8_128_128.ico" type="image/x-icon">
 
 <!--  <link rel="stylesheet"-->
 <!--        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/shades-of-purple.min.css">-->
@@ -32,16 +32,26 @@
   </script>
 
   <style>
-    body { color: #333; font-size: 12px; padding: 0; margin: 0; font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif; -webkit-font-smoothing: antialiased; }
+    :root {
+      --font-size: 14px;
+      --font-color: #666;
+      --primary-color: #68BAEB;
+      --link-color: #0398FF;
+
+      --header-height: 68px;
+      --sidebar-width: 240px;
+    }
+
+    body { color: #333; font-size: 14px; padding: 0; margin: 0; font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif; -webkit-font-smoothing: antialiased; }
     .f-fr { float: right; }
 
     .g-top { font: 14px/1.6 "Microsoft YaHei","Hiragino Sans GB","WenQuanYi Micro Hei",sans-serif; position: fixed; top: 0; left: 0; right: 0; height: 68px; z-index: 5; background: #68BAEB;  }
     .g-topc { margin: 0 auto; width: 1080px; }
     .u-logo { display: block; float: left; margin-left: 12px; background: url(https://haitao.nos.netease.com/6f8e6539-cfca-4d4b-869c-dc6bf9bc4c65_323_329.png) center center no-repeat #fff; width: 72px; height: 72px; font-size: 0; background-size: 54px; }
-    .m-navbar { list-style: none; margin: 0; padding: 0; color: #fff; letter-spacing: -4px; }
+    .m-navbar { list-style: none; margin: 0; padding: 0; color: #fff; letter-spacing: -5px; }
     .m-navbar li { display: inline-block; letter-spacing: normal; }
-    .m-navbar li a, .m-navbar li span {display: block; text-decoration: none; text-align: center; min-width: 120px; height: 68px; line-height: 68px; color: rgba(255,255,255,.75); transition: color .3s;  }
-    .m-navbar li a:hover { color: #fff; }
+    .m-navbar li a, .m-navbar li span {display: block; text-decoration: none; text-align: center; font-weight: bold; min-width: 120px; height: 68px; line-height: 68px; color: rgba(255,255,255,.75); transition: color .3s;  }
+    .m-navbar li a:hover, .m-navbar li a.crt { color: #fff; background: #63ABDD; }
 
     .g-bd { padding-top: 68px; display: flex; flex-direction: row; width: 1200px; margin: 0 auto; min-height: calc(100vh - 240px); }
 
@@ -69,7 +79,7 @@
     }
 
     .m-sidebar { box-sizing: border-box; margin: 0; padding: 20px 10px 100px 10px; list-style: none; width: 240px; border-right: 1px solid #ececec; }
-    .m-sidebar-page { font-size: 14px; line-height: 40px; height: 40px; font-weight: 400; color: #999; }
+    .m-sidebar-page { font-size: 13px; line-height: 40px; height: 40px; font-weight: 400; color: #999; }
     .m-sidebar-page a { text-decoration: none; color: #333; }
     .m-sidebar-page a:hover, .m-sidebar-page a:hover i { color: #68BAEB; }
 
@@ -77,37 +87,42 @@
 
     .m-sidebar-sub { list-style: none; }
     .m-sidebar-sub-page { height: 30px; line-height: 30px; }
-    .m-sidebar-sub-page a { text-decoration: none; color: #333; }
+    .m-sidebar-sub-page a { font-size: 13px; text-decoration: none; color: #333; }
     .m-sidebar-sub-page a:hover, .m-sidebar-sub-page a:hover i { color: #68BAEB;}
 
     .m-sidebar-page.active a, .m-sidebar-page.active i,
     .m-sidebar-sub-page.active a, .m-sidebar-sub-page.active i
     { color: #68BAEB; }
 
-    .m-cnt { font-size: 13px; width: 960px; box-sizing: border-box; padding: 20px 0 100px 60px; }
+    .m-cnt {
+      font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif; font-weight: 400;
+      line-height: 1.7; font-size: 14px; width: 960px; box-sizing: border-box; padding: 0px 0 100px 60px;
+    }
 
     /* style md */
-    .rde-h1, .rde-h2, .rde-h3, .rde-h4, .rde-h5 { font-weight: 400; color: #1f2f3d; margin: 15px 0; }
-    .rde-h1 { font-size: 28px; margin-top: 40px; }
-    .rde-h2 { font-size: 28px; margin-top: 40px; }
-    .rde-h3 { font-size: 22px; margin-top: 40px; }
-    .rde-h4 { font-size: 18px; margin-top: 40px; }
-    .rde-h5 { font-size: 14px; }
+    ol, ul { margin-bottom: 1em; padding-left: 2em; }
+    ol .rde-p, ul .rde-p { margin-bottom: 4px; }
+    .rde-h1, .rde-h2, .rde-h3, .rde-h4, .rde-h5 { margin-top: 1.275em; margin-bottom: .85em; font-weight: 700;  color: #1f2f3d; }
+    .rde-h1 { font-size: 2em; }
+    .rde-h2 { font-size: 1.75em; }
+    .rde-h3 { font-size: 1.5em; }
+    .rde-h4 { font-size: 1.25em; }
+    .rde-h5 { font-size: 1em; }
 
-    .rde-p { line-height: 26px; }
+    .rde-p { line-height: 1.7; margin-top: 0; margin-bottom: .85em; }
     .rde-p + .rde-p { margin-top: 20px; }
     .rde-p img { width: 700px; display: block; margin: 0 auto; }
 
     .rde-a { color: var(--link-color); text-decoration: none; }
-    blockquote { font-weight: bold; margin: 20px 0; padding-left: 20px; border-left: 2px solid #68BAEB; }
+    blockquote { border-left: 2px solid #68BAEB; color: #68BAEB; font-weight: bold; margin: 20px 0; padding-left: 14px; }
 
-    .hljs { font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+    .hljs { background: #f1f4f7!important; color: #3d516b!important; font-family: Menlo,Monaco,Consolas,Courier,monospace; line-height: 1.8; font-size: 13px; padding: 12px 20px; }
+    code { font-family: Consolas,"Liberation Mono",Menlo,Courier,monospace!important; }
 
     /* rde-component api */
-    .rde-table { table-layout: fixed; font-size: 12px; width: 100%; margin: 8px 0; }
-    .rde-table th { text-align: center; background: #eef1f4; border-bottom: 1px solid #ecf2f9; color: #666; }
-    .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.5em 1.4em; border: none; }
-    .rde-table td { border-bottom: 1px solid #ecf2f9; }
+    .rde-table { table-layout: fixed; border-spacing: 0; font-size: 12px; width: 100%; margin: 20px 0 40px 0; }
+    .rde-table th { text-align: center; background: #f1f4f7; border-bottom: 1px solid #ecf2f9; color: #666; }
+    .rde-table td, .rde-table th { line-height: 1.5em; padding: 0.8em 1.4em; border: none; }
     .rde-table tr:nth-child(2n-1) { background: #fff; }
     .rde-table tr:nth-child(2n) { background: #f6f9fc; }
   </style>
@@ -118,8 +133,8 @@
     <a class="u-logo u-logo-index" href="/RDE/index.html">RDE</a>
     <ul class="m-navbar f-fr">
       <li><a href="/RDE/rda/quickstart.html">开始使用</a></li>
-      <li><a href="/RDE/about.html">文档</a></li>
-      <li><a href="/RDE/container.html">容器示例</a></li>
+      <li><a href="/RDE/about.html" id="nav-docs">文档</a></li>
+      <li><a href="/RDE/container.html" id="nav-container">容器示例</a></li>
     </ul>
   </div>
 </div>
@@ -244,6 +259,12 @@ category: Components
 </div>
 
 <script>
+  if (location.pathname.includes('container.html')) {
+    document.querySelector('#nav-container').classList.add('crt');
+  } else {
+    document.querySelector('#nav-docs').classList.add('crt');
+  }
+
   new Vue({
     el: '#sidebar',
     data() {
@@ -278,6 +299,8 @@ category: Components
             title: '模式选择', enTitle: 'Modes', url: '/rdc/modes.html'
           }, {
             title: '配置说明', enTitle: 'Config', url: '/rdc/config.html'
+          }, {
+            title: '扩展说明', enTitle: 'Extends', url: '/rdc/extends.html'
           }, {
             title: '常见问题', enTitle: 'Q&A', url: '/rdc/qa.html'
           }]
