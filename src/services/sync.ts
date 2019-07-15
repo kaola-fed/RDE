@@ -1,7 +1,7 @@
 import * as deepExtend from 'deep-extend'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as writeJson from 'write-json-file'
+import { writeJson } from 'fs-extra'
 import * as writePkg from 'write-pkg'
 
 import conf from '../services/conf'
@@ -232,7 +232,7 @@ rde lint -m "$commitMsg"
       }
     })
 
-    await writeJson(join(conf.localCacheDir, 'package-cache.json'), devPkgJson)
+    await writeJson(join(conf.localCacheDir, 'package-cache.json'), devPkgJson, {spaces: '\t'})
   }
 
   public async install() {
