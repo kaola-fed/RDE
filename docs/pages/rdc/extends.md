@@ -48,3 +48,24 @@ const variables = require('${relativeToProjectRoot}/rdc.varaibles')
 ![](https://haitao.nos.netease.com/b9426d67-bfb8-4334-aed5-c959dd023a86_686_614.png)
 
 请注意，在本地环境的hook只有preMount，其他hook都是在Docker环境中执行；具体使用哪个hook请根据需求评估；
+
+使用 hook 很简单，只需要在RDC工程中的 template 目录下新建_rdehooks目录， 并在该目录下新建对应的`${hookName}.js`文件即可，例如下面，在 preMount hook ，收集git信息写入app目录下，供容器内部读取：
+```javascript
+/* eslint-disable @typescript-eslint/no-var-requires */
+const childProcess = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+module.exports = async () => {
+    // 获取 git version
+    const gitVersionPath = path.resolve(process.cwd(), 'app', '.gitversion');
+    try {
+        const gitVersion = childProcess.execSync('git rev-parse --short=7 HEAD', { encoding: 'utf8' }).trim();
+        fs.writeFileSync(gitVersionPath, gitVersion, {
+            encoding: 'utf-8'
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+```
