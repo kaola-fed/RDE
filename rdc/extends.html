@@ -205,6 +205,25 @@ RDE在运行时，会读取 variables 的配置，并写入 Docker 容器项目�
 </ol>
 <p class="rde-p"><img src="https://haitao.nos.netease.com/b9426d67-bfb8-4334-aed5-c959dd023a86_686_614.png" alt=""></p>
 <p class="rde-p">请注意，在本地环境的hook只有preMount，其他hook都是在Docker环境中执行；具体使用哪个hook请根据需求评估；</p>
+<p class="rde-p">使用 hook 很简单，只需要在RDC工程中的 template 目录下新建_rdehooks目录， 并在该目录下新建对应的<code>${hookName}.js</code>文件即可，例如下面，在 preMount hook ，收集git信息写入app目录下，供容器内部读取：</p>
+<pre class="hljs"><code><span class="hljs-comment">/* eslint-disable @typescript-eslint/no-var-requires */</span>
+<span class="hljs-keyword">const</span> childProcess = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>);
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-comment">// 获取 git version</span>
+    <span class="hljs-keyword">const</span> gitVersionPath = path.resolve(process.cwd(), <span class="hljs-string">'app'</span>, <span class="hljs-string">'.gitversion'</span>);
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">const</span> gitVersion = childProcess.execSync(<span class="hljs-string">'git rev-parse --short=7 HEAD'</span>, { <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf8'</span> }).trim();
+        fs.writeFileSync(gitVersionPath, gitVersion, {
+            <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>
+        });
+    } <span class="hljs-keyword">catch</span> (err) {
+        <span class="hljs-built_in">console</span>.error(err);
+    }
+};
+</code></pre>
 
   </div>
 </div>
