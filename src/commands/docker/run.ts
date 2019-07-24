@@ -1,3 +1,4 @@
+import {ParentBinLinker} from 'link-parent-bin'
 import * as path from 'path'
 
 import RunBase from '../../base/run'
@@ -61,12 +62,31 @@ export default class DockerRun extends RunBase {
       args = args.concat(extras)
     }
 
-    await _.asyncSpawn('npm', args, {
-      cwd: conf.isIntegrate ? conf.integrateDir : conf.runtimeDir,
-      env: process.env
-    })
-    process.exit(0)
+    if (process.platform === 'win32') {
+      const linker = new ParentBinLinker({
+        childDirectoryRoot: '.integrate',
+        linkDevDependencies: true,
+        linkDependencies: true,
+        linkLocalDependencies: true,
+      } as any)
 
-    await rdehook.trigger('postRun')
+      await linker.linkBinsToChildren()
+
+      await _.asyncSpawn('npm', args, {
+        cwd: conf.isIntegrate ? conf.integrateDir : conf.runtimeDir,
+        env: process.env
+      })
+      process.exit(0)
+
+      await rdehook.trigger('postRun')
+    } else {
+      await _.asyncSpawn('npm', args, {
+        cwd: conf.isIntegrate ? conf.integrateDir : conf.runtimeDir,
+        env: process.env
+      })
+      process.exit(0)
+
+      await rdehook.trigger('postRun')
+    }
   }
 }
