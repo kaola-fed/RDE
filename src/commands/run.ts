@@ -130,11 +130,8 @@ export default class Run extends RunBase {
 
     child = spawn('docker-compose', (args as ReadonlyArray<string>), {
       cwd: conf.localCacheDir,
-      stdio: 'pipe'
+      stdio: 'inherit'
     })
-
-    child.stdout.pipe(process.stdout)
-    child.stderr.pipe(process.stdout)
 
     child.on('close', code => {
       if (code !== 0) {
