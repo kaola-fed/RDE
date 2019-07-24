@@ -125,7 +125,7 @@ export default class Run extends RunBase {
     debug('useLocal', conf.useLocal)
 
     if (conf.useLocal) {
-      await _.asyncExec('rm -rf .integrate')
+      await _.asyncExec(`rm -rf ${conf.rdMode === conf.RdModes.Integrate ? conf.integrateDir : conf.runtimeDir}`)
 
       let args = this.appendArgs(['docker:run', this.cmd])
 
