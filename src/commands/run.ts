@@ -132,6 +132,7 @@ export default class Run extends RunBase {
       child = spawn('rde', args, {
         cwd: conf.cwd,
         stdio: 'inherit',
+        shell: true,
       })
     } else {
       // not using docker-compose cuz .dockerignore in sub dir is not working,
@@ -146,7 +147,7 @@ export default class Run extends RunBase {
 
       child = spawn('docker-compose', (args as ReadonlyArray<string>), {
         cwd: conf.localCacheDir,
-        stdio: 'inherit'
+        stdio: 'inherit',
       })
     }
 
