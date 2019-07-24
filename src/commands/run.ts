@@ -11,6 +11,7 @@ import {debug} from '../services/logger'
 import rdehook from '../services/rdehook'
 import sync from '../services/sync'
 import {validateRda, validateRdc} from '../services/validate'
+import _ from '../util'
 
 const {RdTypes, cwd} = conf
 export default class Run extends RunBase {
@@ -96,20 +97,15 @@ export default class Run extends RunBase {
     })
   }
 
-  public async run() {
-    await rdehook.trigger('preMount')
-
-    // not using docker-compose cuz .dockerignore in sub dir is not working,
-    // build with docker-compose is slow if node_modules exists
-    await docker.build(`dev-${conf.tag}`, cwd, this.rebuild, `${conf.localCacheDir}/Dockerfile`)
-
-    let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
-
-    debug(`docker build dev-${conf.tag}`)
-
+  public appendArgs(args) {
     if (this.watch) { args.push('--watch') }
     if (this.verbose) { args.push('-v') }
     if (this.extras) { args = args.concat(['-e', this.extras]) }
+    return args
+  }
+
+  public async run() {
+    await rdehook.trigger('preMount')
 
     let child = null
     process.on('SIGINT', () => child.kill())
@@ -126,12 +122,33 @@ export default class Run extends RunBase {
       })
     }
 
-    debug(`docker-compose ${args.join(' ')}`)
+    debug('useLocal', conf.useLocal)
 
-    child = spawn('docker-compose', (args as ReadonlyArray<string>), {
-      cwd: conf.localCacheDir,
-      stdio: 'inherit'
-    })
+    if (conf.useLocal) {
+      await _.asyncExec('rm -rf .integrate')
+
+      let args = this.appendArgs(['docker:run', this.cmd])
+
+      child = spawn('rde', args, {
+        cwd: conf.cwd,
+        stdio: 'inherit',
+      })
+    } else {
+      // not using docker-compose cuz .dockerignore in sub dir is not working,
+      // build with docker-compose is slow if node_modules exists
+      await docker.build(`dev-${conf.tag}`, cwd, this.rebuild, `${conf.localCacheDir}/Dockerfile`)
+
+      let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
+      args = this.appendArgs(args)
+
+      debug(`docker build dev-${conf.tag}`)
+      debug(`docker-compose ${args.join(' ')}`)
+
+      child = spawn('docker-compose', (args as ReadonlyArray<string>), {
+        cwd: conf.localCacheDir,
+        stdio: 'inherit'
+      })
+    }
 
     child.on('close', code => {
       if (code !== 0) {

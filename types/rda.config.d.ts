@@ -11,6 +11,7 @@ interface Suite {
 }
 
 interface AppConf {
+  useLocal: boolean,
   container: AppConfTemplate,
   suites: Suite[],
   docker: Docker,

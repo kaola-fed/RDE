@@ -8,6 +8,7 @@ import {debug} from '../services/logger'
 import {MCOMMON} from '../services/message'
 import {TError, TStart, uploadHubble} from '../services/track'
 
+const {RdTypes, rdcConfName} = conf
 const {resolve} = path
 export default class RunBase extends Base {
   public static args = [{
@@ -31,6 +32,21 @@ export default class RunBase extends Base {
 
   public extras: string
 
+  public get useLocal() {
+    if (conf.isApp) {
+      const {useLocal} = conf.getAppConf()
+
+      return !!useLocal
+    }
+
+    if (conf.rdType === RdTypes.Container) {
+      const rdcConfPath = resolve(conf.cwd, rdcConfName)
+      const rdcConf = require(rdcConfPath)
+
+      return !!rdcConf.useLocal
+    }
+  }
+
   public async preInit() {
     // @ts-ignore
     const {flags, args} = this.parse(this.constructor)
@@ -41,7 +57,6 @@ export default class RunBase extends Base {
 
     const cmd = this.cmd || (this.constructor as any).id
     uploadHubble({cmd})
-
     return flags
   }
 
@@ -69,6 +84,8 @@ export default class RunBase extends Base {
     ) {
       throw Error(MCOMMON.WRONG_PROJECT_STRUCTURE)
     }
+
+    conf.useLocal = this.useLocal
   }
 
   public async run() {}

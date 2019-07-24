@@ -12,6 +12,8 @@ let rdType = ''
 
 let rdMode = ''
 
+let useLocal = false
+
 let rdcConfMap: any = {}
 
 const conf = {
@@ -139,6 +141,14 @@ const conf = {
 
   set rdMode(mode) {
     rdMode = mode
+  },
+
+  set useLocal(local) {
+    useLocal = local
+  },
+
+  get useLocal() {
+    return useLocal
   },
 
   getAppConf(): AppConf {

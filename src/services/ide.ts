@@ -8,7 +8,7 @@ const {resolve} = path
 
 class IDE {
   public get rdcConfPath() {
-    return resolve(conf.localCacheDir, conf.rdcConfName)
+    return resolve(conf.cwd, conf.rdcConfName)
   }
 
   public get eslintPkgPath() {

@@ -51,10 +51,12 @@ export default class DockerRun {
     }
 
     if (conf.rdType === RdTypes.Application) {
+      const dirRoot = conf.useLocal ? conf.cwd : dockerWorkDirRoot
+
       await sync.mergePkgJson(
-        resolve(dockerWorkDirRoot, 'app', 'package.json'),
-        resolve(dockerWorkDirRoot, conf.rdeDir, 'package.json'),
-        resolve(dockerWorkDirRoot, conf.rdeDir)
+        resolve(dirRoot, 'app', 'package.json'),
+        resolve(dirRoot, conf.rdeDir, 'package.json'),
+        resolve(dirRoot, conf.rdeDir)
       )
     }
 
@@ -90,7 +92,8 @@ export default class DockerRun {
       variables = config.variables || {}
     }
 
-    const variablePath = resolve(dockerWorkDirRoot, 'rdc.variables.js')
+    const dirRoot = conf.useLocal ? conf.cwd : dockerWorkDirRoot
+    const variablePath = resolve(dirRoot, 'rdc.variables.js')
     await render.renderTo('module', {
       obj: variables
     }, variablePath, {

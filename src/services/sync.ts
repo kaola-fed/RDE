@@ -1,7 +1,7 @@
 import * as deepExtend from 'deep-extend'
 import * as fs from 'fs'
+import {writeJson} from 'fs-extra'
 import * as path from 'path'
-import { writeJson } from 'fs-extra'
 import * as writePkg from 'write-pkg'
 
 import conf from '../services/conf'
@@ -133,7 +133,7 @@ class Sync {
       to: cwd
     }, {
       from: `${dockerWorkDirRoot}/${rdcConfName}`,
-      to: localCacheDir,
+      to: cwd,
     }])
 
     if (!createRdc) {
@@ -148,7 +148,7 @@ class Sync {
   }
 
   public async genDevcontainer(createRdc) {
-    const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
+    const rdcConfPath = resolve(conf.cwd, rdcConfName)
     const rdcConf: RdcConf = require(rdcConfPath)
 
     const map = {
