@@ -52,7 +52,7 @@ export default class DockerRun extends RunBase {
         extras = this.extras.split(' ').map(item => {
           // fix path to relative to .rde path
           if (/^(app|template)\/.*/.test(item)) {
-            return path.join('..', item)
+            return path.posix.join('..', item)
           }
           return item
         })

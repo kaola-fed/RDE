@@ -107,7 +107,10 @@ export default class Run extends RunBase {
     await rdehook.trigger('preMount')
 
     let child = null
-    process.on('SIGINT', () => child.kill())
+    process.on('SIGINT', () => {
+      child.kill("SIGINT")
+      process.exit(0)
+    })
 
     if (this.watch) {
       const rl = readline.createInterface({
@@ -116,7 +119,7 @@ export default class Run extends RunBase {
       })
 
       rl.on('SIGINT', () => {
-        child.kill()
+        child.kill("SIGINT")
         process.exit(0)
       })
     }
@@ -127,12 +130,14 @@ export default class Run extends RunBase {
       await _.asyncExec('rm -rf .integrate && rm -rf .runtime')
 
       let args = this.appendArgs(['docker:run', this.cmd])
-      if (this.extras) { args = args.concat(['-e', `\'${this.extras}\'`]) }
+
+      if (this.extras) { args = args.concat(['-e', `\"${this.extras}\"`]) }
 
       child = spawn('rde', args, {
         cwd: conf.cwd,
         stdio: 'inherit',
         shell: true,
+        detached: process.platform === 'win32'
       })
     } else {
       // not using docker-compose cuz .dockerignore in sub dir is not working,
@@ -152,10 +157,10 @@ export default class Run extends RunBase {
       })
     }
 
+
     child.on('close', code => {
-      if (code !== 0) {
-        process.exit(code)
-      }
+      child.kill("SIGINT")
+      process.exit(code)
     })
   }
 }
