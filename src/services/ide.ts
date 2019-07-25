@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as path from 'path'
 
 import conf from './conf'
@@ -8,7 +9,7 @@ const {resolve} = path
 
 class IDE {
   public get rdcConfPath() {
-    return resolve(conf.cwd, conf.rdcConfName)
+    return resolve(conf.localCacheDir, conf.rdcConfName)
   }
 
   public get eslintPkgPath() {
@@ -23,13 +24,19 @@ class IDE {
     debug(`eslint pkg path: ${this.eslintPkgPath}`)
     debug(`eslintrc path: ${this.eslintrcPath}`)
 
-    await render.renderDir(resolve(__dirname, '..' , 'mustaches', 'ide'), {
-      eslintPkgPath: this.eslintPkgPath,
-      eslintrcPath: this.eslintrcPath,
-      isApp,
-    }, ['.xml', '.json', '.iml'], conf.cwd, {
-      overwrite: true,
-    })
+    // gen ide files if ide files does not exist locally
+    if (
+      !fs.existsSync(resolve(conf.cwd, '.idea')) &&
+      !fs.existsSync(resolve(conf.cwd, '.vscode'))
+    ) {
+      await render.renderDir(resolve(__dirname, '..' , 'mustaches', 'ide'), {
+        eslintPkgPath: this.eslintPkgPath,
+        eslintrcPath: this.eslintrcPath,
+        isApp,
+      }, ['.xml', '.json', '.iml'], conf.cwd, {
+        overwrite: true,
+      })
+    }
   }
 }
 

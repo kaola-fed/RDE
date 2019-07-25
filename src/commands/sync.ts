@@ -14,6 +14,11 @@ export default class Sync extends RunBase {
     ...RunBase.flags,
   }
 
+  // Override parent useLocal
+  public get useLocal() {
+    return true
+  }
+
   public async run() {
     await sync.start({
       watch: false,

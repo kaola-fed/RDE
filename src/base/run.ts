@@ -34,9 +34,10 @@ export default class RunBase extends Base {
 
   public get useLocal() {
     if (conf.isApp) {
-      const {useLocal} = conf.getAppConf()
+      const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
+      const rdcConf = require(rdcConfPath)
 
-      return !!useLocal
+      return !!rdcConf.useLocal
     }
 
     if (conf.rdType === RdTypes.Container) {

@@ -100,7 +100,6 @@ export default class Run extends RunBase {
   public appendArgs(args) {
     if (this.watch) { args.push('--watch') }
     if (this.verbose) { args.push('-v') }
-    if (this.extras) { args = args.concat(['-e', this.extras]) }
     return args
   }
 
@@ -125,9 +124,10 @@ export default class Run extends RunBase {
     debug('useLocal', conf.useLocal)
 
     if (conf.useLocal) {
-      await _.asyncExec(`rm -rf ${conf.rdMode === conf.RdModes.Integrate ? conf.integrateDir : conf.runtimeDir}`)
+      await _.asyncExec('rm -rf .integrate && rm -rf .runtime')
 
       let args = this.appendArgs(['docker:run', this.cmd])
+      if (this.extras) { args = args.concat(['-e', `\'${this.extras}\'`]) }
 
       child = spawn('rde', args, {
         cwd: conf.cwd,
@@ -141,6 +141,7 @@ export default class Run extends RunBase {
 
       let args = ['run', '--rm', '--service-ports', 'rde', 'rde', 'docker:run', this.cmd]
       args = this.appendArgs(args)
+      if (this.extras) { args = args.concat(['-e', this.extras]) }
 
       debug(`docker build dev-${conf.tag}`)
       debug(`docker-compose ${args.join(' ')}`)

@@ -70,9 +70,11 @@ export default class DockerRun {
       cwd,
       appConfName,
       rdcConfName,
+      localCacheDir,
     } = conf
 
-    let config = require(resolve(cwd, rdcConfName))
+    let config = (conf.useLocal && conf.isApp) ? require(resolve(localCacheDir, rdcConfName))
+      : require(resolve(cwd, rdcConfName))
 
     const rdaConfPath = resolve(cwd, appConfName)
     if (fs.existsSync(rdaConfPath)) {
@@ -92,7 +94,7 @@ export default class DockerRun {
       variables = config.variables || {}
     }
 
-    const dirRoot = conf.useLocal ? conf.cwd : dockerWorkDirRoot
+    const dirRoot = conf.useLocal ? conf.localCacheDir : dockerWorkDirRoot
     const variablePath = resolve(dirRoot, 'rdc.variables.js')
     await render.renderTo('module', {
       obj: variables

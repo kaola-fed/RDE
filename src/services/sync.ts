@@ -80,25 +80,27 @@ class Sync {
 
     await this.genDevPkgJson()
 
-    await docker.genDockerFile(
-      conf.dockerWorkDirRoot,
-      this.from,
-      conf.localCacheDir,
-      conf.isApp,
-    )
+    if (!conf.useLocal) {
+      await docker.genDockerFile(
+        conf.dockerWorkDirRoot,
+        this.from,
+        conf.localCacheDir,
+        conf.isApp,
+      )
 
-    // @TODO: docker-compose merge
-    // needed in order to let container developer write multiple services like mongo
-    await docker.genDockerCompose(
-      conf.dockerWorkDirRoot,
-      cmd,
-      this.ports,
-      watch,
-      `dev-${conf.tag}`,
-      conf.localCacheDir,
-      conf.isApp,
-      cmd === 'build',
-    )
+      // @TODO: docker-compose merge
+      // needed in order to let container developer write multiple services like mongo
+      await docker.genDockerCompose(
+        conf.dockerWorkDirRoot,
+        cmd,
+        this.ports,
+        watch,
+        `dev-${conf.tag}`,
+        conf.localCacheDir,
+        conf.isApp,
+        cmd === 'build',
+      )
+    }
 
     if (!skipInstall) {
       await this.install()
@@ -133,7 +135,7 @@ class Sync {
       to: cwd
     }, {
       from: `${dockerWorkDirRoot}/${rdcConfName}`,
-      to: cwd,
+      to: localCacheDir,
     }])
 
     if (!createRdc) {
@@ -144,11 +146,12 @@ class Sync {
       )
     }
 
-    await this.genDevcontainer(createRdc)
+    // 基本没人用，去除功能
+    // await this.genDevcontainer(createRdc)
   }
 
   public async genDevcontainer(createRdc) {
-    const rdcConfPath = resolve(conf.cwd, rdcConfName)
+    const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
     const rdcConf: RdcConf = require(rdcConfPath)
 
     const map = {

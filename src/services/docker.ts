@@ -74,11 +74,13 @@ class Docker {
   public async push(name, version) {
     await _.asyncSpawn('docker', ['push', `${name}:${version}`])
     await _.asyncSpawn('docker', ['push', `${name}:latest`])
+
+    await _.asyncExec('rm -f .dockerignore')
   }
 
   @log('Generating docker files...')
   public async genDockerFile(workDir, from, dir, isApp) {
-    // gen dockerfile
+    // gen dockerfile， 不生成dockerignore
     await render.renderTo('docker/.dockerignore', {}, '.dockerignore', {
       overwrite: true,
     })

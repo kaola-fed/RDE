@@ -34,8 +34,6 @@ export default class Create extends Base {
   public rdcRepo = ''
 
   public async preInit() {
-    await this.config.runHook('checkUpdate', {})
-
     const {flags, args} = this.parse(Create)
     const {name} = args
 

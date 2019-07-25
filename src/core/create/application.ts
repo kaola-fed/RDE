@@ -24,7 +24,7 @@ export default class ApplicationCreate extends CreateCore {
       rdcConfName,
       dockerWorkDirRoot,
     } = conf
-    const rdcConfPath = resolve(cwd, rdcConfName)
+    const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
     await docker.copy(
       this.rdc,
       [{

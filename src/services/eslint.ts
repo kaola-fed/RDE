@@ -10,10 +10,12 @@ export default {
   getLintFiles(filenames) {
     const {
       cwd,
+      isApp,
       rdcConfName,
+      localCacheDir,
     } = conf
 
-    const rdcPath = resolve(cwd, rdcConfName)
+    const rdcPath = isApp ? resolve(localCacheDir, rdcConfName) : resolve(cwd, rdcConfName)
     const rdcConf = ensureRequire(rdcPath)
 
     filenames = filenames.filter(file => /(app\/)|(template\/)/.test(file))
