@@ -1,6 +1,5 @@
-import {ParentBinLinker} from 'link-parent-bin'
-import * as path from 'path'
 import * as fs from 'fs-extra'
+import * as path from 'path'
 
 import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
@@ -64,7 +63,6 @@ export default class DockerRun extends RunBase {
     }
 
     if (process.platform === 'win32') {
-
       await fs.ensureSymlink('node_modules', path.join('.integrate', 'node_modules'))
     }
 

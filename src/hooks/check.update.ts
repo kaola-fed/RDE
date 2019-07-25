@@ -79,7 +79,7 @@ export default async function ({config, id}) {
     await updateVersion()
   }
 
-  if(id === 'create') {
+  if (id === 'create') {
     return
   }
 
