@@ -8,7 +8,7 @@ import {debug} from '../services/logger'
 import npm from '../services/npm'
 import _ from '../util'
 
-export default async function ({config}) {
+export default async function ({config, id}) {
   const file = path.join(config.cacheDir, 'version')
   const delayInDays = 6
 
@@ -77,6 +77,10 @@ export default async function ({config}) {
 
   if (await needUpdate()) {
     await updateVersion()
+  }
+
+  if(id === 'create') {
+    return
   }
 
   await _.copy(
