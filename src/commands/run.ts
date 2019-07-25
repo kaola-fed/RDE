@@ -137,7 +137,6 @@ export default class Run extends RunBase {
         cwd: conf.cwd,
         stdio: 'inherit',
         shell: true,
-        detached: process.platform === 'win32'
       })
     } else {
       // not using docker-compose cuz .dockerignore in sub dir is not working,

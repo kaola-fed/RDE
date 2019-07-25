@@ -6,6 +6,7 @@ import Core from '../../core/docker.run'
 import conf from '../../services/conf'
 import rdehook from '../../services/rdehook'
 import _ from '../../util'
+import { spawn } from 'child_process';
 
 export default class DockerRun extends RunBase {
   public static description = 'run script inside docker container'
@@ -66,11 +67,22 @@ export default class DockerRun extends RunBase {
       await fs.ensureSymlink('node_modules', path.join('.integrate', 'node_modules'))
     }
 
-    await _.asyncSpawn('npm', args, {
-      cwd: conf.isIntegrate ? conf.integrateDir : conf.runtimeDir,
-      env: process.env
+    process.on('SIGINT', () => {
+      child.kill("SIGINT")
+      process.exit(0)
     })
-    process.exit(0)
+
+    let child = spawn('npm', args, {
+      cwd: conf.isIntegrate ? conf.integrateDir : conf.runtimeDir,
+      env: process.env,
+      stdio: 'inherit',
+      shell: true
+    })
+
+    child.on('close', code => {
+      child.kill("SIGINT")
+      process.exit(code)
+    })
 
     await rdehook.trigger('postRun')
   }
