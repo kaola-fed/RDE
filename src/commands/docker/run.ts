@@ -1,3 +1,4 @@
+import {spawn} from 'child_process'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -5,8 +6,6 @@ import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
 import conf from '../../services/conf'
 import rdehook from '../../services/rdehook'
-import _ from '../../util'
-import { spawn } from 'child_process';
 
 export default class DockerRun extends RunBase {
   public static description = 'run script inside docker container'
@@ -68,7 +67,7 @@ export default class DockerRun extends RunBase {
     }
 
     process.on('SIGINT', () => {
-      child.kill("SIGINT")
+      child.kill('SIGINT')
       process.exit(0)
     })
 
@@ -80,7 +79,7 @@ export default class DockerRun extends RunBase {
     })
 
     child.on('close', code => {
-      child.kill("SIGINT")
+      child.kill('SIGINT')
       process.exit(code)
     })
 

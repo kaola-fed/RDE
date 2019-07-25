@@ -108,7 +108,7 @@ export default class Run extends RunBase {
 
     let child = null
     process.on('SIGINT', () => {
-      child.kill("SIGINT")
+      child.kill('SIGINT')
       process.exit(0)
     })
 
@@ -119,7 +119,7 @@ export default class Run extends RunBase {
       })
 
       rl.on('SIGINT', () => {
-        child.kill("SIGINT")
+        child.kill('SIGINT')
         process.exit(0)
       })
     }
@@ -156,9 +156,8 @@ export default class Run extends RunBase {
       })
     }
 
-
     child.on('close', code => {
-      child.kill("SIGINT")
+      child.kill('SIGINT')
       process.exit(code)
     })
   }
