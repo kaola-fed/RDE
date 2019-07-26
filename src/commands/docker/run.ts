@@ -6,6 +6,7 @@ import RunBase from '../../base/run'
 import Core from '../../core/docker.run'
 import conf from '../../services/conf'
 import rdehook from '../../services/rdehook'
+import sync from '../../services/sync'
 
 export default class DockerRun extends RunBase {
   public static description = 'run script inside docker container'
@@ -25,6 +26,18 @@ export default class DockerRun extends RunBase {
 
     const {flags} = this.parse(DockerRun)
     this.extras = flags.extras
+  }
+
+  public async initialize() {
+    await super.initialize()
+
+    await sync.start({
+      watch: this.watch,
+      cmd: this.cmd,
+      skipInstall: true
+    })
+
+    conf.useLocal = this.useLocal
   }
 
   public async preRun() {

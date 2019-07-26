@@ -85,8 +85,6 @@ export default class RunBase extends Base {
     ) {
       throw Error(MCOMMON.WRONG_PROJECT_STRUCTURE)
     }
-
-    conf.useLocal = this.useLocal
   }
 
   public async run() {}

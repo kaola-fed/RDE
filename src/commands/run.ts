@@ -61,6 +61,18 @@ export default class Run extends RunBase {
     }
   }
 
+  public async initialize() {
+    await super.initialize()
+
+    await sync.start({
+      watch: this.watch,
+      cmd: this.cmd,
+      skipInstall: true
+    })
+
+    conf.useLocal = this.useLocal
+  }
+
   public async preRun() {
     if (conf.isApp) {
       const cacheContainer = cache.get('container')
@@ -89,12 +101,6 @@ export default class Run extends RunBase {
       }
       cache.set('container', container.name)
     }
-
-    await sync.start({
-      watch: this.watch,
-      cmd: this.cmd,
-      skipInstall: true
-    })
   }
 
   public appendArgs(args) {

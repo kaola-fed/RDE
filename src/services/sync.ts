@@ -80,27 +80,25 @@ class Sync {
 
     await this.genDevPkgJson()
 
-    if (!conf.useLocal) {
-      await docker.genDockerFile(
-        conf.dockerWorkDirRoot,
-        this.from,
-        conf.localCacheDir,
-        conf.isApp,
-      )
+    await docker.genDockerFile(
+      conf.dockerWorkDirRoot,
+      this.from,
+      conf.localCacheDir,
+      conf.isApp,
+    )
 
-      // @TODO: docker-compose merge
-      // needed in order to let container developer write multiple services like mongo
-      await docker.genDockerCompose(
-        conf.dockerWorkDirRoot,
-        cmd,
-        this.ports,
-        watch,
-        `dev-${conf.tag}`,
-        conf.localCacheDir,
-        conf.isApp,
-        cmd === 'build',
-      )
-    }
+    // @TODO: docker-compose merge
+    // needed in order to let container developer write multiple services like mongo
+    await docker.genDockerCompose(
+      conf.dockerWorkDirRoot,
+      cmd,
+      this.ports,
+      watch,
+      `dev-${conf.tag}`,
+      conf.localCacheDir,
+      conf.isApp,
+      cmd === 'build',
+    )
 
     if (!skipInstall) {
       await this.install()
