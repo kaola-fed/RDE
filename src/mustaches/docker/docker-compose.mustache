@@ -6,8 +6,8 @@ services:
     {{#isApp}}
     - ../app:{{{workDir}}}/app
     - ../rda.config.js:{{{workDir}}}/rda.config.js
-    - /Users/hale/Work/kaola/rde/lib:/usr/local/lib/node_modules/rde/lib
-    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules
+    {{!- /Users/hale/Work/kaola/rde/lib:/usr/local/lib/node_modules/rde/lib
+    - /Users/hale/Work/kaola/rde/node_modules:/usr/local/lib/node_modules/rde/node_modules!}}
     {{/isApp}}
     {{^isApp}}
     - ../app:{{{workDir}}}/app
