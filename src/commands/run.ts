@@ -135,7 +135,7 @@ export default class Run extends RunBase {
     if (conf.useLocal) {
       await _.asyncExec('rm -rf .integrate && rm -rf .runtime')
 
-      let args = this.appendArgs(['docker:run', this.cmd])
+      let args = this.appendArgs(['docker:run', this.cmd, '-l'])
 
       if (this.extras) { args = args.concat(['-e', `\"${this.extras}\"`]) }
 
