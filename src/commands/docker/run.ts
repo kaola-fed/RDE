@@ -7,7 +7,6 @@ import Core from '../../core/docker.run'
 import conf from '../../services/conf'
 import {debug} from '../../services/logger'
 import rdehook from '../../services/rdehook'
-import sync from '../../services/sync'
 
 export default class DockerRun extends RunBase {
   public static description = 'run script inside docker container'
@@ -34,13 +33,6 @@ export default class DockerRun extends RunBase {
 
     if (this.useLocalFlag) {
       debug('using local flag')
-
-      await sync.start({
-        watch: this.watch,
-        cmd: this.cmd,
-        skipInstall: true
-      })
-
       conf.useLocal = this.useLocal
     }
   }

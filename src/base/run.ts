@@ -25,6 +25,7 @@ export default class RunBase extends Base {
       description: 'arguments need to pass to npm run cmd',
     }),
     useLocalFlag: flags.boolean({char: 'l'}),
+    offline: flags.boolean({char: 'o'}),
   }
 
   public cmd = ''
@@ -34,6 +35,8 @@ export default class RunBase extends Base {
   public extras: string
 
   public useLocalFlag: boolean
+
+  public offline = false
 
   public get useLocal() {
     if (conf.isApp) {
@@ -59,6 +62,7 @@ export default class RunBase extends Base {
     this.watch = flags.watch
     this.extras = flags.extras
     this.useLocalFlag = flags.useLocalFlag
+    this.offline = flags.offline
 
     const cmd = this.cmd || (this.constructor as any).id
     uploadHubble({cmd})

@@ -64,11 +64,13 @@ export default class Run extends RunBase {
   public async initialize() {
     await super.initialize()
 
-    await sync.start({
-      watch: this.watch,
-      cmd: this.cmd,
-      skipInstall: true
-    })
+    if (!this.offline) {
+      await sync.start({
+        watch: this.watch,
+        cmd: this.cmd,
+        skipInstall: true
+      })
+    }
 
     conf.useLocal = this.useLocal
   }
