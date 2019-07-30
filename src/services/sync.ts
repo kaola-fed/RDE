@@ -42,12 +42,20 @@ class Sync {
   public get ports() {
     if (conf.isApp) {
       const {docker} = conf.getAppConf()
-      return docker.ports || []
+      if (docker) {
+        return docker.ports || []
+      } else {
+        return []
+      }
     }
 
     if (conf.rdType === RdTypes.Container) {
       const rdcConf = require(join(conf.cwd, conf.rdcConfName))
-      return rdcConf.docker.ports || []
+      if (rdcConf.docker) {
+        return rdcConf.docker.ports || []
+      } else {
+        return []
+      }
     }
   }
 
