@@ -126,7 +126,7 @@ export default class Create extends Base {
       const {rdcName} = await enquirer.prompt({
         type: 'input',
         name: 'rdcName',
-        message: 'What is the name of container on docker hub?',
+        message: 'What is the name of rdc package?',
         required: true,
         initial: rdcStarter,
       })
@@ -134,25 +134,25 @@ export default class Create extends Base {
       const {version} = await enquirer.prompt({
         type: 'input',
         name: 'version',
-        message: 'What is the version of container?',
+        message: 'What is the version of rdc package?',
         required: true,
         initial: 'latest',
       })
 
-      this.rdc = `${rdcName}:${version}`
+      this.rdc = `${rdcName}@${version}`
     }
 
     if (type === RdTypes.Container) {
       const {rdcRepo} = await enquirer.prompt({
         type: 'input',
         name: 'rdcRepo',
-        message: 'What is the repository name on docker hub?',
+        message: 'What is the package name of container?',
         required: true,
       })
       this.rdcRepo = rdcRepo
 
       const name = conf.frameworks[this.framework].rdcStarter
-      this.rdc = `${name}:latest`
+      this.rdc = `${name}@latest`
     }
 
     conf.rdType = type

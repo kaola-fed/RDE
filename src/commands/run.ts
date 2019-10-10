@@ -66,8 +66,6 @@ export default class Run extends RunBase {
 
     if (!this.offline) {
       await sync.start({
-        watch: this.watch,
-        cmd: this.cmd,
         skipInstall: true
       })
     }

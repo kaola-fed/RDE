@@ -1,3 +1,4 @@
+import * as os from 'os'
 import * as path from 'path'
 
 import _ from '../util'
@@ -27,6 +28,14 @@ const conf = {
 
   get docsPagesDir() {
     return '.docs'
+  },
+
+  get userHomeDir() {
+    return os.homedir()
+  },
+
+  get npmPkgDir() {
+    return resolve(this.userHomeDir, '.rde')
   },
 
   get appConfPath() {
@@ -84,7 +93,7 @@ const conf = {
   get frameworks() {
     return {
       vue: {
-        rdcStarter: 'rdebase/rdc-vue-starter',
+        rdcStarter: 'rdc-vue-starter',
         cdn: [],
       },
       react: {

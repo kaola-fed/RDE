@@ -1,6 +1,7 @@
 export const MCOMMON = {
   UNSUPPORTED_FRAMEWORK: 'Unsupported framework in your config file',
   WRONG_FRAMEWORK_CONFIG: 'Framework is not set correctly in your config file or framework is not supported by rde',
+  WRONG_NPM_CONFIG: 'Npm config is needed when publish to npm',
   WRONG_DOCKER_CONFIG_PORTS: 'Missing docker ports in your config file',
   WRONG_DOCKER_CONFIG_TAG: 'Missing docker tag in your config file',
   WRONG_MAPPING_CONFIG_MAPPING: 'Missing mappings in your config file',

@@ -2,8 +2,8 @@ import * as path from 'path'
 
 import cache from '../../services/cache'
 import conf from '../../services/conf'
-import docker from '../../services/docker'
 import ide from '../../services/ide'
+import npm from '../../services/npm'
 import render from '../../services/render'
 import sync from '../../services/sync'
 import _ from '../../util'
@@ -15,21 +15,19 @@ export default class ApplicationCreate extends CreateCore {
   public rdcConf: RdcConf = null
 
   public async prepare() {
-    await docker.pull(this.rdc)
+    await npm.pull(this.rdc)
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
     cache.set('container', this.rdc)
 
     const {
       cwd,
       rdcConfName,
-      dockerWorkDirRoot,
+      npmPkgDir,
     } = conf
     const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
-    await docker.copy(
-      this.rdc,
+    await npm.copy(
       [{
-        // don't use join or resolve, cuz windows will change / to C:/
-        from: `${dockerWorkDirRoot}/app`,
+        from: resolve(npmPkgDir, this.rdc, 'app'),
         to: resolve(cwd, 'app'),
       }],
     )
@@ -43,11 +41,10 @@ export default class ApplicationCreate extends CreateCore {
 
   public async genConfFile() {
     const {appConfName} = conf
-    const {docs, docker = {ports: []}} = this.rdcConf
+    const {docs} = this.rdcConf
     await render.renderTo(join('rda', appConfName.slice(0, -3)), {
       container: this.rdc,
       docs: docs ? docs.url : '',
-      ports: docker.ports,
     }, appConfName)
   }
 

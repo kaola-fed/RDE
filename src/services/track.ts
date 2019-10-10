@@ -1,11 +1,8 @@
 import axios from 'axios'
 import * as cleanStack from 'clean-stack'
-import * as fs from 'fs'
 import * as ip from 'ip'
-import * as path from 'path'
 import * as rax from 'retry-axios'
 
-import conf from './conf'
 // init request
 const request = axios.create() as any
 request.defaults.raxConfig = {instance: request}
@@ -13,52 +10,15 @@ request.defaults.headers.common['X-SHA1-APPKEY'] = '53ce9ed1f8631045ca098a0949b0
 request.defaults.headers.common['X-CLIENT-IP'] = ip.address()
 rax.attach(request)
 // Hubble config
-const serverUrl = 'https://hubble.netease.com/track/s/'
-const appKey = 'MA-AC3D-F6D2C4E407FA'
+// const serverUrl = 'https://hubble.netease.com/track/s/'
 const isDebug = false
 
 const logTrack = msg => {
   isDebug && console.log(msg) // tslint:disable-line
 }
 
-export const uploadHubble = (info = {}) => {
-  const name = path.basename(conf.cwd)
-  const {appConfPath, rdcConfPath} = conf
-  let tag = 'RDC'
-  if (fs.existsSync(appConfPath)) {
-    const appConf = conf.getAppConf()
-    tag = appConf.container.name
-  } else if (fs.existsSync(rdcConfPath)) {
-    const rdcConf = conf.getRdcConf('.')
-    tag = rdcConf.docker.tag
-  }
-
-  try {
-    const params = {
-      userId: name || tag.split(':')[0],
-      dataType: 'ie',
-      sdkType: 'server',
-      eventId: 'RdeTrack',
-      time: (new Date as any).getTime(), // tslint:disable-line
-      appKey,
-      attributes: {...info, ...{version: tag, project: name}}
-    }
-    const data = Buffer.from(JSON.stringify(params)).toString('base64')
-
-    request({
-      method: 'get',
-      url: serverUrl,
-      params: {data},
-      raxConfig: {
-        onRetryAttempt: err => {
-          const cfg = rax.getConfig(err)
-          logTrack(`Retry attempt #${cfg.currentRetryAttempt}`)
-        }
-      }
-    })
-  } catch (_e) {
-    if (_e) {}
-  }
+// tslint:disable-next-line:no-unused
+export const uploadHubble = (opt = {}) => {
 }
 
 export function TStart(target, key, descriptor) {

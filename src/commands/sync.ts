@@ -21,8 +21,6 @@ export default class Sync extends RunBase {
 
   public async run() {
     await sync.start({
-      watch: false,
-      cmd: 'sync',
       skipInstall: false
     })
   }

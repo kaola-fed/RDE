@@ -37,7 +37,10 @@ interface RdcConf {
   render: Render
   variables: { [key: string]: any }
   mappings: Mapping[]
-  docker: Docker,
+  npm?: {
+    name: string,
+    version: string,
+  },
   nodeVersion: string,
   extensions: string[],
   lint: {

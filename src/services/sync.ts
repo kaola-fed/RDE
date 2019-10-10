@@ -1,23 +1,20 @@
 import * as deepExtend from 'deep-extend'
 import * as fs from 'fs'
-import {writeJson} from 'fs-extra'
 import * as path from 'path'
 import * as writePkg from 'write-pkg'
 
 import conf from '../services/conf'
-import docker from '../services/docker'
 import {debug} from '../services/logger'
+import npm from '../services/npm'
 import _ from '../util'
 
 import ide from './ide'
 import {MRDA} from './message'
-import render from './render'
 
 const {resolve, join} = path
 const {
   RdTypes,
   rdcConfName,
-  dockerWorkDirRoot,
 } = conf
 
 class Sync {
@@ -39,26 +36,6 @@ class Sync {
     }
   }
 
-  public get ports() {
-    if (conf.isApp) {
-      const {docker} = conf.getAppConf()
-      if (docker) {
-        return docker.ports || []
-      } else {
-        return []
-      }
-    }
-
-    if (conf.rdType === RdTypes.Container) {
-      const rdcConf = require(join(conf.cwd, conf.rdcConfName))
-      if (rdcConf.docker) {
-        return rdcConf.docker.ports || []
-      } else {
-        return []
-      }
-    }
-  }
-
   /**
    * sync all
    * used for local dev env, resync is needed when container updates
@@ -68,14 +45,14 @@ class Sync {
    * if rdType is app
    * need to gen extra staged files
    */
-  public async start({watch, cmd, skipInstall = false}) {
+  public async start({skipInstall = false}) {
     await _.asyncSpawn('mkdir', ['-p', conf.localCacheDir], {})
 
     await _.asyncExec('rm -rf app/node_modules')
     await _.asyncExec(`rm -rf ${conf.templateDir}/node_modules`)
 
     if (conf.isApp) {
-      await docker.pull(this.appConf.container.name)
+      await npm.pull(this.appConf.container.name)
 
       await this.genAppStagedFiles()
     } else {
@@ -85,28 +62,6 @@ class Sync {
         {}
       )
     }
-
-    await this.genDevPkgJson()
-
-    await docker.genDockerFile(
-      conf.dockerWorkDirRoot,
-      this.from,
-      conf.localCacheDir,
-      conf.isApp,
-    )
-
-    // @TODO: docker-compose merge
-    // needed in order to let container developer write multiple services like mongo
-    await docker.genDockerCompose(
-      conf.dockerWorkDirRoot,
-      cmd,
-      this.ports,
-      watch,
-      `dev-${conf.tag}`,
-      conf.localCacheDir,
-      conf.isApp,
-      cmd === 'build',
-    )
 
     if (!skipInstall) {
       await this.install()
@@ -126,22 +81,23 @@ class Sync {
     const {
       cwd,
       rdcConfName,
-      dockerWorkDirRoot,
+      npmPkgDir,
       templateDir,
       localCacheDir,
     } = conf
 
     // only create application will pass rdc param
     const image = createRdc || this.appConf.container.name
-    await docker.copy(image, [{
-      from: `${dockerWorkDirRoot}/${templateDir}/package.json`,
-      to: localCacheDir,
+
+    await npm.copy([{
+      from: resolve(npmPkgDir, image, templateDir, 'package.json'),
+      to: resolve(localCacheDir, 'package.json'),
     }, {
-      from: `${dockerWorkDirRoot}/${templateDir}`,
-      to: cwd
+      from: resolve(npmPkgDir, image, templateDir),
+      to: resolve(cwd, templateDir),
     }, {
-      from: `${dockerWorkDirRoot}/${rdcConfName}`,
-      to: localCacheDir,
+      from: resolve(npmPkgDir, image, rdcConfName),
+      to: resolve(localCacheDir, rdcConfName),
     }])
 
     if (!createRdc) {
@@ -150,37 +106,6 @@ class Sync {
         resolve(cwd, localCacheDir, 'package.json'),
         resolve(localCacheDir),
       )
-    }
-
-    // 基本没人用，去除功能
-    // await this.genDevcontainer(createRdc)
-  }
-
-  public async genDevcontainer(createRdc) {
-    const rdcConfPath = resolve(conf.localCacheDir, rdcConfName)
-    const rdcConf: RdcConf = require(rdcConfPath)
-
-    const map = {
-      devcontainer: 'devcontainer.json',
-      'docker-compose': 'docker-compose.yml',
-      Dockerfile: 'Dockerfile',
-    }
-
-    const from = createRdc || this.from
-    rdcConf.docker = rdcConf.docker || {}
-    const ports = createRdc ? rdcConf.docker.ports || [] : this.ports
-    const extensions = rdcConf.extensions || []
-
-    for (let [key, value] of Object.entries(map)) {
-      await render.renderTo(`devcontainer/${key}`, {
-        tag: conf.tag,
-        workDir: dockerWorkDirRoot,
-        extensions: JSON.stringify(extensions),
-        from,
-        ports,
-      }, resolve(conf.cwd, '.devcontainer', value), {
-        overwrite: true,
-      })
     }
   }
 
@@ -220,28 +145,6 @@ rde lint -m "$commitMsg"
 
     await writePkg(destPath, pkgJson)
     return pkgJson
-  }
-
-  public async genDevPkgJson() {
-    const dependenciesAttr = [
-      'os',
-      'engines',
-      'engineStrict',
-      'dependencies',
-      'devDependencies',
-      'peerDependencies',
-      'bundledDependencies',
-      'optionalDependencies']
-    const devPkgJson = {}
-    const pkgJson = require(resolve(conf.localCacheDir, 'package.json'))
-
-    dependenciesAttr.forEach(item => {
-      if (pkgJson[item]) {
-        devPkgJson[item] = pkgJson[item]
-      }
-    })
-
-    await writeJson(join(conf.localCacheDir, 'package-cache.json'), devPkgJson, {spaces: '\t'})
   }
 
   public async install() {

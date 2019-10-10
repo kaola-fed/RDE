@@ -40,14 +40,7 @@ export const validateRdc = (useStrict = false) => {
     throw Error(MCOMMON.WRONG_FRAMEWORK_CONFIG)
   }
 
-  const {docker, mappings, docs, mode = RdModes.Integrate} = rdcConf
-  if (!docker || !docker.ports || !docker.ports.length) {
-    throw Error(MCOMMON.WRONG_DOCKER_CONFIG_PORTS)
-  }
-
-  if (useStrict && !docker.tag) {
-    throw Error(MCOMMON.WRONG_DOCKER_CONFIG_TAG)
-  }
+  const {mappings, docs, mode = RdModes.Integrate} = rdcConf
 
   if (
     mode === conf.RdModes.Integrate &&
@@ -58,6 +51,10 @@ export const validateRdc = (useStrict = false) => {
 
   if (useStrict && (!docs || !docs.url)) {
     throw Error(MCOMMON.WRONG_DOCS_CONFIG)
+  }
+
+  if (!rdcConf.npm || !rdcConf.npm.name || !rdcConf.npm.version) {
+    throw Error(MCOMMON.WRONG_NPM_CONFIG)
   }
 
   return rdcConf

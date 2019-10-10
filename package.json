@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Redesigned Development Environment",
-  "version": "0.0.1-beta.62",
+  "version": "0.0.2-alpha.1",
   "bin": {
     "rde": "./bin/run"
   },
@@ -21,6 +21,7 @@
     "debug": "^4.1.1",
     "deep-extend": "^0.6.0",
     "directory-tree": "^2.2.1",
+    "download": "^7.1.0",
     "enquirer": "^2.3.0",
     "fs-extra": "^7.0.1",
     "gh-pages": "^2.0.1",

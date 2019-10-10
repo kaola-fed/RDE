@@ -1,7 +1,14 @@
+import * as download from 'download'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as copy from 'recursive-copy'
+
 import _ from '../util'
 
+import conf from './conf'
 import {debug} from './logger'
 
+const {resolve} = path
 export default {
   async install({
     pkgs = [],
@@ -42,5 +49,33 @@ export default {
       if (e) {}
       return null
     }
-  }
+  },
+
+  async pull(image: string) {
+    const imageDir = resolve(
+      conf.npmPkgDir,
+      image,
+    )
+
+    if (!fs.existsSync(imageDir)) {
+      await _.asyncExec(`mkdir -p ${imageDir}`)
+
+      const json = await this.getInfo(image)
+
+      await download(json.dist.tarball, imageDir, {
+        extract: true,
+      })
+
+      await _.asyncExec(`cd ${imageDir} && mv -f package/* . && rm -rf package`)
+    }
+  },
+
+  async copy(mappings: any[]) {
+    for (const mapping of mappings) {
+      await copy(path.resolve(mapping.from), mapping.to, {
+        overwrite: true,
+        dot: true,
+      })
+    }
+  },
 }

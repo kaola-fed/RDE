@@ -1,23 +1,21 @@
 import * as path from 'path'
 
 import conf from '../../services/conf'
-import docker from '../../services/docker'
 import ide from '../../services/ide'
+import npm from '../../services/npm'
 import render from '../../services/render'
 import sync from '../../services/sync'
 
 import CreateCore from './index'
 
-const {join} = path
+const {join, resolve} = path
 export default class ContainerCreate extends CreateCore {
   public async prepare() {
-    await docker.pull(this.rdc)
+    await npm.pull(this.rdc)
 
-    await docker.copy(
-      this.rdc,
+    await npm.copy(
       [{
-        // does not need to join, cuz it's docker path
-        from: `${conf.dockerWorkDirRoot}/.`,
+        from: resolve(conf.npmPkgDir, this.rdc, './'),
         to: `${conf.cwd}`,
       }],
     )
@@ -27,7 +25,8 @@ export default class ContainerCreate extends CreateCore {
     const {rdcConfName, rdcConfPath} = conf
 
     const rdcConf = require(rdcConfPath)
-    rdcConf.docker.tag = this.rdcRepo
+    rdcConf.npm.name = this.rdcRepo
+    rdcConf.npm.version = '0.0.1'
 
     await render.renderTo('module', {
       obj: rdcConf,
