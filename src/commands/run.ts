@@ -13,6 +13,8 @@ import sync from '../services/sync'
 import {validateRda, validateRdc} from '../services/validate'
 import _ from '../util'
 
+import CmdDockerRun from './docker/run'
+
 const {RdTypes, cwd} = conf
 export default class Run extends RunBase {
   public static description = 'run scripts provided by container'
@@ -135,15 +137,11 @@ export default class Run extends RunBase {
     if (conf.useLocal) {
       await _.asyncExec('rm -rf .integrate && rm -rf .runtime')
 
-      let args = this.appendArgs(['docker:run', this.cmd, '-l'])
+      let args = this.appendArgs([this.cmd, '-l'])
 
       if (this.extras) { args = args.concat(['-e', `\"${this.extras}\"`]) }
 
-      child = spawn('rde', args, {
-        cwd: conf.cwd,
-        stdio: 'inherit',
-        shell: true,
-      })
+      await CmdDockerRun.run(args)
     } else {
       // not using docker-compose cuz .dockerignore in sub dir is not working,
       // build with docker-compose is slow if node_modules exists
@@ -160,11 +158,11 @@ export default class Run extends RunBase {
         cwd: conf.localCacheDir,
         stdio: 'inherit',
       })
-    }
 
-    child.on('close', code => {
-      child.kill('SIGINT')
-      process.exit(code)
-    })
+      child.on('close', code => {
+        child.kill('SIGINT')
+        process.exit(code)
+      })
+    }
   }
 }
