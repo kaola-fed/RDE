@@ -1,3 +1,5 @@
 export {run} from '@oclif/command'
 
-export {default as ApplicationCreate} from './core/create/application'
+export {default as CmdCreate} from './commands/create'
+export {default as CmdServe} from './commands/serve'
+export {default as CmdRun} from './commands/run'

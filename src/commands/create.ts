@@ -1,3 +1,4 @@
+import * as flags from '@oclif/command/lib/flags'
 import * as enquirer from 'enquirer'
 
 import Base from '../base'
@@ -17,6 +18,9 @@ export default class Create extends Base {
 
   public static flags = {
     ...Base.flags,
+    rdType: flags.string({required: false, description: 'project type to create'}),
+    framework: flags.string({required: false, description: 'framework to use'}),
+    rdc: flags.string({required: false, description: 'rdc to use'}),
   }
 
   public static args = [{
@@ -38,13 +42,20 @@ export default class Create extends Base {
 
     const {flags, args} = this.parse(Create)
     const {name} = args
+    const {rdType, framework, rdc} = flags
 
     this.name = name
+    this.framework = framework
+    this.rdc = rdc
+
+    conf.rdType = rdType
     return flags
   }
 
   public async initialize() {
-    await this.ask()
+    if (!this.framework || !this.rdc) {
+      await this.ask()
+    }
   }
 
   public async preRun() {
