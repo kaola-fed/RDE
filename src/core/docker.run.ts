@@ -159,7 +159,8 @@ export default class DockerRun {
     }
 
     if (conf.isIntegrate) {
-      options.filter = /.*(?<!\.d\.ts)$/
+      // options.filter = /.*(?<!\.d\.ts)$/
+      options.filter = /^(?!.*\.d\.ts$).*\..*$/
     }
 
     await render.renderDir(from, {
@@ -198,7 +199,7 @@ export default class DockerRun {
       if (!options || options.filter) {
         options = options || {}
         options.overwrite = options.overwrite || false
-        options.filter = /.*(?<!\.d\.ts)$/
+        options.filter = /^(?!.*\.d\.ts$).*\..*$/
       }
 
       await _.copy(appDir, destDir, {options})
