@@ -36,6 +36,7 @@ export default class Publish extends Base {
       'app',
       'template',
       'rdc.config.js',
+      'abc.json'
     ]
 
     await writePkg(conf.cwd, json)
