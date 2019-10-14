@@ -51,14 +51,14 @@ export default {
     }
   },
 
-  async pull(image: string) {
+  async pull(image: string, forceUpdate = false) {
     const imageDir = resolve(
       conf.npmPkgDir,
       image,
     )
 
-    if (!fs.existsSync(imageDir)) {
-      await _.asyncExec(`mkdir -p ${imageDir}`)
+    if (!fs.existsSync(imageDir) || forceUpdate) {
+      await _.asyncExec(`rm -rf ${imageDir} && mkdir -p ${imageDir}`)
 
       const json = await this.getInfo(image)
 

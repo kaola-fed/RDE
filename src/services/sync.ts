@@ -100,6 +100,14 @@ class Sync {
       to: resolve(localCacheDir, rdcConfName),
     }])
 
+    const abcJsonPath = resolve(npmPkgDir, image, 'abc.json')
+    if (fs.existsSync(abcJsonPath)) {
+      await npm.copy([{
+        from: abcJsonPath,
+        to: resolve(cwd, 'abc.json'),
+      }])
+    }
+
     if (!createRdc) {
       await this.mergePkgJson(
         resolve(cwd, 'app', 'package.json'),

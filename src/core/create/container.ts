@@ -11,7 +11,7 @@ import CreateCore from './index'
 const {join, resolve} = path
 export default class ContainerCreate extends CreateCore {
   public async prepare() {
-    await npm.pull(this.rdc)
+    await npm.pull(this.rdc, true)
 
     await npm.copy(
       [{

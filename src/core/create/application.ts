@@ -15,7 +15,7 @@ export default class ApplicationCreate extends CreateCore {
   public rdcConf: RdcConf = null
 
   public async prepare() {
-    await npm.pull(this.rdc)
+    await npm.pull(this.rdc, true)
     await _.asyncExec(`mkdir ${conf.localCacheDir}`)
     cache.set('container', this.rdc)
 

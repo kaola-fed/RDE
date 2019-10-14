@@ -46,18 +46,12 @@ export default async function ({config, id}) {
       table.push([config.name, config.version, latest])
       table.push([
         {
-          content: 'New version available. Updating RDE Cli Automatically',
+          content: 'New version available. Please Update RDE Cli',
           colSpan: 3
         }
       ])
       // tslint:disable:no-console
       console.log(table.toString())
-
-      await npm.install({
-        pkgs: [config.name],
-        isGlobal: true,
-        isDevDep: false,
-      })
     }
   }
 
