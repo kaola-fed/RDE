@@ -58,7 +58,7 @@ export default {
     )
 
     if (!fs.existsSync(imageDir) || forceUpdate) {
-      await _.asyncExec(`rm -rf ${imageDir} && mkdir -p ${imageDir}`)
+      await _.asyncExec(`rm -rf ${imageDir} && mkdir ${imageDir}`)
 
       const json = await this.getInfo(image)
 

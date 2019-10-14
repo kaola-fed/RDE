@@ -3,7 +3,7 @@ import * as path from 'path'
 
 import _ from '../util'
 
-const {resolve} = path
+const {resolve, join} = path
 
 const appConfName = 'rda.config.js'
 
@@ -31,11 +31,12 @@ const conf = {
   },
 
   get userHomeDir() {
-    return os.homedir()
+    // @ts-ignore
+    return os.platform === 'win32' ? process.cwd().split(path.sep)[0] : os.homedir()
   },
 
   get npmPkgDir() {
-    return resolve(this.userHomeDir, '.rde')
+    return join(this.userHomeDir, '.rde')
   },
 
   get appConfPath() {
