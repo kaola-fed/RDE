@@ -32,7 +32,8 @@ const conf = {
 
   get userHomeDir() {
     // @ts-ignore
-    return os.platform === 'win32' ? process.cwd().split(path.sep)[0] : os.homedir()
+    // tslint:disable-next-line:triple-equals
+    return os.platform == 'win32' ? process.cwd().split(path.sep)[0] : os.homedir()
   },
 
   get npmPkgDir() {
