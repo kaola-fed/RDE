@@ -1,5 +1,6 @@
 import * as download from 'download'
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
 import * as copy from 'recursive-copy'
 
@@ -58,7 +59,13 @@ export default {
     )
 
     if (!fs.existsSync(imageDir) || forceUpdate) {
-      await _.asyncExec(`rm -rf ${imageDir} && mkdir ${imageDir}`)
+      // @ts-ignore
+      // tslint:disable-next-line:triple-equals
+      if (os.platform == 'win32') {
+        await _.asyncExec(`rm -rf ${imageDir} && mkdir ${imageDir}`)
+      } else {
+        await _.asyncExec(`rm -rf ${imageDir} && mkdir -p ${imageDir}`)
+      }
 
       const json = await this.getInfo(image)
 
