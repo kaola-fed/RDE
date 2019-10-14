@@ -25,7 +25,10 @@ export default class DockerRun extends RunBase {
     await super.preInit()
 
     const {flags} = this.parse(DockerRun)
-    this.extras = flags.extras.replace(/"/g, '')
+
+    if (flags.extras) {
+      this.extras = flags.extras.replace(/"/g, '')
+    }
   }
 
   public async initialize() {
