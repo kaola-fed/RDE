@@ -1,7 +1,7 @@
 {
   "name": "rde",
   "description": "Redesigned Development Environment",
-  "version": "0.0.2-alpha.7",
+  "version": "0.0.2-alpha.8",
   "bin": {
     "rde": "./bin/run"
   },
