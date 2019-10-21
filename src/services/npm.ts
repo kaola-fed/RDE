@@ -61,7 +61,7 @@ export default {
     if (!fs.existsSync(imageDir) || forceUpdate) {
       // @ts-ignore
       // tslint:disable-next-line:triple-equals
-      if (os.platform == 'win32') {
+      if (os.platform() == 'win32') {
         await _.asyncExec(`rm -rf ${imageDir} && mkdir ${imageDir}`)
       } else {
         await _.asyncExec(`rm -rf ${imageDir} && mkdir -p ${imageDir}`)
