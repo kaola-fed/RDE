@@ -59,6 +59,11 @@ export default {
     )
 
     if (!fs.existsSync(imageDir) || forceUpdate) {
+      const json = await this.getInfo(image)
+
+      if (!(json && json.dist && json.dist.tarball)) {
+        throw Error(`npm cannot find ${image}`)
+      }
       // @ts-ignore
       // tslint:disable-next-line:triple-equals
       if (os.platform() == 'win32') {
@@ -67,13 +72,17 @@ export default {
         await _.asyncExec(`rm -rf ${imageDir} && mkdir -p ${imageDir}`)
       }
 
-      const json = await this.getInfo(image)
+      try {
+        await download(json.dist.tarball, imageDir, {
+          extract: true,
+        })
 
-      await download(json.dist.tarball, imageDir, {
-        extract: true,
-      })
+        await _.asyncExec(`cd ${imageDir} && mv -f package/* . && rm -rf package`)
+      } catch (err) {
+        await _.asyncExec(`rm -rf ${imageDir}`)
+        throw err
+      }
 
-      await _.asyncExec(`cd ${imageDir} && mv -f package/* . && rm -rf package`)
     }
   },
 
