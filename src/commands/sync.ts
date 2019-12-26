@@ -1,3 +1,5 @@
+import {flags} from '@oclif/command'
+
 import Base from '../base'
 import RunBase from '../base/run'
 import sync from '../services/sync'
@@ -12,6 +14,7 @@ export default class Sync extends RunBase {
   public static flags = {
     ...Base.flags,
     ...RunBase.flags,
+    tnpm: flags.boolean({char: 't'}),
   }
 
   // Override parent useLocal
@@ -20,8 +23,12 @@ export default class Sync extends RunBase {
   }
 
   public async run() {
+    const {flags} = this.parse(Sync)
+    const tnpm = flags.tnpm
+
     await sync.start({
-      skipInstall: false
+      skipInstall: false,
+      npmCmd: tnpm ? 'tnpm' : 'npm'
     })
   }
 }

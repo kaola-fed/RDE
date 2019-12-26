@@ -45,7 +45,7 @@ class Sync {
    * if rdType is app
    * need to gen extra staged files
    */
-  public async start({skipInstall = false}) {
+  public async start({skipInstall = false, npmCmd = 'npm'}) {
     await _.asyncSpawn('mkdir', ['-p', conf.localCacheDir], {})
 
     await _.asyncExec('rm -rf app/node_modules')
@@ -64,7 +64,7 @@ class Sync {
     }
 
     if (!skipInstall) {
-      await this.install()
+      await this.install(npmCmd)
     }
 
     await ide.initSettings(conf.isApp)
@@ -155,13 +155,19 @@ rde lint -m "$commitMsg"
     return pkgJson
   }
 
-  public async install() {
+  public async install(npmCmd?) {
     const {
       cwd,
       RdTypes,
       templateDir,
       localCacheDir,
     } = conf
+
+    if (!npmCmd) {
+      npmCmd = 'npm'
+    }
+
+    debug(`npm Cmd: ${npmCmd}`)
 
     if (conf.isApp) {
       const cachePkgJsonPath = resolve(localCacheDir, 'package.json')
@@ -186,7 +192,7 @@ rde lint -m "$commitMsg"
       }
 
       fs.symlinkSync(cachePkgJsonPath, symPkgJsonPath)
-      await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {
+      await _.asyncSpawn(npmCmd, ['i', '--package-lock', 'false'], {
         cwd,
       })
       fs.unlinkSync(symPkgJsonPath)
@@ -206,7 +212,7 @@ rde lint -m "$commitMsg"
       }
 
       fs.symlinkSync(runtimePkgJsonPath, symPkgJsonPath)
-      await _.asyncSpawn('npm', ['i', '--package-lock', 'false'], {
+      await _.asyncSpawn(npmCmd, ['i', '--package-lock', 'false'], {
         cwd,
       })
       fs.unlinkSync(symPkgJsonPath)
